@@ -1,0 +1,444 @@
+"use strict";
+// 部分程式碼源自 https://github.com/SN-Koarashi/discord-bot_sis
+const path = require('path');
+const crypto = require('crypto');
+const fs = require('fs-extra');
+const WebSocket = require('ws');
+const SocketServer = WebSocket.Server;
+const http = require('http');
+
+// 指定開啟的 port
+const PORT = 8080;
+const server = new http.createServer();
+
+// SocketServer 開啟 WebSocket 服務
+const wssSrv = new SocketServer({ server })
+const clientList = {};
+const roomTimer = {};
+const roomList = {
+	public: {},
+	ncut: {}
+};
+const roomListReserved = ["ncut"];
+const roomPassword = {
+	public: null,
+	ncut: null
+};
+const messageList = {
+	public: {
+		message: [],
+		type: "history"
+	}
+};
+
+// 當 WebSocket 從外部連結時執行
+wssSrv.on('connection', (ws, req) => {
+    // 連結時執行提示
+	const ip = (req.connection.remoteAddress.match(/^(::ffff:192\.168\.)/ig))?req.headers['x-forwarded-for']:req.connection.remoteAddress;
+	const port = req.connection.remotePort;
+	const addressCrypt = cryptPwd(ip);
+	const clientUID = crypto.randomUUID().toUpperCase();
+	
+	if(!req.headers["origin"].match(/^https?:\/\/chat\.snkms\.com/ig)){
+		ws.close();
+		Logger("ERROR",`Client ${ip} forbidden because invalid origin:`,req.headers["origin"]);
+		return;
+	}
+
+	
+	// 驗證使用者是否合法
+	if(ip == req.headers['x-forwarded-for']){
+		let url = req.url.split('=')[1];
+		if(url != ip){
+			onSender({
+				type: 'forbidden',
+				session: clientUID,
+				message: 'Session Verify Failed'
+			},ws,null);
+			ws.close();
+			Logger("ERROR", `Client ${ip} forbidden because verified failed:`, clientUID);
+			return;
+		}
+	}
+	
+	Logger("INFO", `Client ${ip} connected:`, clientUID);
+
+	// 接收訊息
+	ws.on('message', async (msg) => {
+		try{
+			if(!isJSONString(msg.toString())) return;
+			
+			let obj;
+			let data = JSON.parse(msg.toString());
+			
+			// 登入動作
+			if(data.type == 'login'){
+				// 使用者所在的房間
+				var locate = (data.location && data.location.match(/^([0-9a-zA-Z-_]{1,16})$/g))?data.location:"public";
+			
+				// 如果房間不存在就重新定位到大廳
+				if(!roomList[locate])
+					locate = "public";
+				
+				// 如果房間有密碼
+				if(roomPassword[locate] !== null){
+					// 檢查登入要求是否攜帶密碼
+					if(data.password !== undefined && typeof data.password === 'string' && data.password.trim().length > 0){
+						// 如果攜帶的密碼與房間密碼不相同，則將使用者踢出房間
+						if(getSHA256(data.password) !== roomPassword[locate]){
+							Logger("WARN", `Client ${ip} has been kicked from #${locate} bacause wrong password:`, clientUID);
+							onSender({
+								type: "verifyFailed",
+								session: clientUID,
+								location: locate
+							}, ws);
+							
+							// 跳出後續步驟
+							return;
+						}
+					}
+					// 沒攜帶密碼則要求驗證
+					else{
+						onSender({
+							type: "requireVerify",
+							session: clientUID,
+							location: locate,
+						}, ws);
+						
+						Logger("WARN", `Client ${ip} haven't take password in #${locate}:`, clientUID);
+						
+						// 跳出後續步驟
+						return;
+					}
+				}
+				
+				
+				// 推送訊息到控制台
+				Logger("INFO", `Client ${ip} logged in #${locate}:`, clientUID);
+				
+				// 如果先前有所在的房間，則從先前的房間踢出
+				if(roomList[clientList[clientUID]?.locate]){
+					if(roomList[clientList[clientUID].locate][addressCrypt]){
+						let k = 0;
+						for(let c of roomList[clientList[clientUID].locate][addressCrypt]){
+							if(c.session == clientUID){
+								roomList[clientList[clientUID].locate][addressCrypt].splice(k, 1);
+								break;
+							}
+							k++;
+						}
+						
+						if(roomList[clientList[clientUID].locate][addressCrypt].length == 0)
+							delete roomList[clientList[clientUID].locate][addressCrypt];
+					}
+					
+					
+					// 更新先前的房間的使用者列表
+					onSender({
+						user: roomList[clientList[clientUID].locate],
+						type: 'profile'
+					},null,clientList[clientUID].locate);
+				}
+				
+				// 使用者工作階段資料
+				let clientSession = {
+					username: "",
+					id: port,
+					session: clientUID
+				};
+				
+				// 在特定房間中所有工作階段的詳細資訊 (Array)
+				if(!roomList[locate][addressCrypt])
+					roomList[locate][addressCrypt] = [clientSession];
+				else
+					roomList[locate][addressCrypt].push(clientSession);
+				
+				// 檢查並更新同一個使用者在房間中的所有工作階段的暱稱
+				for(let c of roomList[locate][addressCrypt]){
+					c.username = (data.username.length > 0)?data.username:"Unknown";
+				}
+				
+				
+				// 使用者工作階段的基本資訊
+				clientList[clientUID] = {
+					username: data.username,
+					id: port,
+					address: addressCrypt,
+					locate: locate, // 使用者工作階段與所在房間的對應關係
+					instance: ws // 使用者工作階段的 WebSocket 實例
+				};
+				
+				// 將使用者列表廣播給所有人 (Object)
+				obj = {
+					user: roomList[locate],
+					type: 'profile'
+				};
+				
+				// 將目前工作階段的資訊傳遞給目前連線的使用者工作階段(單個人，並非所有人)
+				onSender({
+					type: "verified",
+					session: clientUID,
+					location: locate,
+					isReserved: (roomListReserved.indexOf(locate) === -1) ? false : true
+				},ws);
+				
+				// 將房間內的歷史訊息傳遞給目前連線的使用者工作階段(單個人，並非所有人)
+				if(messageList[locate] && messageList[locate].message && messageList[locate].message.length > 0)
+					onSender(messageList[locate],ws);
+				
+				// 傳遞上述建立物件 obj 之內容給房間中的所有使用者
+				onSender(obj,null,locate);
+			}
+			// 建立私聊
+			else if(data.type == 'create'){
+				var j = 0;
+				var locate = makeID(8);
+				while(roomList[locate]){
+					if(j > 15) break;
+					
+					locate = makeID(8);
+					j++;
+				}
+				
+				
+				if(j > 15 || data.session != clientUID){
+					onSender({
+						type: "verified",
+						session: clientUID,
+						location: locate,
+						status: "private_failed",
+						message: "私聊建立失敗"
+					},ws);
+				}
+				else{
+					roomList[locate] = {};
+					roomPassword[locate] = (data.password && data.password.length > 0) ? getSHA256(data.password) : null;
+					
+					onSender({
+						type: "verified",
+						session: clientUID,
+						status: "private_created",
+						hasPassword: (data.password && data.password.length > 0)?true:false,
+						location: locate
+					},ws);
+				}
+			}
+			// 刷新動作
+			else if(data.type == 'refresh'){
+				Logger("INFO", `Client ${ip} recache:`, clientUID);
+				var locate = (data.location && roomList[data.location])?data.location:"public";
+				
+				// 檢查並更新同一個使用者在房間中的所有工作階段的暱稱
+				for(let c of roomList[locate][addressCrypt]){
+					c.username = (data.username.length > 0)?data.username:"Unknown";
+				}
+				
+				// 廣播更新後使用者列表給所有人 (Object)
+				obj = {
+					user: roomList[locate],
+					type: 'profile'
+				};
+				
+				// 傳遞上述建立物件 obj 之內容給房間中的所有使用者
+				onSender(obj,null,locate);
+			}
+			// 發送訊息
+			else if(data.type == "message"){
+				Logger("INFO", `Client ${ip} sent message:`, clientUID);
+				var locate = (data.location && roomList[data.location])?data.location:"public";
+				
+				// 訊息所要包含的資訊
+				obj = {
+					session: clientUID,
+					message: data.message.toString(),
+					location: locate,
+					type: 'message'
+				};
+
+				// 將目前的訊息及發送訊息的使用者工作階段資訊記錄到歷史訊息中(在新使用者登入後要傳遞給他的)
+				let objHistory = {
+					session: clientUID,
+					id: clientList[clientUID].id,
+					username: clientList[clientUID].username,
+					address: clientList[clientUID].address,
+					time: new Date().getTime(),
+					message: data.message.toString(),
+					location: locate,
+					type: 'history'
+				};
+				
+				if(!messageList[locate])
+					messageList[locate] = {
+						message: [objHistory],
+						type: "history"
+					};
+				else
+					messageList[locate].message.push(objHistory);
+				
+				// 傳遞上述建立物件 obj 之內容給房間中的所有使用者
+				onSender(obj,null,locate);
+			}
+			// 傳送悄悄話 (悄悄話會在重新整理後消失，不會顯示在訊息歷史中)
+			else if(data.type == "privateMessage"){
+				Logger("INFO", `Client ${ip} sent private message:`, clientUID);
+				var locate = (data.location && roomList[data.location])?data.location:"public";
+				
+				// 訊息所要包含的資訊
+				obj = {
+					source: {
+						session: clientUID,
+						username: clientList[clientUID].username
+					},
+					session: data.session,
+					message: data.message.toString(),
+					location: locate,
+					type: 'privateMessage'
+				};
+				
+				// 傳遞上述建立物件 obj 之內容給悄悄話對象工作階段
+				onSender(obj, clientList[data.session].instance);
+			}
+			else{
+				Logger("WARN", `Client ${ip} invalid type:`, clientUID);
+			}
+		}
+		catch(err){
+			console.log(err);
+		}
+	});
+	
+
+	// 使用者工作階段關閉連線
+	ws.on('close', async (msg) => {
+		Logger("INFO", `Client ${ip} disconnected:`, clientUID);
+		let locate = clientList[clientUID]?.locate;
+		// 於使用者列表陣列及使用者所有工作階段陣列中刪除此工作階段
+		if(roomList[locate]){
+			if(roomList[locate][addressCrypt]){
+				let k = 0;
+				for(let c of roomList[locate][addressCrypt]){
+					if(c.session == clientUID){
+						roomList[locate][addressCrypt].splice(k, 1);
+						break;
+					}
+					k++;
+				}
+				
+				if(roomList[locate][addressCrypt].length == 0)
+					delete roomList[locate][addressCrypt];
+			}
+		
+			delete clientList[clientUID];
+			
+			
+			if(roomList[locate] && Object.keys(roomList[locate]).length == 0 && locate.match(/^([0-9a-zA-Z-_]{8})$/g) && roomListReserved.indexOf(locate) === -1){
+				roomTimer[locate] = setTimeout(()=>{
+					if(roomList[locate] && Object.keys(roomList[locate]).length == 0){
+						delete roomList[locate];
+						delete messageList[locate];
+						delete roomTimer[locate];
+						
+						// 推送清除訊息到控制台
+						Logger("WARN", `Deleted channel #${locate} and its message history.`);
+					}
+				},60000);
+			}
+
+			// 傳遞更新後的使用者列表給所有人
+			let obj = {
+				user: roomList[locate],
+				type: 'profile'
+			};
+			onSender(obj,null,locate);
+		}
+	});
+
+});
+
+// 建立私聊ID
+function makeID(length) {
+    var result           = '';
+    var charactersMax       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+    var charactersMin       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	
+    for ( var i = 0; i < length; i++ ) {
+		if(i == 0 || i == length - 1)
+			result += charactersMin.charAt(Math.floor(Math.random() * charactersMin.length));
+		else
+			result += charactersMax.charAt(Math.floor(Math.random() * charactersMax.length));
+   }
+   return result;
+}
+
+// 檢查是不是JSON
+function isJSONString(jsonString){
+    try {
+        var o = JSON.parse(jsonString);
+        if (o && typeof o === "object") {
+            if(o.type)
+				return true;
+        }
+    }
+    catch (e) { }
+
+    return false;
+};
+
+// 訊息廣播函數
+function onSender(contentObj,onlyClient,locate){
+	wssSrv.clients.forEach(function each(client) {
+		// 只傳遞給連線中的使用者
+		if (client.readyState === WebSocket.OPEN) {
+			if(onlyClient == client) // 只廣播給單個客戶端(傳送歷史訊息、悄悄話)
+				client.send(JSON.stringify(contentObj));
+			else if(locate != null){
+				let room = roomList[locate];
+				
+				for(let r in room){
+					for(let c of room[r]){
+						let ws = clientList[c.session].instance;
+						if(ws == client)
+							client.send(JSON.stringify(contentObj));
+					}
+				}
+			}
+		}
+	});
+}
+
+function cryptPwd(password) {
+    var md5 = crypto.createHash('md5');
+    return md5.update(password).digest('hex').toUpperCase();
+}
+
+function getSHA256(str) {
+    var hash = crypto.createHash('sha256');
+    return hash.update(str).digest('hex').toUpperCase();
+}
+
+function Logger(stats, ...message){
+	var date = new Date();
+	var year = date.getFullYear();
+	var month = ('0'+(date.getMonth()*1+1)).substr(-2);
+	var day = ('0'+date.getDate()).substr(-2);
+	var hour = ('0'+date.getHours()).substr(-2);
+	var minute = ('0'+date.getMinutes()).substr(-2);
+	var second = ('0'+date.getSeconds()).substr(-2);
+	
+	var StrtoDate = `${month}-${day} ${hour}:${minute}:${second}`;
+	if(stats == 'INFO'){
+		var color = '\x1b[32m';
+	}
+	if(stats == 'WARN'){
+		var color = '\x1b[33m';
+	}
+	if(stats == 'ERROR'){
+		var color = '\x1b[31m';
+	}
+	
+	console.log(`\x1b[0m${StrtoDate}`,`[${color}${stats}\x1b[0m]`,`${message.join(" ")}\x1b[0m`);
+}
+
+server.listen(PORT, ()=>{
+	Logger("WARN", `Socket Server is Listening on Port ${server.address().port}`);
+});

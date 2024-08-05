@@ -1,0 +1,16 @@
+{
+  "name": "API Service",
+  "version": "1.0.0",
+  "description": "TESTING",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "5026",
+  "license": "GPLv3",
+  "dependencies": {
+    "crypto-js": "^4.1.1",
+    "ws": "^8.5.0",
+    "fs-extra": "^10.0.0",
+    "https": "^1.0.0"
+  }
+}
