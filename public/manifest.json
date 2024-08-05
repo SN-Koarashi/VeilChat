@@ -1,0 +1,26 @@
+{
+  "version": "2.24.10804",
+  "short_name": "XCoreNET WebChat",
+  "name": "XCoreNET 匿名聊天室",
+  "description": "以匿名主打的端對端加密網頁即時聊天室，免登入立即使用，與您的團隊或朋友進行小組討論、溝通聊天。",
+  "icons": [
+    {
+      "src": "/images/sw/apple-icon-192x.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/images/sw/icon-512x.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "https://chat.snkms.com/",
+  "background_color": "#131313",
+  "display": "standalone",
+  "theme_color": "#131313",
+  "developer": {
+    "name": "SN-Koarashi",
+    "url": "https://github.com/SN-Koarashi"
+  }
+}

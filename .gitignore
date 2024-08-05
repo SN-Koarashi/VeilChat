@@ -1,0 +1,4 @@
+node_modules
+old_assets
+bin
+*.db

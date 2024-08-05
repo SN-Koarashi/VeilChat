@@ -1,0 +1,16 @@
+{
+  "name": "XCoreNET WebChat",
+  "version": "1.0.0",
+  "description": "WebSocket WebChat",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "5026",
+  "license": "UNLICENSE",
+  "dependencies": {
+    "fs-extra": "^10.0.0",
+    "request": "latest",
+    "javascript-obfuscator": "latest",
+    "uglify-js": "latest"
+  }
+}
