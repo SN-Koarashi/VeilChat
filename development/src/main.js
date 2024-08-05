@@ -12,6 +12,7 @@ window.scrollBottom = true;
 const CDNServer = "https://media.snkms.org";
 const CDNRedirect = "https://chat.snkms.com/cdn";
 const lang = navigator.language || window.localStorage.getItem('lang') || 'en';
+const isDebugger = window.localStorage.getItem('debugger') ? true : false;
 
 var wss,
 	token,
@@ -75,7 +76,7 @@ function WebSocketConnect(){
 			snkms.success(toast);
 
 		let joinLocation = $('#room_id').val();
-		if(isMobile() && localStorage.getItem('lastRoom') && location.pathname.match(/^\/private\/([0-9a-z]+)/ig) === null){
+		if(isMobile() && localStorage.getItem('lastRoom') && location.pathname.match(/^\/private\/([0-9A-Za-z\-_]+)/ig) === null){
 			joinLocation = localStorage.getItem('lastRoom');
 		}
 		
@@ -192,14 +193,6 @@ function WebSocketConnect(){
 				if(locate == "public"){
 					if(isInited || window.location.pathname !== "/")
 						window.history.pushState(null, document.title, "/");
-					
-					if(tempLocate !== locate){
-						let toast = "#房間 "+ tempLocate + " 已不存在";
-						if(isMobile())
-							snkms.toastMessage(toast, 'close', 'red');
-						else
-							snkms.error(toast);
-					}
 				}
 				else{
 					window.history.pushState(null, document.title, '/private/'+locate);
@@ -280,6 +273,16 @@ function WebSocketConnect(){
 		// 伺服器禁止連線
 		else if(data.type == 'forbidden'){
 			$('.lobby > .chat').append(`<div data-id="system">伺服器拒絕您的連線: ${data.message}</div>`);
+			
+			if(locate != "public"){
+				WebSocketBinaryHandler({
+					type: 'login',
+					token: token,
+					username: userName,
+					location: 'public',
+				});
+			}
+			
 			denyCount++;
 		}
 		// 房間密碼認證失敗
@@ -294,6 +297,23 @@ function WebSocketConnect(){
 		// 進入房間需要密碼認證
 		else if(data.type == 'requireVerify'){
 			passwordVerify(data.location);
+		}
+		// 進入的房間不存在
+		else if(data.type == 'notFound'){
+			let toast = "#房間 "+ data.location + " 已不存在";
+			if(isMobile())
+				snkms.toastMessage(toast, 'close', 'red');
+			else
+				snkms.error(toast);
+			
+			if(!data.previous.location){
+				WebSocketBinaryHandler({
+					type: 'login',
+					token: token,
+					username: userName,
+					location: "public"
+				});
+			}
 		}
 		// 未知/未定義的事件類型
 		else{
@@ -1075,7 +1095,7 @@ function parseInviteLink(text){
 	const inviteRegex = /\[inviteURL=(.*?)\](.*?)\[\/inviteURL\]/g;
 	return text.replace(inviteRegex, function(matched, word, inviteCode) {
 		let notice = (locate == inviteCode) ? "已加入" : "加入";
-		return '<a class="inviteLink" target="_self" href="' + word + inviteCode + '">邀請您加入 #房間 ' + inviteCode + '<span>' + notice + '</span></a>';
+		return '<a class="inviteLink" target="_self" href="' + word + inviteCode + '" data-room="' + inviteCode + '">邀請您加入 #房間 ' + inviteCode + '<span>' + notice + '</span></a>';
 	});
 }
 
@@ -1084,7 +1104,7 @@ function parseInviteCode(text){
 	return text.replace(inviteRegex, function(matched, inviteCode) {
 		let notice = (locate == inviteCode) ? "已加入" : "加入";
 		let word = `https://chat.snkms.com/private/${inviteCode}`;
-		return '<a class="inviteLink" target="_self" href="' + word + '">邀請您加入 #房間 ' + inviteCode + '<span>' + notice + '</span></a>';
+		return '<a class="inviteLink" target="_self" href="' + word + '" data-room="' + inviteCode + '">邀請您加入 #房間 ' + inviteCode + '<span>' + notice + '</span></a>';
 	});
 }
 
@@ -1226,6 +1246,25 @@ function initFirst(window){
 			if(!e.altKey && !e.shiftKey && !e.ctrlKey)
 				$('#sender').focus();
 		}
+	});
+	
+	$('body').on('click','.inviteLink',function(e){
+		if($(this).attr('data-room') === locate){
+			let toast = "您已經在這個房間了";
+			if(isMobile())
+				snkms.toastMessage(toast, 'close', 'red');
+			else
+				snkms.error(toast);
+		}
+		else{
+			WebSocketBinaryHandler({
+				type: 'login',
+				token: token,
+				username: userName,
+				location: $(this).attr('data-room')
+			});
+		}
+		e.preventDefault();
 	});
 	
 	$('#sendMessage').on('click',function(e){
@@ -3130,12 +3169,13 @@ var ecdh = {
     }
 };
 
-var Logger = function(){
-	if(window.Logger != undefined && typeof window.Logger === "object"){
+var Logger = function(isDebugger){
+	if(window.Logger != undefined && typeof window.Logger === "object" && isDebugger){
 		return window.Logger;
 	}
 	else{
-		if(localStorage.getItem('debugger') != null){
+		if(isDebugger){
+			console.log('[Logger]', "debugger mode");
 			return {
 				Types: {
 					WARN: console.warn,
@@ -3160,7 +3200,7 @@ var Logger = function(){
 			};
 		}
 	}
-}();
+}(isDebugger);
 
 var snkms = function($){
 	// *** 內部變數區域 *** //
