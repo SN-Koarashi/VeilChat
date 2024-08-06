@@ -253,6 +253,7 @@ wssSrv.on('connection', (ws, req) => {
 				onSender({
 					type: "verified",
 					session: clientUID,
+					signature: clientTokenHash,
 					location: locate,
 					isReserved: (roomListReserved.indexOf(locate) === -1) ? false : true,
 					publicKeyBase64: (roomKeyPair[locate])?roomKeyPair[locate].publicKey:null,
@@ -332,6 +333,7 @@ wssSrv.on('connection', (ws, req) => {
 					onSender({
 						type: "forbidden",
 						session: clientUID,
+						signature: clientTokenHash,
 						message: "No chat room exist"
 					},ws);
 					
@@ -345,6 +347,7 @@ wssSrv.on('connection', (ws, req) => {
 				obj = {
 					session: clientUID,
 					message: data.message,
+					signature: clientTokenHash,
 					location: locate,
 					type: 'message'
 				};
@@ -382,16 +385,19 @@ wssSrv.on('connection', (ws, req) => {
 				obj = {
 					source: {
 						session: clientUID,
-						username: clientList[clientUID].username
+						username: clientList[clientUID].username,
+						signature: clientTokenHash,
 					},
-					session: data.session,
-					message: data.message.toString(),
+					signature: data.signature,
+					message: data.message,
 					location: locate,
 					type: 'privateMessage'
 				};
 				
 				// 傳遞上述建立物件 obj 之內容給悄悄話對象工作階段
-				onSender(obj, clientList[data.session].instance);
+				roomList[locate][data.signature].forEach(clientData => {
+					onSender(obj, clientList[clientData.session].instance);
+				});
 			}
 			else{
 				Logger("WARN", `Client ${ip} invalid type:`, clientUID);

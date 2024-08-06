@@ -16,6 +16,7 @@ const isDebugger = window.localStorage.getItem('debugger') ? true : false;
 
 var wss,
 	token,
+	crcTableGlobal,
 	localStorage = window.localStorage,
 	crypto = window.crypto,
 	roomPassword = undefined,
@@ -26,6 +27,7 @@ var wss,
 	userName = "Unknown",
 	locate = "public",
 	sessionSelf,
+	tokenHashSelf,
 	isInited = false,
 	denyCount = 0;
 
@@ -121,31 +123,44 @@ function WebSocketConnect(){
 
 		// 目前房間的使用者列表
 		if(data.type == 'profile'){
-			clientList = {};
+			var downList = [];
+			
+			$('.userWrapper #dropdown.down').each(function(){
+				let downId = $(this).parent().attr('id');
+				
+				if(downList.indexOf(downId) === -1)
+					downList.push(downId);
+			});
+			
 			$('.userWrapper').empty();
+			
+			
 			var uList = data.user;
+			clientList = Object.assign({}, uList);
 
 			for(let u in uList){
 				uList[u].forEach(e =>{
-					clientList[e.session] = {
-						signature: u,
-						username: e.username,
-						id: e.id
-					};
-
 					if($('.userWrapper').find(`#${u}`).length == 0)
-						$('.userWrapper').append(`<div title="${e.username}#${crc32(u)} / 特徵碼: ${u}" id="${u}" data-ripple>`);
+						$('.userWrapper').append(`<div title="${e.username}#${crc32(u)}" id="${u}" data-ripple>`);
 					
-					if($('.userWrapper').find(`#${u} #username`).length == 0)
+					if($('.userWrapper').find(`#${u} #username`).length == 0){
 						$('.userWrapper').find(`#${u}`).append(`<div id="username"><author></author><pid></pid></div>`);
+						$('.userWrapper').find(`#${u}`).append(`<div id="sessionList"></div>`);
+						$('.userWrapper').find(`#${u}`).append(`<div id="dropdown"><div></div></div>`);
+					}
 					
 					$('.userWrapper').find(`#${u} #username author`).text(`${e.username}`);
 					$('.userWrapper').find(`#${u} #username pid`).text(`#${crc32(u)}`);
-					$('.userWrapper').find(`#${u}`).append(`<span id="session" data-id="${e.session}">${e.id}</span>`);
+					$('.userWrapper').find(`#${u} #sessionList`).append(`<span id="session" data-id="${e.session}">${e.id}</span>`);
+					
+					if(downList.indexOf(u) !== -1){
+						$('.userWrapper').find(`#${u} #dropdown`).addClass('down');
+						$('.userWrapper').find(`#${u} #sessionList`).show();
+					}
 				});
 			}
 			
-			
+			// 顯示多個工作階段
 			$('.userWrapper > div').each(function(){
 				let k = 0;
 				let length = $(this).find('span').length;
@@ -158,7 +173,7 @@ function WebSocketConnect(){
 				});
 			});
 			
-			$('.lobby > .chat').find(`author[data-self-id="${crc32(clientList[sessionSelf].signature)}"]`).addClass('sameWorker');
+			$('.lobby > .chat').find(`author[data-self-id="${crc32(tokenHashSelf)}"]`).addClass('sameWorker');
 			$('.userWrapper').find(`#session[data-id="${sessionSelf}"]`).addClass('me');
 		}
 		// 使用者資訊驗證完成，可加入房間
@@ -166,6 +181,7 @@ function WebSocketConnect(){
 			let tempLocate = locate;
 			locate = data.location;
 			sessionSelf = data.session;
+			tokenHashSelf = data.signature;
 			$('.settings_footer span').text(sessionSelf);
 			
 			if(!data.status){
@@ -264,11 +280,11 @@ function WebSocketConnect(){
 		}
 		// 傳送訊息
 		else if(data.type == 'message'){
-			onMessage(data.type,data.session,clientList[data.session].signature,clientList[data.session].username,clientList[data.session].id,data.message,new Date().getTime());
+			onMessage(data.type,data.session,data.signature,clientList[data.signature]?.at(0).username,clientList[data.signature]?.at(0).id,data.message,new Date().getTime());
 		}
 		// 傳送悄悄話訊息
 		else if(data.type == 'privateMessage'){
-			onMessage(data.type,data.source.session,clientList[data.source.session].signature,clientList[data.source.session].username,clientList[data.source.session].id,data.message,new Date().getTime());
+			onMessage(data.type,"private",data.source.signature,clientList[data.source.signature]?.at(0).username,clientList[data.source.signature]?.at(0).id,data.message,new Date().getTime());
 		}
 		// 伺服器禁止連線
 		else if(data.type == 'forbidden'){
@@ -362,10 +378,12 @@ async function onMessage(messageType,session,signature,username,id,messageObj,ti
 		let {secretKey} = await getSharedSecret(roomPublicKeyBase64, privateKey);
 		message = await decryptMessage(secretKey, messageObj.iv, messageObj.encryptedMessage);
 	}
+	else if(typeof messageObj === 'string'){
+		message = messageObj;
+	}
 	else{
 		message = "";
 	}
-	
 	
 	let date = new Date(timestamp);
 	let year = date.getFullYear();
@@ -378,16 +396,16 @@ async function onMessage(messageType,session,signature,username,id,messageObj,ti
 	while($('.lobby > .chat div[data-id="T'+randomSeed+'"]').length > 0){
 		randomSeed = randomASCIICode(18);
 	}
-
+	
 	if(messageType.startsWith("privateMessage")){
 		let sourceText = "[悄悄話]";
 		if(messageType.endsWith("Source"))
 			sourceText = "[發送給]";
 		
-		$('.lobby > .chat').append(`<div data-id="T${randomSeed}" data-ripple><author data-id="${session}" title="來源工作階段: ${session}" class="private">${sourceText} ${username}#${crc32(signature)}</author> <span title="${year}/${month}/${day} ${hour}:${minute}">${DateFormatter(timestamp)}</span><div data-convert="true" class="msgWrapper"></div></div>`);
+		$('.lobby > .chat').append(`<div data-id="T${randomSeed}" data-ripple><author data-id="${session}" data-user="${signature}" title="${username}#${crc32(signature)}" class="private">${sourceText} ${username}#${crc32(signature)}</author> <span title="${year}/${month}/${day} ${hour}:${minute}">${DateFormatter(timestamp)}</span><div data-convert="true" class="msgWrapper"></div></div>`);
 	}
 	else{
-		$('.lobby > .chat').append(`<div data-id="T${randomSeed}" data-ripple><author data-id="${session}" data-self-id="${crc32(signature)}" class="${session}" title="來源工作階段: ${session} / 工作階段ID: ${id}">${username}#${crc32(signature)}</author> <span title="${year}/${month}/${day} ${hour}:${minute}">${DateFormatter(timestamp)}</span><div data-convert="true" class="msgWrapper"></div></div>`);
+		$('.lobby > .chat').append(`<div data-id="T${randomSeed}" data-ripple><author data-id="${session}" data-user="${signature}" data-self-id="${crc32(signature)}" class="${session}" title="${username}#${crc32(signature)}">${username}#${crc32(signature)}</author> <span title="${year}/${month}/${day} ${hour}:${minute}">${DateFormatter(timestamp)}</span><div data-convert="true" class="msgWrapper"></div></div>`);
 	}
 	
 	// 將訊息內容放入
@@ -410,8 +428,8 @@ async function onMessage(messageType,session,signature,username,id,messageObj,ti
 	
 	$('.lobby > .chat').find(`.${sessionSelf}`).addClass('me');
 	
-	if(clientList[sessionSelf] && !$('.lobby > .chat').find(`author[data-self-id="${crc32(clientList[sessionSelf].signature)}"]`).hasClass('me'))
-		$('.lobby > .chat').find(`author[data-self-id="${crc32(clientList[sessionSelf].signature)}"]`).addClass('sameWorker');
+	if(clientList[tokenHashSelf] && !$('.lobby > .chat').find(`author[data-self-id="${crc32(tokenHashSelf)}"]`).hasClass('me'))
+		$('.lobby > .chat').find(`author[data-self-id="${crc32(tokenHashSelf)}"]`).addClass('sameWorker');
 	
 	onScroll(messageType == "history");
 }
@@ -515,8 +533,8 @@ function toggleSidebar($element,flag,openDirection){
 	}
 }
 
-function privateChat(targetSession, message){
-	if(!clientList[targetSession]){
+function privateChat(targetSignature, message){
+	if(!clientList[targetSignature]){
 		let toast = "該使用者工作階段已不在此聊天室";
 		if(isMobile())
 			snkms.toastMessage(toast, 'close', 'red');
@@ -525,7 +543,7 @@ function privateChat(targetSession, message){
 		return;
 	}
 	
-	if(targetSession == sessionSelf){
+	if(targetSignature == tokenHashSelf){
 		let toast = "不要對自己說悄悄話";
 		if(isMobile())
 			snkms.toastMessage(toast, 'close', 'red');
@@ -537,30 +555,30 @@ function privateChat(targetSession, message){
 	if(message){
 		WebSocketBinaryHandler({
 			type: 'privateMessage',
-			session: targetSession,
+			signature: targetSignature,
 			message: {
 				original: message
 			},
 			location: locate
 		});
-		onMessage("privateMessageSource",targetSession,clientList[targetSession].signature,clientList[targetSession].username,clientList[targetSession].id,message,new Date().getTime());
+		onMessage("privateMessageSource","private",tokenHashSelf,clientList[tokenHashSelf].username,clientList[tokenHashSelf].id,message,new Date().getTime());
 	}
 	else{
 		if($("#sender").text().length > 0 || mobileAndTabletCheck()){
-			snkms.prompt("傳送悄悄話",`傳送悄悄話給 ${clientList[targetSession].username}#${crc32(clientList[targetSession].signature)} (${clientList[targetSession].id})`,targetSession,function(e,value){
+			snkms.prompt("傳送悄悄話",`傳送悄悄話給 ${clientList[targetSignature]?.at(0).username}#${crc32(targetSignature)}`,targetSignature,function(e,value){
 				WebSocketBinaryHandler({
 					type: 'privateMessage',
-					session: targetSession,
+					signature: targetSignature,
 					message: {
 						original: value
 					},
 					location: locate
 				});
-				onMessage("privateMessageSource",targetSession,clientList[targetSession].signature,clientList[targetSession].username,clientList[targetSession].id,value,new Date().getTime());
+				onMessage("privateMessageSource","private",targetSignature,clientList[targetSignature]?.at(0).username,clientList[targetSignature]?.at(0).id,{original: value},new Date().getTime());
 			});
 		}
 		else{
-			$("#sender").text(`/msg ${targetSession} `);
+			$("#sender").text(`/msg ${targetSignature} `);
 			$("#sender").focus();
 			
 			// 移動至末尾
@@ -1302,10 +1320,10 @@ function initFirst(window){
 			if(!e.shiftKey && !mobileAndTabletCheck()){
 				if($(this).text().startsWith("/msg ")){
 					var msgSplit = $(this).text().split(" ");
-					var targetSession = (msgSplit.splice(0,2))[1];
+					var targetSignature = (msgSplit.splice(0,2))[1];
 					var message = msgSplit.join(" ");
 					
-					if(!clientList[targetSession]){		
+					if(!clientList[targetSignature]){		
 						let toast = "該使用者工作階段不存在";
 						if(isMobile())
 							snkms.toastMessage(toast, 'close', 'red');
@@ -1329,14 +1347,14 @@ function initFirst(window){
 						
 						WebSocketBinaryHandler({
 							type: 'privateMessage',
-							session: targetSession,
+							signature: targetSignature,
 							message: {
 								original: message
 							},
 							location: locate
 						});
 						
-						onMessage("privateMessageSource",targetSession,clientList[targetSession].signature,clientList[targetSession].username,clientList[targetSession].id,message,new Date().getTime());
+						onMessage("privateMessageSource","private",targetSignature,clientList[targetSignature]?.at(0).username,clientList[targetSignature]?.at(0).id,message,new Date().getTime());
 					}
 				}
 				// 使用 Markdown 語法時不送出訊息
@@ -2128,6 +2146,9 @@ function initFirst(window){
 	$('.wrapper_settings, .rightSide').on('touchstart','[data-ripple]',function(e){
 		ElementRipple(this, e);
 	});
+	$('body').on('touchstart','.snkms-jsd-m [data-ripple]',function(e){
+		ElementRipple(this, e);
+	});
 	
 	function ElementRipple(sElement, e){
 		var $self = $(sElement);
@@ -2221,10 +2242,9 @@ function initFirst(window){
 		
 		let elements = "";
 		for(let c in clientList){
-			if(c == sessionSelf) continue;
+			if(c == tokenHashSelf) continue;
 			
-			elements += `<div><label class="container"><input name="inviteList" type="checkbox" value="${c}"><span class="checkmark"></span>${clientList[c].username}#${crc32(clientList[c].signature)} (${clientList[c].id})</label></div>`;
-			//elements += `<div><label><input name="inviteList" type="checkbox" value="${c}" />${clientList[c].username}#${crc32(clientList[c].signature)} (${clientList[c].id})</label></div>`;
+			elements += `<div><label class="container"><input name="inviteList" type="checkbox" value="${c}"><span class="checkmark"></span>${clientList[c].username}#${crc32(tokenHashSelf)}</label></div>`;
 		}
 		
 		if(elements.length > 0)
@@ -2329,14 +2349,26 @@ function initFirst(window){
 		}
 	});
 	
+	$('.userWrapper').on('click','div[id] > #dropdown', function(e){
+		let $main = $(this).parent();
+		
+		$main.children('#sessionList').toggle();
+		$(this).toggleClass('down');
+		
+		e.stopPropagation();
+	});
 	
-	$(".userList").on("click",'.userWrapper #session',function(e){
-		var targetSession = $(this).attr('data-id');
+	$('.userWrapper').on('touchstart','div[id] > #dropdown', function(e){
+		e.stopPropagation();
+	});
+	
+	$(".userList").on("click",'.userWrapper > div[title][id]',function(e){
+		var targetSession = $(this).attr('id');
 		privateChat(targetSession);
 	});
 	
 	$(".lobby > .chat").on("click",'div > author',function(e){
-		var targetSession = $(this).attr('data-id');
+		var targetSession = $(this).attr('data-user');
 		privateChat(targetSession);
 	});
 
@@ -2902,8 +2934,9 @@ function base64ToBlob(base64, mime){
 	return new Blob(byteArrays, {type: mime});
 };
 
+// https://stackoverflow.com/a/18639999/14486292
 function crc32(str) {
-    var crcTable = window.crcTable || (window.crcTable = makeCRCTable());
+    var crcTable = crcTableGlobal || (crcTableGlobal = makeCRCTable());
     var crc = 0 ^ (-1);
 
     for (var i = 0; i < str.length; i++ ) {
@@ -2998,7 +3031,7 @@ async function encodePrivateKey(privateKeyCrypto) {
         let charCode = roomPassword.charCodeAt(index % roomPassword.length);
         return str.charCodeAt(0) ^ charCode;
     });
-	console.log(charCodeArr);
+	//console.log(charCodeArr);
     return btoa(unescape(encodeURIComponent(String.fromCharCode(...charCodeArr))));
 }
 

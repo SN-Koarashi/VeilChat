@@ -9,6 +9,7 @@ const UglifyJS = require("uglify-js");
 const minifyAPI = "https://www.toptal.com/developers/javascript-minifier/api/raw";
 
 var result;
+var isMinify = false;
 var isDeploy = false;
 var isEncrypt = false;
 console.log("[INFO]","開始編譯");
@@ -16,11 +17,20 @@ console.log("[INFO]","開始編譯");
 process.argv.forEach(function (val, index, array) {
   console.log("[INFO]","獲取參數" ,index + ': ' + val);
   
+  if(val == "--minify") isMinify = true;
   if(val == "--deploy") isDeploy = true;
   if(val == "--encrypt") isEncrypt = true;
 });
 console.log("---");
 const inputData = fs.readFileSync(path.join(__dirname, "src", "main.js"),{encoding:'utf8', flag:'r'});
+
+if(!isMinify && !isDeploy && !isEncrypt){
+	console.log("[INFO]","執行程式碼部署");
+	fs.writeFileSync(path.join(__dirname, "../public/js", "main.encrypted.js"),inputData);
+	console.log("[INFO]","程式碼部署完成");
+	
+	return;
+}
 
 console.log("[INFO]","執行最小化作業");
 result = UglifyJS.minify(inputData, {output:{preamble: `/*! 
@@ -30,6 +40,14 @@ result = UglifyJS.minify(inputData, {output:{preamble: `/*!
 */`}});
 fs.writeFileSync(path.join(__dirname, "bin", "main.temp.js"), result.code);
 console.log("[INFO]","最小化完成");
+
+if(isMinify){
+	console.log("[INFO]","執行程式碼部署");
+	fs.writeFileSync(path.join(__dirname, "../public/js", "main.encrypted.js"),result.code);
+	console.log("[INFO]","程式碼部署完成");
+	
+	return;
+}
 
 console.log("[INFO]","執行混淆作業");
 var result = JSOF.obfuscate(result.code,
