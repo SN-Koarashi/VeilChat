@@ -1,7 +1,6 @@
 <?php error_reporting(0);
 //if($_SERVER['REMOTE_ADDR'] != '220.133.93.223'){http_response_code(403);exit;}
 //if($_SERVER['REMOTE_ADDR'] != '36.234.235.56'){http_response_code(403);exit;}
-
 ?>
 <!DOCTYPE html>
 <html>
@@ -25,24 +24,15 @@
 <link rel="manifest" href="https://chat.snkms.com/manifest.json" />
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://i.snkms.com/highlight.js/atom-one-dark.css" />
-<link rel="stylesheet" href="https://chat.snkms.com/css/main.css?v2408063" />
+<link rel="stylesheet" href="https://chat.snkms.com/css/main.css?v2408071" />
 <script type="application/ld+json">[{"@context":"http:\/\/schema.org","@type":"WebSite","name":"XCoreNET \u533f\u540d\u804a\u5929\u5ba4","url":"https:\/\/chat.snkms.com\/","alternateName":"\u5929\u591c\u4e4b\u5fc3"}]</script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 <script src="https://i.snkms.com/js/jquery.cookie.min.js"></script>
 <script src="https://i.snkms.com/highlight.js/highlight.min.js"></script>
 <script src="https://chat.snkms.com/js/debugger.js"></script>
 <script src="https://chat.snkms.com/js/emojis.js"></script>
-<script src="https://chat.snkms.com/js/main.encrypted.js?v2408064"></script>
+<script src="https://chat.snkms.com/js/main.encrypted.js?v2408071"></script>
 <?php require_once('C:/xampp/php_api/analytics.php');?>
-<script>
-// Check that service workers are supported
-if ('serviceWorker' in navigator) {
-  // Use the window load event to keep the page load performant
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/js/service-workers.js');
-  });
-}
-</script>
 </head>
 <body>
 <div id="progress">
@@ -82,8 +72,8 @@ if ('serviceWorker' in navigator) {
 		</div>
 		<div class="chatInfo">
 			<div class="chatNotice">
-			透過此聊天室上傳之圖片及文字訊息僅供短暫資訊傳遞、交流用途，遠端伺服器將會在重新啟動之後刪除上述內容，並不負責永久儲存，如有相關需求請自行留存備份。<br/>
-			Tips: 在使用者列表點擊他們的工作階段ID或是在聊天室中點擊他們的名字可開始悄悄話！
+			透過此聊天室上傳之圖片及文字訊息僅供短暫資訊傳遞、交流用途，伺服器將會在重新啟動之後刪除上述內容，並不負責永久儲存，如有相關需求請自行留存備份。<br/>
+			Tips: 在使用者列表或是聊天室中點擊使用者的暱稱可開始進行悄悄話！
 			</div>
 		</div>
 	</div>

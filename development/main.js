@@ -52,7 +52,9 @@ if(isMinify){
 console.log("[INFO]","執行混淆作業");
 var result = JSOF.obfuscate(result.code,
 	{
-		compact: false,
+		target: 'browser-no-eval',
+		selfDefending: false,
+		compact: true,
 		controlFlowFlattening: true,
 		controlFlowFlatteningThreshold: 1,
 		numbersToExpressions: true,
@@ -68,13 +70,21 @@ var resultCode = result.getObfuscatedCode();
 
 console.log("[INFO]","混淆完成");
 fs.writeFileSync(path.join(__dirname, "bin", "main.obfuscate.js"), resultCode);
-
 result = UglifyJS.minify(resultCode, {output:{preamble: `/*! 
  * XCoreNET WebSocket WebChat
  * Powered by SNKms.com
  * Copyright 2023 Sky-Night Kamhu Mitor Seuna
 */`}});
 fs.writeFileSync(path.join(__dirname, "bin", "main.min.js"), result.code);
+
+//var result = {};
+//result.code = `/*! 
+// * XCoreNET WebSocket WebChat
+// * Powered by SNKms.com
+// * Copyright 2023 Sky-Night Kamhu Mitor Seuna
+//*/` + resultCode;
+//fs.writeFileSync(path.join(__dirname, "bin", "main.min.js"), result.code);
+
 console.log("[INFO]","混淆最小化完成");
 
 var encrypted;
@@ -93,42 +103,3 @@ if(isDeploy){
 	fs.writeFileSync(path.join(__dirname, "../public/js", "main.encrypted.js"),encrypted);
 	console.log("[INFO]","程式碼部署完成");
 }
-
-/*
-request.post(minifyAPI, {form:{input: inputData}}, function(err,httpResponse,body){
-	if(err)
-		console.log(err);
-	
-	console.log("[INFO]","最小化完成");
-	fs.writeFileSync(path.join(__dirname, "bin", "main.min.js"),body);
-
-
-	var result = JSOF.obfuscate(body,
-		{
-			compact: false,
-			controlFlowFlattening: true,
-			controlFlowFlatteningThreshold: 1,
-			numbersToExpressions: true,
-			simplify: true,
-			stringArrayShuffle: true,
-			splitStrings: true,
-			stringArrayThreshold: 1
-		}
-	);
-	var resultCode = result.getObfuscatedCode();
-	
-	console.log("[INFO]","混淆完成");
-	fs.writeFileSync(path.join(__dirname, "bin", "main.obfuscate.js"), resultCode);
-
-	console.log("[INFO]","執行加密作業");
-	const encrypted = JSFuck.encode(resultCode, true, true);
-	fs.writeFileSync(path.join(__dirname, "bin", "main.encrypted.js"),encrypted);
-	console.log("[INFO]","加密完成");
-	
-	if(isDeploy){
-		console.log("[INFO]","執行程式碼部署");
-		fs.writeFileSync(path.join(__dirname, "../js", "main.encrypted.js"),encrypted);
-		console.log("[INFO]","程式碼部署完成");
-	}
-});
-*/
