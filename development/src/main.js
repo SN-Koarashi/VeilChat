@@ -138,6 +138,11 @@ function WebSocketConnect(){
 			var uList = data.user;
 			clientList = Object.assign({}, uList);
 
+			// 使用者數量(Token)
+			var userCount = Object.keys(clientList).length;
+			$('.userList > .userTitle > span').text(userCount);
+			$('.userList > .userTitle > span').addClass('display');
+
 			for(let u in uList){
 				uList[u].forEach(e =>{
 					if($('.userWrapper').find(`#${u}`).length == 0)
@@ -2898,7 +2903,7 @@ function initSettings(){
 		});
 	}
 	
-	$('.userList').css('bottom', $('.chatInfo').outerHeight() + 'px');
+	//$('.userList').css('bottom', $('.chatInfo').outerHeight() + 'px');
 }
 
 function escapeHtml(unsafe){

@@ -76,7 +76,7 @@ if ('serviceWorker' in navigator) {
 	<div class="rightSide">
 		<div class="channelName">#載入中</div>
 		<div class="userList">
-			<div class="userTitle">使用者列表</div>
+			<div class="userTitle">使用者列表<span>0</span></div>
 			<div class="userWrapper">
 			</div>
 		</div>

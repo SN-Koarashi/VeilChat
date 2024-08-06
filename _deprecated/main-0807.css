@@ -1157,8 +1157,6 @@ body.noOverflow{
 	box-sizing: border-box;
 	transition: right 0.25s;
 	background: #181818;
-    display: flex;
-    flex-direction: column;
 }
 
 .channelName{
@@ -1174,14 +1172,16 @@ body.noOverflow{
 }
 
 .userList{
-	padding: 0px 0px 0px 15px;
-    position: relative;
-    width: 100%;
+	padding: 0px 15px;
+    position: absolute;
+    right: 0px;
+    width: 250px;
+    top: 34px;
+    bottom: 140px;
     color: #fff;
     overflow-y: auto;
     box-sizing: border-box;
     overflow-x: hidden;
-    flex: 1;
 }
 .userList div{
     white-space: nowrap;
@@ -1191,12 +1191,8 @@ body.noOverflow{
 }
 .userList .userTitle{
 	margin-top: 5px;
-    color: #ccc;
+	color: #ccc;
     font-weight: bold;
-    background: #181818;
-    z-index: 1;
-    position: sticky;
-    top: 0px;
 }
 .userList .userTitle span{
 	display: none;
@@ -1315,9 +1311,12 @@ body.noOverflow{
 }
 
 .chatInfo{
-    width: 100%;
+	position: absolute;
+    width: 250px;
     height: fit-content;
+    right: 0px;
     padding: 5px 15px;
+    bottom: 0px;
     box-sizing: border-box;
 	overflow: hidden;
 	color:#aaa;
@@ -1825,7 +1824,7 @@ body.noOverflow{
 		transition: padding-top 0.25s;
 	}
 	.userList.slideDown{
-		padding-top: 0px;
+		padding-top: 30px;
 	}
 	
 	.channelName{
@@ -1840,7 +1839,7 @@ body.noOverflow{
 		text-decoration: underline;
 	}
 	.channelName.slideDown{
-		padding-top: 20px;
+		padding-top: 30px;
 	}
 
 	.messageBox{
@@ -1891,7 +1890,7 @@ body.noOverflow{
 		left: calc(100vw - 40px);
 	}
 	.rightSide{
-		display: flex;
+		display: block;
 		position: fixed;
 		width: calc(100vw - 50px);
 		right: calc(-100vw + 50px);
