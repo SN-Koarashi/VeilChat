@@ -984,7 +984,7 @@ function ParseBBCode(text){
   });
   text = text.replace(urlRegex, (m, w, x)=>{
 	 if(w.trim().startsWith(PrivateRoomURL)){
-		 let inviteCode = w.trim().split("/").at(-1);
+		 let inviteCode = w.trim().split("/").filter(r => r.length > 0).at(-1);
 		 return `[inviteURL=${PrivateRoomURL}]${inviteCode.trim()}[/inviteURL]`; 
 	 }
 	 else{
@@ -1438,15 +1438,11 @@ function initFirst(window){
 					// 因為文字節點無法被定位，因此使用元素節點來定位
 					// 建立元素節點
 					let elementNodeStart = document.createElement("span");
+					elementNodeStart.setAttribute('data-paste', 'true');
 					
 					// 將元素節點插入到起始位置
+					// 後續由觀察者(observer)執行游標移動
 					range.insertNode(elementNodeStart);
-					
-					// 將捲軸捲動到元素位置
-					elementNodeStart.scrollIntoView();
-					
-					// 刪除元素
-					elementNodeStart.remove();
 				}
 				else{
 					let insertMarkdown = "```\n\n```";
@@ -1571,16 +1567,9 @@ function initFirst(window){
 		  reader.readAsDataURL(blob);
 		}
 		else{
-			// get text representation of clipboard
-			//var text = (e.originalEvent || e).clipboardData.getData('text/plain');
-			//console.log(text);
-			// insert text manually
-			//document.execCommand("insertText", false, text);
-			
-			
 			var text = (e.originalEvent || e).clipboardData.getData('text/plain');
 			var range = document.getSelection().getRangeAt(0);
-			
+
 			// 刪除選取文字
 			range.deleteContents();
 			
@@ -1588,25 +1577,17 @@ function initFirst(window){
 			range.insertNode(textNode);
 			
 			// 移動游標位置到末端插入處
-			var pointer = $(this).val().length + text.length;
-			range.setStart(textNode, pointer);
-			range.setEnd(textNode, pointer);
-
+			range.setStart(textNode, text.length);
+			range.setEnd(textNode, text.length);
+			
 			// 因為文字節點無法被定位，因此使用元素節點來定位
 			// 建立元素節點
 			let elementNodeStart = document.createElement("span");
+			elementNodeStart.setAttribute('data-paste', 'true');
 			
 			// 將元素節點插入到起始位置
+			// 後續由觀察者(observer)執行游標移動
 			range.insertNode(elementNodeStart);
-			
-			// 將捲軸捲動到元素位置
-			elementNodeStart.scrollIntoView();
-			
-			// 刪除元素
-			elementNodeStart.remove();
-
-			document.getSelection().removeAllRanges();
-			document.getSelection().addRange(range);
 			
 			onKeyEnter($('#sender'));
 		}
@@ -1629,7 +1610,10 @@ function initFirst(window){
 		},250);
 	});
 	$('#sender').on('blur',function(e){
-		if(document.getSelection().rangeCount > 0 && $(document.getSelection().focusNode.parentElement).parents('#sender').length > 0){
+		//if(document.getSelection().rangeCount > 0 && $(document.getSelection().focusNode.parentElement).parents('#sender').length > 0){
+		if(document.getSelection().rangeCount > 0 && 
+			($(document.getSelection().focusNode.parentElement).parents('#sender').length > 0 || $(document.getSelection().focusNode.parentElement).is('#sender'))
+		){
 			lastRange = document.getSelection().getRangeAt(0);
 		}
 	});
@@ -2499,7 +2483,7 @@ function initFirst(window){
 
 		let range = (lastRange === null) ? document.getSelection().getRangeAt(0) : lastRange;
 		
-		if($(document.getSelection().focusNode.parentElement).parents('#sender').length === 0){
+		if(!$(document.getSelection().focusNode.parentElement).is('#sender') && $(document.getSelection().focusNode.parentElement).parents('#sender').length === 0){
 			range = document.getSelection().getRangeAt(0);
 			let r = document.createRange();
 			r.setStart(document.querySelector('#sender'), 0);
@@ -2508,7 +2492,7 @@ function initFirst(window){
 		}
 		
 		let text = `:${$(this).attr("data-id")}:`;
-		
+
 		var textBefore = v.substring(0,  range.startOffset);
 		var textAfter  = v.substring(range.endOffset, v.length);
 		
@@ -2517,17 +2501,22 @@ function initFirst(window){
 		if(textAfter.length > 0 && v.substr(range.endOffset,1) != " ")
 			text = text + " ";
 		
-		
 		var textNode = document.createTextNode(text);
 		range.insertNode(textNode);
-		
-		// Move the selection to the middle of the inserted text node
+
+		// 移動游標位置到末端插入處
 		range.setStart(textNode, text.length);
 		range.setEnd(textNode, text.length);
-		document.getSelection().removeAllRanges();
-		document.getSelection().addRange(range);
 
+		// 因為文字節點無法被定位，因此使用元素節點來定位
+		// 建立元素節點
+		let elementNodeStart = document.createElement("span");
+		elementNodeStart.setAttribute('data-paste', 'true');
 		
+		// 將元素節點插入到起始位置
+		// 後續由觀察者(observer)執行游標移動
+		range.insertNode(elementNodeStart);
+
 		if(!e.shiftKey){
 			$(".emoji-window").hide();
 			$('.openBackground').css('opacity', '');
@@ -2698,6 +2687,7 @@ function initFirst(window){
 	});*/
 	
 	// 防止拖曳進入輸入框的連結或文字含有HTML標籤
+	// 同時自動偵測輸入框變化以反應游標位置
 	const observer = new MutationObserver(MutationCallback);
 	
 	function MutationCallback(mutations) {
@@ -2708,14 +2698,21 @@ function initFirst(window){
 			  record.addedNodes.forEach(node => {
 				  if(node.tagName != undefined && node.getAttribute('triggered') === null && node.tagName !== 'BR'){
 						var target = $(node);
+						
 						target.replaceWith(function(){
-							let content = ($(this).attr('href') || $(this).text());
-							if($(this).hasClass('emojis') && $(this).attr('title')){
-								content = $(this).attr('title');
+							if($(this).attr('data-paste')){
+								return '<span triggered="true" newElement="true"></span>';
 							}
-							
-							return '<span triggered="true" newElement="true">'+((content?.length)?content:' ')+'</span><br/>';
+							else{
+								let content = ($(this).attr('href') || $(this).text());
+								if($(this).hasClass('emojis') && $(this).attr('title')){
+									content = $(this).attr('title');
+								}
+								
+								return '<span triggered="true" newElement="true">'+((content?.length)?content:' ')+'</span><br/>';
+							}
 						});
+
 						changed = true;
 				  }
 			  });
@@ -2741,11 +2738,15 @@ function initFirst(window){
 
 			// 移動游標位置到插入處末端
 			var pointerNode = document.querySelector('#sender span[cursorPoint]');
-			if(pointerNode?.firstChild != null){
+			if(pointerNode != null){
 				setTimeout(()=>{
+					// If you pass the DOM node you should give the start and end offsets as 0 and 1 to create a range over the DOM node
+					// (Select All Over DOM Node)
+					// https://stackoverflow.com/a/30856479/14486292
 					var range = document.createRange();
-					range.setStart(pointerNode.firstChild, pointerNode.textContent.length);
-					range.setEnd(pointerNode.firstChild, pointerNode.textContent.length);
+					
+					range.setStart(pointerNode, pointerNode.textContent?.length ? 1 : 0);
+					range.setEnd(pointerNode, pointerNode.textContent?.length ? 1 : 0);
 
 					// 將捲軸捲動到元素位置
 					pointerNode.scrollIntoView();

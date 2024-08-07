@@ -1824,6 +1824,7 @@ body.noOverflow{
 	}
 	
 	.userList{
+		padding: 0px 7px 0px 15px;
 		transition: padding-top 0.25s;
 	}
 	.userList.slideDown{

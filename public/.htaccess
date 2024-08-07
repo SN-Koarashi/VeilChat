@@ -4,7 +4,7 @@ AcceptPathInfo Off
 RewriteEngine on
 RewriteRule ^index.php$ https://chat.snkms.com/ [R,NC]
 
-RewriteRule ^private/([0-9a-zA-Z_-]+)$ ?private=$1 [L]
+RewriteRule ^private/([0-9a-zA-Z_-]+)/?$ ?private=$1 [L]
 RewriteRule ^private/?$ ?private=public [L]
 
 #RewriteRule ^cdn/(.*?)$ https://media.eoe.asia/$1 [R,NC]
