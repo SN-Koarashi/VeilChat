@@ -701,14 +701,16 @@ body.noOverflow{
 	width: 40px;
 	height: 40px;
 	border-radius: 7px;
-	transition: background 0.15s;
+	transition: background 0.15s, opacity 0.15s;
 	cursor: default;
+	opacity: 0.7;
 }
 .messageBox .button.big{
 	width: 120px;
 }
 .messageBox .button:hover{
-	background: rgba(255,255,255,.15);
+	/*background: rgba(255,255,255,.15);*/
+	opacity: 1;
 }
 .messageBox .button img{
 	width: 32px;
@@ -890,10 +892,10 @@ body.noOverflow{
     min-height: 40px;
 	background: rgba(255,255,255,.1);
 	overflow-y: auto;
-	border-radius: 7px;
+	border-radius: 10px;
 }
 .senderWrapper:hover,.senderWrapper:focus{
-    background: rgba(255,255,255,.15);
+    background: rgba(255,255,255,.1);
 }
 #sender{
 	width: 100%;
@@ -1332,7 +1334,7 @@ body.noOverflow{
 .button#sendMessage{
 	display: inline-block;
 	border-radius: 50%;
-	background: #133c85;
+	/*background: #133c85;*/
 }
 .button#sendMessage img{
 	width: 28px;
@@ -1872,6 +1874,7 @@ body.noOverflow{
 		right: 0px;
 	}
 	.messageBox .button{
+		opacity: 1;
 		border-radius: 50%;
 	}
 	.messageBox #container .button:not(#sendMessage){
@@ -1938,9 +1941,11 @@ body.noOverflow{
 	.button#sendMessage{
 		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 		display:inline-block;
+		background: #282828;
 	}
 	.button#sendMessage:active{
-		background: #0a3176 !important;
+		/*background: #0a3176 !important;*/
+		background: rgba(255, 255, 255, .15) !important;
 	}
 	.messageBox .button{
 		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);

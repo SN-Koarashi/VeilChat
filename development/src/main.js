@@ -183,12 +183,13 @@ function WebSocketConnect(){
 		}
 		// 使用者資訊驗證完成，可加入房間
 		else if(data.type == 'verified'){
-			let tempLocate = locate;
+			const tempLocate = locate;
 			locate = data.location;
 			sessionSelf = data.session;
 			tokenHashSelf = data.signature;
 			$('.settings_footer span').text(sessionSelf);
 			
+			// 無狀態參數，表示為加入房間
 			if(!data.status){
 				let channelName = (locate == "public")?"#大廳":(data.isReserved)?"#房間 "+locate:"#私聊 "+locate;
 				
@@ -232,6 +233,7 @@ function WebSocketConnect(){
 					}
 				}
 			}
+			// 有狀態參數，表示私人房間建立狀態回傳
 			else{
 				if(data.status == "private_failed"){
 					locate = "public";
@@ -244,7 +246,7 @@ function WebSocketConnect(){
 				}
 				else if(inviteList.length > 0){
 					inviteList.forEach(s => {
-						privateChat(s, `[invite]${locate}[/invite]`);
+						privateChat(s, `[invite]${locate}[/invite]`, tempLocate);
 					});
 					
 					inviteList = [];
@@ -538,9 +540,9 @@ function toggleSidebar($element,flag,openDirection){
 	}
 }
 
-function privateChat(targetSignature, message){
+function privateChat(targetSignature, message, previousLocate){
 	if(!clientList[targetSignature]){
-		let toast = "該使用者工作階段已不在此聊天室";
+		let toast = "該使用者已不在此聊天室";
 		if(isMobile())
 			snkms.toastMessage(toast, 'close', 'red');
 		else
@@ -564,9 +566,10 @@ function privateChat(targetSignature, message){
 			message: {
 				original: message
 			},
-			location: locate
+			location: previousLocate ?? locate // 有攜帶前一房間位置的話就使用前一房間位置 (通常發生於建立私人房間的同時透過UI邀請對象)
 		});
-		onMessage("privateMessageSource","private",tokenHashSelf,clientList[tokenHashSelf].username,clientList[tokenHashSelf].id,message,new Date().getTime());
+		
+		onMessage("privateMessageSource","private",targetSignature,clientList[targetSignature]?.at(0).username,clientList[targetSignature]?.at(0).id,message,new Date().getTime());
 	}
 	else{
 		if($("#sender").text().length > 0 || mobileAndTabletCheck()){
@@ -2249,7 +2252,7 @@ function initFirst(window){
 		for(let c in clientList){
 			if(c == tokenHashSelf) continue;
 			
-			elements += `<div><label class="container"><input name="inviteList" type="checkbox" value="${c}"><span class="checkmark"></span>${clientList[c].username}#${crc32(tokenHashSelf)}</label></div>`;
+			elements += `<div><label class="container"><input name="inviteList" type="checkbox" value="${c}"><span class="checkmark"></span>${clientList[c]?.at(0).username}#${crc32(c)}</label></div>`;
 		}
 		
 		if(elements.length > 0)

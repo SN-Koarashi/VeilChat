@@ -395,7 +395,8 @@ wssSrv.on('connection', (ws, req) => {
 				};
 				
 				// 傳遞上述建立物件 obj 之內容給悄悄話對象工作階段
-				roomList[locate][data.signature].forEach(clientData => {
+				// !! 有可能對象根本不在該房間內，所以要使用可選連結語句 !!
+				roomList[locate][data.signature]?.forEach(clientData => {
 					onSender(obj, clientList[clientData.session].instance);
 				});
 			}
