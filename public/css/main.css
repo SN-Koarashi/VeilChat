@@ -688,7 +688,7 @@ body.noOverflow{
     height: 60px;
     max-height: 25vh;
     padding: 10px 0px;
-    z-index: 5;
+    z-index: 6;
     background: #131313;
     box-sizing: border-box;
 	box-shadow: 0px -2px 10px #000;
@@ -1908,7 +1908,7 @@ body.noOverflow{
 		overflow-x: hidden;
 	}
 	.messageBox.fixed{
-		z-index: 6;
+		z-index: 7;
 	}
 	.room{
 		position: relative;
