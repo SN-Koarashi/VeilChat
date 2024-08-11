@@ -2715,6 +2715,11 @@ function initSetup(){
 						WebSocketConnect();
 						$('.userlist > div').show();
 					},function(){
+						const rndName = getRandomNickname();
+						
+						userName = rndName;
+						localStorage.setItem('username', rndName);
+						$('#userName').val(rndName);
 						WebSocketConnect();
 						$('.userlist > div').show();
 					});
@@ -2847,6 +2852,11 @@ function getNowDate(){
 	let day = (date.getDate() < 10)?'0'+date.getDate():date.getDate();
 	
 	return `${year}/${month}/${day}`;
+}
+
+function getRandomNickname(){
+	var list = ["Emily","Amy","Alice","Grace","Tina","Joyce","Vivian","Cindy","Ivy","Jenny","Claire","Annie","Vicky","Jessica","Peggy","Sandy","Irene","Iris","Maggie","Winnie"];
+	return list.at(Math.floor(Math.random() * list.length));
 }
 
 // 取得公私鑰對
