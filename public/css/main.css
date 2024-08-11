@@ -871,9 +871,10 @@ body.noOverflow{
 	height: 100%;
 	flex: 1;
 	margin: 0px 7px;
+	max-width: calc(100% - 186px);
 }
 .textArea.maximum{
-    flex: 1;
+	max-width: calc(100% - 142px);
 }
 .textPlaceholder{
 	color: #717171;
@@ -1799,6 +1800,10 @@ body.noOverflow{
 	
 	.senderWrapper:hover, .senderWrapper:focus{
 		background: rgba(255, 255, 255, .1);
+	}
+	
+	.textArea{
+		max-width: calc(100% - 142px);
 	}
 	
 	@keyframes snkms-open-emoji-m{
