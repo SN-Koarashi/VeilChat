@@ -17,6 +17,7 @@ const isDebugger = window.localStorage.getItem('debugger') ? true : false;
 var wss,
 	token,
 	crcTableGlobal,
+	privateChatTarget,
 	localStorage = window.localStorage,
 	crypto = window.crypto,
 	roomPassword = undefined,
@@ -572,6 +573,8 @@ function privateChat(targetSignature, message, previousLocate){
 		onMessage("privateMessageSource","private",targetSignature,clientList[targetSignature]?.at(0).username,clientList[targetSignature]?.at(0).id,message,new Date().getTime());
 	}
 	else{
+		/*
+		// 舊版悄悄話模式
 		if($("#sender").text().length > 0 || isMobile()){
 			snkms.prompt("傳送悄悄話",`傳送悄悄話給 ${clientList[targetSignature]?.at(0).username}#${crc32(targetSignature)}`,targetSignature,function(e,value){
 				WebSocketBinaryHandler({
@@ -596,6 +599,13 @@ function privateChat(targetSignature, message, previousLocate){
 			document.getSelection().removeAllRanges();
 			document.getSelection().addRange(range);
 		}
+		*/
+		
+		privateChatTarget = targetSignature;
+		if($('.lobby > .privateStatus').length === 0){
+			$('.lobby').append('<div class="privateStatus"><div class="privateText">悄悄話 <span></span></div><div title="關閉悄悄話模式" class="privateButton"><img src="https://chat.snkms.com/images/close_black.png" /></div></div>');
+		}
+		$('.lobby > .privateStatus > .privateText > span').text(`${clientList[targetSignature]?.at(0).username}#${crc32(targetSignature)}`);
 	}
 }
 
@@ -804,13 +814,28 @@ function uploadFiles(files){
 					message.push(response[o].url);
 				}
 				
-				WebSocketBinaryHandler({
-					type: 'message',
-					location: locate,
-					message: {
-						original: message.join(' ')
-					}
-				});
+				// 若是悄悄話模式，以悄悄話傳送檔案網址
+				if(privateChatTarget?.length > 0){
+					WebSocketBinaryHandler({
+						type: 'privateMessage',
+						signature: privateChatTarget,
+						message: {
+							original: message.join(' ')
+						},
+						location: locate
+					});
+					
+					onMessage("privateMessageSource","private",privateChatTarget,clientList[privateChatTarget]?.at(0).username,clientList[privateChatTarget]?.at(0).id,message.join(' '),new Date().getTime());
+				}
+				else{
+					WebSocketBinaryHandler({
+						type: 'message',
+						location: locate,
+						message: {
+							original: message.join(' ')
+						}
+					});
+				}
 			}
 			else{
 				let toast = "發生不明錯誤";
@@ -835,7 +860,12 @@ function onKeyEnter(ele){
 			$('.emoji-window').css('bottom',`${$('.messageBox').height()+15}px`);
 		}
 		
-		$('.lobby > .menu').css('bottom',`${$('.messageBox').height()+30}px`);
+		if(privateChatTarget?.length > 0){
+			$('.lobby > .menu').css('bottom',`${$('.messageBox').height()+70}px`);
+		}
+		else{
+			$('.lobby > .menu').css('bottom',`${$('.messageBox').height()+30}px`);
+		}
 		
 		onScroll(false);
 	},5);
@@ -1237,6 +1267,12 @@ function initFirst(window){
 		}
 	});
 	
+	
+	$('body').on('click','.privateStatus .privateButton',function(e){
+		privateChatTarget = null;
+		$('.privateStatus').remove();
+	});
+	
 	$('body').on('click','.inviteLink',function(e){
 		if($(this).attr('data-room') === locate){
 			let toast = "您已經在這個房間了";
@@ -1289,10 +1325,9 @@ function initFirst(window){
 	$('#sender').on('keydown',function(e){
 		if(e.keyCode == 13 && wss.readyState == 1 && $(this).text().replace(/\n|\r/g,"").length > 0){
 			if(!e.shiftKey && !isMobile()){
-				if($(this).text().startsWith("/msg ")){
-					var msgSplit = $(this).text().split(" ");
-					var targetSignature = (msgSplit.splice(0,2))[1];
-					var message = msgSplit.join(" ");
+				if(privateChatTarget?.length > 0){
+					var targetSignature = privateChatTarget;
+					var message = $(this).text();
 					
 					if(!clientList[targetSignature]){		
 						let toast = "該使用者工作階段不存在";
@@ -1301,7 +1336,8 @@ function initFirst(window){
 						else
 							snkms.error(toast);
 						
-						$(this).text('');
+						//$(this).text('');
+						privateChatTarget = null;
 						e.preventDefault();
 						return;
 					}
@@ -2418,6 +2454,13 @@ function initFirst(window){
 		return false;
 	});
 	$(".menu .speedMove").on("contextmenu","img",function(e){
+		return false;
+	});
+	$("body").on("contextmenu",".privateButton img",function(e){
+		return false;
+	});
+	
+	$("body").on("dragstart",".privateButton img, .msgWrapper img.emojis, .messageBox img, .menu .speedMove img",function(e){
 		return false;
 	});
 	
