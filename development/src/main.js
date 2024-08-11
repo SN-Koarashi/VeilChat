@@ -1999,7 +1999,7 @@ function initFirst(window){
 		}
 	});
 	
-	$('.wrapper_settings, .rightSide').on('touchstart','[data-ripple]',function(e){
+	$('.wrapper_settings, .rightSide, .channelHeader').on('touchstart','[data-ripple]',function(e){
 		ElementRipple(this, e);
 	});
 	$('body').on('touchstart','.snkms-jsd-m [data-ripple]',function(e){

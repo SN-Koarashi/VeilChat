@@ -695,8 +695,8 @@ body.noOverflow{
 }
 
 .messageBox .button{
-	display:inline-flex;
-	vertical-align: middle;
+	display:inline-block;
+	vertical-align: top;
 	text-align: center;
 	width: 40px;
 	height: 40px;
@@ -704,10 +704,6 @@ body.noOverflow{
 	transition: background 0.15s, opacity 0.15s;
 	cursor: default;
 	opacity: 0.7;
-	justify-content: center;
-    align-items: center;
-    align-content: center;
-	margin: 0px 2px;
 }
 .messageBox .button.big{
 	width: 120px;
@@ -721,10 +717,10 @@ body.noOverflow{
 	height: 32px;
 	filter: invert(1);
 	position: relative;
+    top: 4px;
 	cursor: pointer;
     -webkit-user-drag: none;
 	user-select: none;
-	vertical-align: middle;
 }
 
 .wrapper_settings .additionalSetting{
@@ -863,17 +859,15 @@ body.noOverflow{
 	margin: 0px 7px;
 	user-select: none;
 	height: 100%;
-	display: flex;
 }
 .textArea{
-    display: inline-flex;
+	width: calc(100% - 180px);
+    display: inline-block;
 	position: relative;
 	height: 100%;
-	flex: 1;
-	margin: 0px 7px;
 }
 .textArea.maximum{
-    flex: 1;
+    width: calc(100% - 135px);
 }
 .textPlaceholder{
 	color: #717171;
@@ -905,6 +899,7 @@ body.noOverflow{
 }
 #sender{
 	width: 100%;
+	max-height: 100%;
 	min-height: 40px;
     display: inline-block;
     outline: 0px;
@@ -1337,15 +1332,15 @@ body.noOverflow{
 }
 
 .button#sendMessage{
-	display: inline-flex;
+	display: inline-block;
 	border-radius: 50%;
 	/*background: #133c85;*/
-	margin-left: 0px;
-	margin-right: 0px;
 }
 .button#sendMessage img{
 	width: 28px;
     height: 28px;
+    top: 6px;
+    left: 2px;
 }
 
 .additional{
@@ -1821,6 +1816,9 @@ body.noOverflow{
 		}
 	}
 	
+	.textArea{
+		width: calc(100% - 135px);
+	}
 	.userList, .chatInfo{
 		width: inherit;
 	}
@@ -1884,6 +1882,8 @@ body.noOverflow{
 		background: #282828;
 	}
 	.messageBox .button img,.button#sendMessage img{
+		top: 50%;
+		transform: translateY(-50%);
 		width: 28px;
 		height: 28px;
 	}
