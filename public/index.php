@@ -25,7 +25,7 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" crossorigin="anonymous" />
 <link rel="stylesheet" href="https://i.snkms.com/highlight.js/atom-one-dark.css" />
 <link rel="stylesheet" href="https://chat.snkms.com/css/main.css?v2408121" />
-<script type="application/ld+json">[{"@context":"http:\/\/schema.org","@type":"WebSite","name":"XCoreNET \u533f\u540d\u804a\u5929\u5ba4","url":"https:\/\/chat.snkms.com\/","alternateName":"\u5929\u591c\u4e4b\u5fc3"}]</script>
+<script type="application/ld+json">[{"@context":"http:\/\/schema.org","@type":"WebSite","name":"EEACC - \u7aef\u5c0d\u7aef\u52a0\u5bc6\u4e4b\u793e\u7fa4\u533f\u540d\u804a\u5929\u7cfb\u7d71","url":"https:\/\/chat.snkms.com\/","alternateName":"\u5929\u591c\u4e4b\u5fc3"}]</script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
 <script src="https://i.snkms.com/js/jquery.cookie.min.js"></script>
 <script src="https://i.snkms.com/highlight.js/highlight.min.js"></script>

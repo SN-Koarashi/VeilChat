@@ -1,5 +1,5 @@
 /*! 
- * XCoreNET WebSocket WebChat
+ * Veil WebSocket WebChat
  * Powered by SNKms.com
  * Copyright 2023 Sky-Night Kamhu Mitor Seuna
  */
@@ -11,6 +11,7 @@ window.scrollBottom = true;
 (function($, window){
 const CDNServer = "https://media.snkms.org";
 const CDNRedirect = "https://chat.snkms.com/cdn";
+const MainDomain = "https://chat.snkms.com";
 const lang = navigator.language || window.localStorage.getItem('lang') || 'en';
 const isDebugger = window.localStorage.getItem('debugger') ? true : false;
 
@@ -603,7 +604,7 @@ function privateChat(targetSignature, message, previousLocate){
 		
 		privateChatTarget = targetSignature;
 		if($('.lobby > .privateStatus').length === 0){
-			$('.lobby').append('<div class="privateStatus"><div class="privateText">悄悄話 <span></span></div><div title="關閉悄悄話模式" class="privateButton"><img src="https://chat.snkms.com/images/close_black.png" /></div></div>');
+			$('.lobby').append('<div class="privateStatus"><div class="privateText">悄悄話 <span></span></div><div title="關閉悄悄話模式" class="privateButton"><img src="'+MainDomain+'/images/close_black.png" /></div></div>');
 		}
 		$('.lobby > .privateStatus > .privateText > span').text(`${clientList[targetSignature]?.at(0).username}#${crc32(targetSignature)}`);
 	}
@@ -966,7 +967,7 @@ function randomToken(length) {
 }
 
 function ParseBBCode(text){
-  const PrivateRoomURL = "https://chat.snkms.com/private/";
+  const PrivateRoomURL = MainDomain + "/private/";
   const codeRegex = /```([a-z0-9]+)?\n\n*([^\n][^]*?)\n*```/ig;
   const emojiRegex = /:([0-9A-Za-z_]+):/ig;
   const urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -1122,7 +1123,7 @@ function parseInviteCode(text){
 	const inviteRegex = /\[invite\]([0-9A-Za-z\-_]+)\[\/invite\]/g;
 	return text.replace(inviteRegex, function(matched, inviteCode) {
 		let notice = (locate == inviteCode) ? "已加入" : "加入";
-		let word = `https://chat.snkms.com/private/${inviteCode}`;
+		let word = `${MainDomain}/private/${inviteCode}`;
 		return '<a class="inviteLink" target="_self" href="' + word + '" data-room="' + inviteCode + '">邀請您加入 #房間 ' + inviteCode + '<span>' + notice + '</span></a>';
 	});
 }
@@ -1200,7 +1201,7 @@ function urlify(text) {
 		let url = new URL(matchSub);
 		let CDNReplacement = CDNRedirect + url.pathname;
 		
-		return `<div class="file"><span><a class="linkName" href="${CDNReplacement}" title="${matchSub.split("/").at(-1)}" class="filename">${matchSub.split("/").at(-1)}</a><br/><span data-id="${timeID}" class="${crc32(matchSub)}">-</span></span><a href="${CDNReplacement}" class="linkButton" title="下載 ${matchSub.split("/").at(-1)}"><img src="https://chat.snkms.com/images/download.png" /></a></div>`;
+		return `<div class="file"><span><a class="linkName" href="${CDNReplacement}" title="${matchSub.split("/").at(-1)}" class="filename">${matchSub.split("/").at(-1)}</a><br/><span data-id="${timeID}" class="${crc32(matchSub)}">-</span></span><a href="${CDNReplacement}" class="linkButton" title="下載 ${matchSub.split("/").at(-1)}"><img src="${MainDomain}/images/download.png" /></a></div>`;
 	}
 	else if(matchSub.match(/^https?:\/\/(www\.youtube\.com\/watch\?[^\s]+|youtu\.be\/[0-9a-zA-Z\-_]{11})/ig)){
 		let videoCode = "";
@@ -1511,7 +1512,7 @@ function initFirst(window){
 		if(isMobile()){
 			$(this).parents(".textArea").addClass("maximum");
 			$("#add").addClass("right");
-			//$("#add img").attr("src","https://chat.snkms.com/images/arrow_right.png");
+			//$("#add img").attr("src",MainDomain + "/images/arrow_right.png");
 			//$("#upload").hide();
 			e.stopPropagation();
 		}
@@ -2185,7 +2186,7 @@ function initFirst(window){
 	
 	$("#privateChatJoin").on("click",function(e){
 		const $element = $(this);
-		snkms.prompt("加入房間","請輸入房間ID或網址","https://chat.snkms.com/private/########",function(e,value){
+		snkms.prompt("加入房間","請輸入房間ID或網址",MainDomain + "/private/########",function(e,value){
 			if(locate === value.split("/").at(-1)){
 				let toast = "您已經在這個房間了";
 				if(isMobile())
@@ -2196,7 +2197,7 @@ function initFirst(window){
 			}
 			
 			if(value.match(/^(https?:\/\/chat\.snkms\.com\/private)/ig) || value.match(/^([0-9A-Za-z\-_]{1,16})$/g)){
-				locate = value.replace("https://chat.snkms.com/private/","");
+				locate = value.replace(MainDomain + "/private/","");
 				
 				WebSocketBinaryHandler({
 					type: 'login',
@@ -2299,7 +2300,7 @@ function initFirst(window){
 		$("#upload").show();
 		$(".textArea").removeClass("maximum");
 		$("#add").removeClass("right");
-		$("#add img").attr("src","https://chat.snkms.com/images/add.png");
+		$("#add img").attr("src",MainDomain + "/images/add.png");
 		$(".messageBox").removeClass("unhidden");
 	});
 	
@@ -3132,7 +3133,8 @@ var snkms = function($){
 	// 關閉動畫
 	// @private
 	function slideOut(selector,callback){
-			$(selector).animate({right:"-260px"},'fast',function(){
+		$(selector).animate({right:"15px"},'fast',function(){
+			$(this).animate({right:"-260px"},'fast',function(){
 				$(this).remove();
 				
 				if(typeof callback === 'function')
@@ -3144,6 +3146,7 @@ var snkms = function($){
 					}
 				},250);
 			});
+		});
 	};
 	
 	// 搖動動畫(未輸入內容時的提示)
@@ -3316,7 +3319,7 @@ var snkms = function($){
 		},
 		// success 函數
 		success: function(content,callback,duration){
-			duration = (duration && typeof duration === 'number')?duration:5000;
+			duration = (duration && typeof duration === 'number')?duration:3000;
 			
 			if(!$('.snkms-message').length){$('body').append('<div class="snkms-message">');}
 			$('.snkms-message').append('<div data-registered="false" class="snkms-status snkms-success">'+content+'<span></span></div>');
@@ -3339,7 +3342,7 @@ var snkms = function($){
 		},
 		// error 函數
 		error: function(content,callback,duration){
-			duration = (duration && typeof duration === 'number')?duration:5000;
+			duration = (duration && typeof duration === 'number')?duration:3000;
 			
 			if(!$('.snkms-message').length){$('body').append('<div class="snkms-message">');}
 			$('.snkms-message').append('<div data-registered="false" class="snkms-status snkms-error">'+content+'<span></span></div>');

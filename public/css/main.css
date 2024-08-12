@@ -1432,7 +1432,6 @@ body.noOverflow{
 	display: inline-block;
     vertical-align: middle;
     position: relative;
-    top: 3px;
 }
 
 .emoji-window{

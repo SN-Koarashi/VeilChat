@@ -12,7 +12,7 @@ var result;
 var isMinify = false;
 var isDeploy = false;
 var isEncrypt = false;
-console.log("[INFO]","開始編譯");
+console.log("[INFO]","開始編譯", __dirname);
 
 process.argv.forEach(function (val, index, array) {
   console.log("[INFO]","獲取參數" ,index + ': ' + val);
@@ -34,9 +34,19 @@ if(!isMinify && !isDeploy && !isEncrypt){
 
 console.log("[INFO]","執行最小化作業");
 result = UglifyJS.minify(inputData, {output:{preamble: `/*! 
- * XCoreNET WebSocket WebChat
+ * Veil WebSocket WebChat
  * Powered by SNKms.com
  * Copyright 2023 Sky-Night Kamhu Mitor Seuna
+ * Release date by ${new Date().toLocaleString('zh-TW', {
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  second: 'numeric',
+  timeZoneName: 'shortOffset',
+  hour12: false
+})}
 */`}});
 fs.writeFileSync(path.join(__dirname, "bin", "main.temp.js"), result.code);
 console.log("[INFO]","最小化完成");
@@ -71,15 +81,25 @@ var resultCode = result.getObfuscatedCode();
 console.log("[INFO]","混淆完成");
 fs.writeFileSync(path.join(__dirname, "bin", "main.obfuscate.js"), resultCode);
 result = UglifyJS.minify(resultCode, {output:{preamble: `/*! 
- * XCoreNET WebSocket WebChat
+ * Veil WebSocket WebChat
  * Powered by SNKms.com
  * Copyright 2023 Sky-Night Kamhu Mitor Seuna
+ * Release date by ${new Date().toLocaleString('zh-TW', {
+  year: 'numeric',
+  month: 'numeric',
+  day: 'numeric',
+  hour: 'numeric',
+  minute: 'numeric',
+  second: 'numeric',
+  timeZoneName: 'shortOffset',
+  hour12: false
+})}
 */`}});
 fs.writeFileSync(path.join(__dirname, "bin", "main.min.js"), result.code);
 
 //var result = {};
 //result.code = `/*! 
-// * XCoreNET WebSocket WebChat
+// * Veil WebSocket WebChat
 // * Powered by SNKms.com
 // * Copyright 2023 Sky-Night Kamhu Mitor Seuna
 //*/` + resultCode;
