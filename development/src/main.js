@@ -203,7 +203,6 @@ function WebSocketConnect(){
 				//document.title = channelName + " | XCoreNET 匿名聊天室 - 天夜之心";
 				document.title = channelName + " | EEACC - 端對端加密之社群匿名聊天系統";
 				
-				
 				if(data.isReserved || locate === "public" || !data.publicKeyBase64){
 					roomPublicKeyBase64 = undefined;
 					roomPrivateKeyBase64 = undefined;
