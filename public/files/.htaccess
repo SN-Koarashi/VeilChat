@@ -14,3 +14,21 @@ RewriteRule ^ - [E=FILENAME:%2]
 
 # 使用環境變數 FILENAME 設置 Content-Disposition 標頭
 Header set Content-Disposition "attachment; filename=%{FILENAME}e" env=FILENAME
+
+# Serve HTML as plaintext, don't execute SHTML
+AddType text/plain .html .htm .shtml .phtml .php .php3 .php4 .php5 .php7
+
+# Old way of registering php with AddHandler
+RemoveHandler .php
+
+# Recent way of registering php with SetHandler
+<FilesMatch "\.ph(p[3457]?s?|tml)$">
+   SetHandler None
+</FilesMatch>
+
+# If you've other scripting languages, disable them too.
+
+<IfModule mod_deflate.c>
+    # 不要對 .jar 檔案進行 Gzip 壓縮
+    SetEnvIfNoCase Request_URI \.jar$ no-gzip dont-vary
+</IfModule>

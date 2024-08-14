@@ -1112,6 +1112,9 @@ body.noOverflow{
 	display: inline-block;
 	margin-left: 10px;
 }
+.lobby > .chat div.msgWrapper .file a.linkButton:not([href]){
+	cursor: not-allowed;
+}
 .lobby > .chat div.msgWrapper .file a img{
     filter: invert(0.85);
     width: 32px;

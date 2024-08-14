@@ -1183,20 +1183,24 @@ function urlify(text) {
 	}
 	else if(matchSub.startsWith(`${CDNServer}/files/`)){
 		let timeID = new Date().getTime();
-		$.ajax({
-			url: matchSub,
-			cache: false,
-			type:'HEAD',
-			error: function(err){
-				$(`.${crc32(matchSub)}[data-id="${timeID}"]`).parent().next().attr("href","javascript:void(0);");
-				$(`.${crc32(matchSub)}[data-id="${timeID}"]`).css("color","#ff6d6d");
-				$(`.${crc32(matchSub)}[data-id="${timeID}"]`).text("ERROR");
-			},
-			success: function(response, status, xhr) {
-				let fileSize = xhr.getResponseHeader("Content-Length");
-				$(`.${crc32(matchSub)}[data-id="${timeID}"]`).text(SizeFormatter(fileSize));
-			}
-		});
+		
+		// 防止一次傳送太多請求
+		setTimeout(()=>{
+			$.ajax({
+				url: matchSub,
+				cache: false,
+				type:'HEAD',
+				error: function(err){
+					$(`.${crc32(matchSub)}[data-id="${timeID}"]`).parent().next().removeAttr("href");
+					$(`.${crc32(matchSub)}[data-id="${timeID}"]`).css("color","#ff6d6d");
+					$(`.${crc32(matchSub)}[data-id="${timeID}"]`).text("ERROR");
+				},
+				success: function(response, status, xhr) {
+					let fileSize = xhr.getResponseHeader("Content-Length");
+					$(`.${crc32(matchSub)}[data-id="${timeID}"]`).text(SizeFormatter(fileSize));
+				}
+			});
+		}, 100 * $('.lobby > .chat div.file').length);
 		
 		let url = new URL(matchSub);
 		
