@@ -4,9 +4,6 @@
  * Copyright 2023 Sky-Night Kamhu Mitor Seuna
  */
 "use strict";
-// 全域變數
-window.scrollBottom = true;
-
 // start of immediately function
 (function($, window){
 const CDNServer = "https://chat.snkms.com";
@@ -27,12 +24,14 @@ var wss,
 	roomPrivateKeyBase64 = undefined,
 	clientList = {},
 	inviteList = [],
+	globalObserverTimer = [],
 	userName = "Unknown",
 	locate = "public",
 	sessionSelf,
 	tokenHashSelf,
 	isInited = false,
-	denyCount = 0;
+	denyCount = 0,
+	scrollBottom = true;
 
 async function WebSocketBinaryHandler(obj){
 	var str;
@@ -1184,23 +1183,46 @@ function urlify(text) {
 	else if(matchSub.startsWith(`${CDNServer}/files/`)){
 		let timeID = new Date().getTime();
 		
-		// 防止一次傳送太多請求
-		setTimeout(()=>{
-			$.ajax({
-				url: matchSub,
-				cache: false,
-				type:'HEAD',
-				error: function(err){
-					$(`.${crc32(matchSub)}[data-id="${timeID}"]`).parent().next().removeAttr("href");
-					$(`.${crc32(matchSub)}[data-id="${timeID}"]`).css("color","#ff6d6d");
-					$(`.${crc32(matchSub)}[data-id="${timeID}"]`).text("ERROR");
-				},
-				success: function(response, status, xhr) {
-					let fileSize = xhr.getResponseHeader("Content-Length");
-					$(`.${crc32(matchSub)}[data-id="${timeID}"]`).text(SizeFormatter(fileSize));
+		// 防止一次傳送太多請求，僅當下載框進入瀏覽器可見視窗內後才觸發載入(而且元素要待在可見視窗內至少650毫秒)
+		const localObserver = new IntersectionObserver((entries, owner)=>{
+			entries.forEach((entry) => {
+				if (entry.isIntersecting) {
+					globalObserverTimer[timeID] = setTimeout(()=>{
+						$.ajax({
+							url: matchSub,
+							cache: false,
+							type:'HEAD',
+							error: function(err){
+								$(`.${crc32(matchSub)}[data-id="${timeID}"]`).parent().next().removeAttr("href");
+								$(`.${crc32(matchSub)}[data-id="${timeID}"]`).css("color","#ff6d6d");
+								$(`.${crc32(matchSub)}[data-id="${timeID}"]`).text("ERROR");
+							},
+							success: function(response, status, xhr) {
+								let fileSize = xhr.getResponseHeader("Content-Length");
+								$(`.${crc32(matchSub)}[data-id="${timeID}"]`).text(SizeFormatter(fileSize));
+							}
+						});
+						localObserver.disconnect();
+						delete globalObserverTimer[timeID];
+					},650);
+				}
+				else{
+					clearTimeout(globalObserverTimer[timeID]);
+					delete globalObserverTimer[timeID];
 				}
 			});
-		}, 100 * $('.lobby > .chat div.file').length);
+		}, {
+			root: document.querySelector(".lobby"),
+			rootMargin: "0px",
+			threshold: 1
+		});
+		
+		let localTimer = setInterval(()=>{
+			if($(`.${crc32(matchSub)}[data-id="${timeID}"]`).length > 0){
+				clearInterval(localTimer);
+				localObserver.observe($(`.${crc32(matchSub)}[data-id="${timeID}"]`)[0]);
+			}
+		},250);
 		
 		let url = new URL(matchSub);
 		
