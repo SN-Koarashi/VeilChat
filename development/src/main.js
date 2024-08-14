@@ -1233,7 +1233,7 @@ function urlify(text) {
 			filename = url.searchParams.get('fileName');
 		}
 		
-		return `<div class="file"><span><a class="linkName" href="${CDNReplacement}" title="${filename}" class="filename">${filename}</a><br/><span data-id="${timeID}" class="${crc32(matchSub)}">-</span></span><a href="${CDNReplacement}" class="linkButton" title="下載 ${matchSub.split("/").at(-1)}"><img src="${MainDomain}/images/download.png" /></a></div>`;
+		return `<div class="file"><span><a class="linkName" href="${CDNReplacement}" title="${filename}" class="filename">${filename}</a><br/><span data-id="${timeID}" class="${crc32(matchSub)}">-</span></span><a href="${CDNReplacement}" class="linkButton" title="下載 ${filename}"><img src="${MainDomain}/images/download.png" /></a></div>`;
 	}
 	else if(matchSub.match(/^https?:\/\/(www\.youtube\.com\/watch\?[^\s]+|youtu\.be\/[0-9a-zA-Z\-_]{11})/ig)){
 		let videoCode = "";
