@@ -1,4 +1,5 @@
 node_modules
-old_assets
 bin
 *.db
+public/files/*
+!public/files/.htaccess

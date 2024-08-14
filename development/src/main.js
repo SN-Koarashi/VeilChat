@@ -9,7 +9,8 @@ window.scrollBottom = true;
 
 // start of immediately function
 (function($, window){
-const CDNServer = "https://media.snkms.org";
+const CDNServer = "https://chat.snkms.com";
+//const CDNServer = "https://media.snkms.org";
 const CDNRedirect = "https://chat.snkms.com/cdn";
 const MainDomain = "https://chat.snkms.com";
 const lang = navigator.language || window.localStorage.getItem('lang') || 'en';
@@ -1171,7 +1172,7 @@ function urlify(text) {
 			}
 		},30);
 		
-		return '<div><a target="_blank" href="' + matchSub + '"><img onload="onScroll(false);" loading="lazy" data-id="' + nowID + '" src="' + matchSub + '" /></a></div>';
+		return '<div><a target="_blank" href="' + matchSub + '"><img loading="lazy" data-id="' + nowID + '" src="' + matchSub + '" /></a></div>';
 	}
 	else if(matchSub.startsWith(`https://${location.hostname}/private/`)){
 		return '[invite]' + matchSub.match(/([0-9a-zA-Z\-]+)$/ig).join() + '[/invite]';
@@ -1198,9 +1199,15 @@ function urlify(text) {
 		});
 		
 		let url = new URL(matchSub);
-		let CDNReplacement = CDNRedirect + url.pathname;
 		
-		return `<div class="file"><span><a class="linkName" href="${CDNReplacement}" title="${matchSub.split("/").at(-1)}" class="filename">${matchSub.split("/").at(-1)}</a><br/><span data-id="${timeID}" class="${crc32(matchSub)}">-</span></span><a href="${CDNReplacement}" class="linkButton" title="下載 ${matchSub.split("/").at(-1)}"><img src="${MainDomain}/images/download.png" /></a></div>`;
+		let CDNReplacement = CDNRedirect + url.pathname + url.search;
+		
+		let filename = matchSub.split("/").at(-1);
+		if(url.search.length > 0 && url.searchParams.get('fileName')){
+			filename = url.searchParams.get('fileName');
+		}
+		
+		return `<div class="file"><span><a class="linkName" href="${CDNReplacement}" title="${filename}" class="filename">${filename}</a><br/><span data-id="${timeID}" class="${crc32(matchSub)}">-</span></span><a href="${CDNReplacement}" class="linkButton" title="下載 ${matchSub.split("/").at(-1)}"><img src="${MainDomain}/images/download.png" /></a></div>`;
 	}
 	else if(matchSub.match(/^https?:\/\/(www\.youtube\.com\/watch\?[^\s]+|youtu\.be\/[0-9a-zA-Z\-_]{11})/ig)){
 		let videoCode = "";
@@ -2791,6 +2798,23 @@ function escapeHtml(unsafe){
     return unsafe.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 }
 
+function onScroll(force){
+	let containerHeight = $('.lobby > .chat').height();
+	let scrollHeight = $('.lobby > .chat').prop("scrollHeight");
+	let scrollTop = $('.lobby > .chat').scrollTop();
+	
+	let nowPost = scrollHeight - scrollTop;
+	
+	if(nowPost < 700 || force || scrollBottom){
+		$('.lobby').scrollTop(scrollHeight);
+	}
+	
+	if($('.lobby > .chat').height() > $('.lobby').height())
+		$("#moveUp").show();
+	else
+		$("#moveUp").hide();
+}
+
 function isMobile() { 
 	var userAgentInfo = navigator.userAgent; 
 	var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");
@@ -3559,6 +3583,7 @@ delete window.localStorage;
 delete window.crypto;
 // end of immediately function
 })(jQuery, window);
+/*
 window.onScroll = function(force){
 	let containerHeight = $('.lobby > .chat').height();
 	let scrollHeight = $('.lobby > .chat').prop("scrollHeight");
@@ -3575,6 +3600,7 @@ window.onScroll = function(force){
 	else
 		$("#moveUp").hide();
 }
+*/
 /*
 window.mobileAndTabletCheck = function() {
   let check = false;

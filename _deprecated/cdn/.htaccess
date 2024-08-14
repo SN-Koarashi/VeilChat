@@ -1,0 +1,16 @@
+Options -Indexes
+RewriteEngine On
+
+Header set Content-Description "File Transfer"
+Header set Content-Disposition attachment
+Header set Connection Keep-Alive
+Header set Access-Control-Allow-Origin "https://chat.snkms.com"
+Header set Cache-Control "max-age=604800, public, must-revalidate"
+
+RewriteEngine On
+# 抓取 URL 中的 fileName 查詢參數，並將其值保存到環境變數 FILENAME
+RewriteCond %{QUERY_STRING} (^|&)fileName=([^&]+) [NC]
+RewriteRule ^ - [E=FILENAME:%2]
+
+# 使用環境變數 FILENAME 設置 Content-Disposition 標頭
+Header set Content-Disposition "attachment; filename=%{FILENAME}e" env=FILENAME

@@ -1,5 +1,0 @@
-Options -Indexes
-Header set Content-Description "File Transfer"
-Header set Content-Disposition attachment
-Header set Connection Keep-Alive
-Header set Access-Control-Allow-Origin "https://chat.snkms.com"

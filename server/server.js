@@ -16,6 +16,7 @@ const wssSrv = new SocketServer({ server })
 const clientList = {};
 const clientListID = {};
 const roomTimer = {};
+const roomCreatedTimestamp = {};
 const roomList = {
 	public: {},
 	ncut: {}
@@ -157,6 +158,7 @@ wssSrv.on('connection', (ws, req) => {
 				if(clientListID[clientTokenHash]){
 					let maxTrying = 0;
 					let randomID = getRandomID(9999);
+					
 					while(clientListID[clientTokenHash].includes(randomID) && maxTrying <= 30){
 						randomID = getRandomID(9999);
 						maxTrying++;
@@ -237,8 +239,8 @@ wssSrv.on('connection', (ws, req) => {
 				// 使用者工作階段的基本資訊
 				clientList[clientUID] = {
 					username: data.username,
-					id: clientID,
-					address: addressCrypt,
+					id: clientID, // 使用者工作階段數字ID
+					address: addressCrypt, // IP位址雜湊
 					signature: clientTokenHash, // 使用者特徵碼
 					locate: locate, // 使用者工作階段與所在房間的對應關係
 					instance: ws // 使用者工作階段的 WebSocket 實例
@@ -296,6 +298,7 @@ wssSrv.on('connection', (ws, req) => {
 						publicKey: data.publicKeyBase64,
 						privateKey: data.creatorPrivateKeyBase64
 					};
+					roomCreatedTimestamp[locate] = new Date().getTime();
 					
 					onSender({
 						type: "verified",
@@ -315,7 +318,7 @@ wssSrv.on('connection', (ws, req) => {
 				
 				// 檢查並更新同一個使用者在房間中的所有工作階段的暱稱
 				for(let c of roomList[locate][clientTokenHash]){
-					c.username = (data.username.length > 0)?data.username:"Unknown";
+					c.username = (data.username?.length > 0)?data.username:"Unknown";
 				}
 				
 				// 廣播更新後使用者列表給所有人 (Object)
@@ -415,8 +418,10 @@ wssSrv.on('connection', (ws, req) => {
 	ws.on('close', async (msg) => {
 		Logger("INFO", `Client ${ip} disconnected:`, clientUID);
 		let locate = clientList[clientUID]?.locate;
+		
 		// 於使用者列表陣列及使用者所有工作階段陣列中刪除此工作階段
 		if(roomList[locate]){
+			// 將使用者工作階段自房間列表中刪除
 			if(roomList[locate][clientTokenHash]){
 				let k = 0;
 				for(let c of roomList[locate][clientTokenHash]){
@@ -435,13 +440,14 @@ wssSrv.on('connection', (ws, req) => {
 			
 			clientListID[clientTokenHash].splice(clientListID[clientTokenHash].indexOf(clientID), 1);
 			
-			if(roomList[locate] && Object.keys(roomList[locate]).length == 0 && locate.match(/^([0-9a-zA-Z-_]{8})$/g) && roomListReserved.indexOf(locate) === -1){
+			if(roomList[locate] && Object.keys(roomList[locate]).length == 0 && locate.match(/^([0-9a-zA-Z\-_]{8})$/g) && roomListReserved.indexOf(locate) === -1){
 				roomTimer[locate] = setTimeout(()=>{
 					if(roomList[locate] && Object.keys(roomList[locate]).length == 0){
 						delete roomList[locate];
 						delete messageList[locate];
 						delete roomTimer[locate];
 						delete roomKeyPair[locate];
+						delete roomCreatedTimestamp[locate];
 						
 						// 推送清除訊息到控制台
 						Logger("WARN", `Deleted channel #${locate} and its message history.`);
@@ -575,4 +581,28 @@ function Logger(stats, ...message){
 
 server.listen(PORT, ()=>{
 	Logger("WARN", `Socket Server is Listening on Port ${server.address().port}`);
+	
+	// 全域計時器
+	setInterval(()=>{
+		// 循環查找所有房間，刪除未刪除的無人房間 (建立時間須達30秒以上)
+		for(let locate in roomList){
+			const nowTime = new Date().getTime();
+			if(
+				roomList[locate] && 
+				Object.keys(roomList[locate]).length == 0 && 
+				locate.match(/^([0-9a-zA-Z\-_]{8})$/g) && 
+				roomListReserved.indexOf(locate) === -1 &&
+				(nowTime - roomCreatedTimestamp[locate]) > 30000
+			){
+				delete roomList[locate];
+				delete messageList[locate];
+				delete roomTimer[locate];
+				delete roomKeyPair[locate];
+				delete roomCreatedTimestamp[locate];
+				
+				// 推送清除訊息到控制台
+				Logger("WARN", `Deleted channel #${locate} and its message history by global timer.`);
+			}
+		}
+	}, 180000);
 });
