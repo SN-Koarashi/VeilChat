@@ -19,7 +19,7 @@ function generateRdStr($length = 11) {
 }
 
 if($_POST['submit']){
-	require_once(__DIR__.'/php_api/class.imageresize.php');
+	require_once(__DIR__ . '/php_api/class.imageresize.php');
 	$arr = array();
 	$fileCount = count($_FILES["fileToUpload"]["name"]);
 	
@@ -32,8 +32,11 @@ if($_POST['submit']){
 		$randomID = generateRdStr();
 		$dest = __DIR__ . "/files/$fileHashHeader/";
 		
-		if(!is_dir($dest))
-			mkdir($dest);
+		if(!is_dir($dest)){
+			$oldMask = umask(0);
+			mkdir($dest, 0777, true);
+			umask($oldMask);
+		}
 		
 		if(preg_match('/^image\//i',$MIME)){
 			$image = new ImageResize($_FILES["fileToUpload"]["tmp_name"][$i]);

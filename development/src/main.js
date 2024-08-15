@@ -6,8 +6,8 @@
 "use strict";
 // start of immediately function
 (function($, window){
-const CDNServer = "https://chat.snkms.com";
-//const CDNServer = "https://media.snkms.org";
+//const CDNServer = "https://chat.snkms.com";
+const CDNServer = "https://media.snkms.org";
 const CDNRedirect = "https://chat.snkms.com/cdn";
 const MainDomain = "https://chat.snkms.com";
 const lang = navigator.language || window.localStorage.getItem('lang') || 'en';
@@ -2332,7 +2332,9 @@ function initFirst(window){
 		$("#upload").show();
 		$(".textArea").removeClass("maximum");
 		$("#add").removeClass("right");
-		$("#add img").attr("src",MainDomain + "/images/add.png");
+		if($("#add img").attr("src") != MainDomain + "/images/add.png"){
+			$("#add img").attr("src",MainDomain + "/images/add.png");
+		}
 		$(".messageBox").removeClass("unhidden");
 	});
 	
@@ -2909,6 +2911,26 @@ function getRandomNickname(){
 	return list.at(Math.floor(Math.random() * list.length));
 }
 
+// 左位移位元
+function rotateLeft(value, shiftBits) {
+    return ((value << shiftBits) | (value >>> (8 - shiftBits))) & 0xFF;
+}
+
+// 右位移位元
+function rotateRight(value, shiftBits) {
+    return ((value >>> shiftBits) | (value << (8 - shiftBits))) & 0xFF;
+}
+
+// 位元翻轉
+function flipBits(value) {
+    return value ^ 0xFF;
+}
+
+// 位元交換
+function swapBits(value) {
+    return ((value & 0xF0) >> 4) | ((value & 0x0F) << 4);
+}
+
 // 取得公私鑰對
 async function getKeyPair(){
 	if(localStorage.getItem('keyPair') != null){
@@ -2949,11 +2971,22 @@ async function getStoredKeyPair() {
 
 // 取得加密公鑰及私鑰
 async function getSecretPublicKeyRaw() {
+	let roomPasswordHashed = await hashString(roomPassword);
+	let finalPassword = roomPassword + roomPasswordHashed;
+	
     let keyPair = await getStoredKeyPair();
     let publicKey = await ecdh.exportPublicKey(keyPair.publicKey);
     let publicKeyEncode = new Uint8Array(publicKey).map((byte, index) => {
-        let charCode = roomPassword.charCodeAt(index % roomPassword.length);
-        return byte ^ charCode;
+		let charCode = finalPassword.charCodeAt(index % finalPassword.length);
+		let xorResult = byte ^ charCode;
+
+		// 加入混淆操作
+		xorResult = rotateLeft(xorResult, 3);
+		xorResult = rotateRight(xorResult, 2);
+		xorResult = swapBits(xorResult);
+		xorResult = flipBits(xorResult);
+
+		return xorResult;
     });
 
     return {
@@ -2964,13 +2997,24 @@ async function getSecretPublicKeyRaw() {
 
 // 取得base64私鑰
 async function encodePrivateKey(privateKeyCrypto) {
+	let roomPasswordHashed = await hashString(roomPassword);
+	let finalPassword = roomPassword + roomPasswordHashed;
+	
 	let privateKeyJwk = await ecdh.exportKey(privateKeyCrypto);
 	let jsonJwk = JSON.stringify(privateKeyJwk);
 	let arrayObj = jsonJwk.split("");
 	
 	let charCodeArr = arrayObj.map((str, index) => {
-        let charCode = roomPassword.charCodeAt(index % roomPassword.length);
-        return str.charCodeAt(0) ^ charCode;
+        let charCode = finalPassword.charCodeAt(index % finalPassword.length);
+        let xorResult = str.charCodeAt(0) ^ charCode;
+		
+		// 加入混淆操作
+		xorResult = rotateLeft(xorResult, 3);
+		xorResult = rotateRight(xorResult, 2);
+		xorResult = swapBits(xorResult);
+		xorResult = flipBits(xorResult);
+		
+		return xorResult;
     });
 	//console.log(charCodeArr);
     return btoa(unescape(encodeURIComponent(String.fromCharCode(...charCodeArr))));
@@ -2978,10 +3022,19 @@ async function encodePrivateKey(privateKeyCrypto) {
 
 // 解密base64私鑰
 async function decodePrivateKey(privateKeyBase64) {
+	let roomPasswordHashed = await hashString(roomPassword);
+	let finalPassword = roomPassword + roomPasswordHashed;
+	
     let privateKeyJwkArray = Uint8Array.from(decodeURIComponent(escape(atob(privateKeyBase64))), c => c.charCodeAt(0));
     let privateKeyDecode = privateKeyJwkArray.map((byte, index) => {
-        let charCode = roomPassword.charCodeAt(index % roomPassword.length);
-        return byte ^ charCode;
+        let charCode = finalPassword.charCodeAt(index % finalPassword.length);
+		// 進行逆向混淆操作
+		let flippedResult = flipBits(byte);
+		let swappedResult = swapBits(flippedResult);
+		let rotatedResult = rotateRight(swappedResult, 3);
+		rotatedResult = rotateLeft(rotatedResult, 2);
+
+		return rotatedResult ^ charCode;
     });
 	
 	let arrayObj = String.fromCharCode(...privateKeyDecode)
@@ -2991,11 +3044,22 @@ async function decodePrivateKey(privateKeyBase64) {
 
 // 取得加密公鑰及私鑰(新產生)
 async function getNewSecretPublicKeyRaw() {
+	let roomPasswordHashed = await hashString(roomPassword);
+	let finalPassword = roomPassword + roomPasswordHashed;
+
     let keyPair = await ecdh.generateKeyPair();
     let publicKey = await ecdh.exportPublicKey(keyPair.publicKey);
     let publicKeyEncode = new Uint8Array(publicKey).map((byte, index) => {
-        let charCode = roomPassword.charCodeAt(index % roomPassword.length);
-        return byte ^ charCode;
+		let charCode = finalPassword.charCodeAt(index % finalPassword.length);
+		let xorResult = byte ^ charCode;
+
+		// 加入混淆操作
+		xorResult = rotateLeft(xorResult, 3);
+		xorResult = rotateRight(xorResult, 2);
+		xorResult = swapBits(xorResult);
+		xorResult = flipBits(xorResult);
+
+		return xorResult;
     });
 
     return {
@@ -3006,10 +3070,20 @@ async function getNewSecretPublicKeyRaw() {
 
 // 解密公鑰並取得公享金鑰
 async function getSharedSecret(publicKeyRawBase64, privateKey) {
+	let roomPasswordHashed = await hashString(roomPassword);
+	let finalPassword = roomPassword + roomPasswordHashed;
+	
     let publicKeyRaw = Uint8Array.from(atob(publicKeyRawBase64), c => c.charCodeAt(0));
     let publicKeyDecode = publicKeyRaw.map((byte, index) => {
-        let charCode = roomPassword.charCodeAt(index % roomPassword.length);
-        return byte ^ charCode;
+		let charCode = finalPassword.charCodeAt(index % finalPassword.length);
+
+		// 進行逆向混淆操作
+		let flippedResult = flipBits(byte);
+		let swappedResult = swapBits(flippedResult);
+		let rotatedResult = rotateRight(swappedResult, 3);
+		rotatedResult = rotateLeft(rotatedResult, 2);
+
+		return rotatedResult ^ charCode;
     });
 
     let publicKey = await ecdh.importPublicKey(publicKeyDecode);
