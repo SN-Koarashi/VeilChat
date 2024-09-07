@@ -15,6 +15,12 @@ RewriteRule ^ - [E=FILENAME:%2]
 # 使用環境變數 FILENAME 設置 Content-Disposition 標頭
 Header set Content-Disposition "attachment; filename=%{FILENAME}e" env=FILENAME
 
+# 如果有 Referer 標頭並且請求的是特定檔案類型，移除 Content-Disposition 和 Content-Description 標頭
+RewriteCond %{HTTP_REFERER} .
+RewriteCond %{REQUEST_URI} \.(jpg|jpeg|png|webp|gif)$ [NC]
+Header unset Content-Disposition env=HTTP_REFERER
+Header unset Content-Description env=HTTP_REFERER
+
 # Serve HTML as plaintext, don't execute SHTML
 AddType text/plain .html .htm .shtml .phtml .php .php3 .php4 .php5 .php7
 
