@@ -20,6 +20,7 @@ function generateRdStr($length = 11) {
 
 if($_POST['submit']){
 	require_once(__DIR__ . '/php_api/class.imageresize.php');
+
 	$arr = array();
 	$fileCount = count($_FILES["fileToUpload"]["name"]);
 	
@@ -66,7 +67,7 @@ if($_POST['submit']){
 			}
 			
 			array_push($arr,array(
-				"url"=>"https://".$_SERVER['HTTP_HOST']."/files/$fileHashHeader/$fileHash$ext?fileName=".$_FILES["fileToUpload"]["name"][$i],
+				"url"=>"https://".$_SERVER['HTTP_HOST']."/files/$fileHashHeader/$fileHash$ext?fileName=".rawurlencode($_FILES["fileToUpload"]["name"][$i]),
 				"name"=>$_FILES["fileToUpload"]["name"][$i],
 				"compressed"=>$compressed,
 				"size"=>array(
@@ -84,7 +85,7 @@ if($_POST['submit']){
 			move_uploaded_file($_FILES["fileToUpload"]["tmp_name"][$i], $dest);
 			
 			array_push($arr,array(
-				"url"=>"https://".$_SERVER['HTTP_HOST']."/files/$fileHashHeader/$fileHash$ext?fileName=".$_FILES["fileToUpload"]["name"][$i],
+				"url"=>"https://".$_SERVER['HTTP_HOST']."/files/$fileHashHeader/$fileHash$ext?fileName=".rawurlencode($_FILES["fileToUpload"]["name"][$i]),
 				"name"=>$_FILES["fileToUpload"]["name"][$i],
 				"compressed"=>false,
 				"size"=>array(
