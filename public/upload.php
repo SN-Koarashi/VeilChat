@@ -1,4 +1,8 @@
 <?php
+ini_set('error_log', '/web/apache/log/php_errors.log');
+ini_set('display_errors', 'On');
+ini_set('display_startup_errors', 'On');
+
 error_reporting(0);
 date_default_timezone_set("Asia/Taipei");
 header('Access-Control-Allow-Origin: https://chat.snkms.com');

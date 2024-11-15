@@ -1233,7 +1233,7 @@ function urlify(text) {
 			filename = url.searchParams.get('fileName');
 		}
 		
-		return `<div class="file"><span><a class="linkName" href="${CDNReplacement}" title="${filename}" class="filename">${filename}</a><br/><span data-id="${timeID}" class="${crc32(matchSub)}">-</span></span><a href="${CDNReplacement}" class="linkButton" title="下載 ${filename}"><img src="${MainDomain}/images/download.png" /></a></div>`;
+		return `<div class="file"><span><a class="linkName" href="${CDNReplacement}" title="${filename}" class="filename">${filename}</a><br/><span data-id="${timeID}" class="${crc32(matchSub)}">-</span></span><a target="_blank" href="${CDNReplacement}&download=true" class="linkButton" title="下載 ${filename}"><img src="${MainDomain}/images/download.png" /></a></div>`;
 	}
 	else if(matchSub.match(/^https?:\/\/(www\.youtube\.com\/watch\?[^\s]+|youtu\.be\/[0-9a-zA-Z\-_]{11})/ig)){
 		let videoCode = "";
@@ -2616,7 +2616,7 @@ function initFirst(window){
 									content = $(this).attr('title');
 								}
 								
-								return '<span triggered="true" newElement="true">'+((content?.length)?content:' ')+'</span><br/>';
+								return '<span triggered="true" newElement="true">'+((content?.length)?content:'')+'</span><br/>';
 							}
 						});
 
@@ -2635,12 +2635,19 @@ function initFirst(window){
 
 			elements.forEach(e => {
 				i++;
+				e.removeAttribute('newElement');
+				
+				if(e.innerText.length > 0){
+					e.insertAdjacentText('beforebegin', e.innerText);
+					e.innerText = '';
+				}
 				
 				if(elements.length === i){
 					e.setAttribute('cursorPoint', true);
 				}
-				
-				e.removeAttribute('newElement');
+				else{
+					e.remove();
+				}
 			});
 
 			// 移動游標位置到插入處末端
@@ -2664,6 +2671,11 @@ function initFirst(window){
 					
 					// 移除標記
 					pointerNode.removeAttribute('cursorPoint');
+					
+					if(pointerNode.innerText.length > 0){
+						pointerNode.insertAdjacentText('beforebegin', pointerNode.innerText);
+					}
+					pointerNode.remove();
 					onKeyEnter($('#sender'));
 				},1);
 			}

@@ -16,6 +16,10 @@ RewriteRule ^ - [E=FILENAME:%2]
 # 使用環境變數 FILENAME 設置 Content-Disposition 標頭
 Header set Content-Disposition "inline; filename=%{FILENAME}e" env=FILENAME
 
+# 新增條件：當 GET 參數 download=true 時，設置 Content-Disposition 標頭
+RewriteCond %{QUERY_STRING} (^|&)download=true [NC]
+Header set Content-Disposition "attachment; filename=%{FILENAME}e" env=FILENAME
+
 ####
 
 # Serve HTML as plaintext, don't execute SHTML
