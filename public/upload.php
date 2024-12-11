@@ -1,7 +1,7 @@
 <?php
-ini_set('error_log', '/web/apache/log/php_errors.log');
-ini_set('display_errors', 'On');
-ini_set('display_startup_errors', 'On');
+//ini_set('error_log', '/web/apache/log/php_errors.log');
+//ini_set('display_errors', 'On');
+//ini_set('display_startup_errors', 'On');
 
 error_reporting(0);
 date_default_timezone_set("Asia/Taipei");
@@ -23,7 +23,7 @@ function generateRdStr($length = 11) {
 }
 
 if($_POST['submit']){
-	require_once(__DIR__ . '/php_api/class.imageresize.php');
+	require_once(__DIR__ . '/../php_api/class.imageresize.php');
 
 	$arr = array();
 	$fileCount = count($_FILES["fileToUpload"]["name"]);

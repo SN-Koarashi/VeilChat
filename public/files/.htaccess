@@ -38,4 +38,5 @@ RemoveHandler .php
 <IfModule mod_deflate.c>
     # 不要對 .jar 檔案進行 Gzip 壓縮
     SetEnvIfNoCase Request_URI \.jar$ no-gzip dont-vary
+    SetEnvIfNoCase Request_URI \.pdf$ no-gzip dont-vary
 </IfModule>
