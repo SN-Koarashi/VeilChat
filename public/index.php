@@ -1,12 +1,7 @@
-<?php error_reporting(0);
-//if($_SERVER['REMOTE_ADDR'] != '220.133.93.223'){http_response_code(403);exit;}
-//if($_SERVER['REMOTE_ADDR'] != '36.234.235.56'){http_response_code(403);exit;}
-?>
 <!DOCTYPE html>
 <html>
-
 <head>
-	<title>Veil Chat</title>
+	<title>Veil Chat - 安全與隱私下的暢所欲言</title>
 	<meta charset="utf-8" />
 	<meta name="robots" content="noindex,nofollow" />
 	<meta property="og:title" content="Veil Chat" />
@@ -49,7 +44,6 @@
 		<div></div>
 	</div>
 	<div class="wrapper_settings">
-		<input type="hidden" id="room_id" value="<?php echo $_GET['private']; ?>" readonly />
 		<div class="settings_title">詳細設定<img id="onClose" src="https://chat.snkms.com/images/close_black.png" /></div>
 		<div class="settings_body">
 			<label>名稱<input id="userName" type="text" /></label>
@@ -129,5 +123,4 @@
 		</div>
 	</div>
 </body>
-
 </html>

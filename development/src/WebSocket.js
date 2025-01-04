@@ -45,7 +45,7 @@ export function WebSocketConnect() {
 		else
 			snkms.success(toast);
 
-		let joinLocation = $('#room_id').val();
+		let joinLocation = location.pathname.replace(/\/$/, '').split('/').at(-1);
 		if (isMobile() && config.localStorage.getItem('lastRoom') && location.pathname.match(/^\/private\/([0-9A-Za-z\-_]+)/ig) === null) {
 			joinLocation = config.localStorage.getItem('lastRoom');
 		}

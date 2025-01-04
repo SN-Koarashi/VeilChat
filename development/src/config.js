@@ -6,7 +6,6 @@ const config = {
 	MainDomain: "https://chat.snkms.com",
 	lang: navigator.language || window.localStorage.getItem('lang') || 'en',
 	isDebugger: window.localStorage.getItem('debugger') ? true : false,
-
 	wss: null,
 	token: null,
 	crcTableGlobal: null,
@@ -25,7 +24,8 @@ const config = {
 	tokenHashSelf: null,
 	isInited: false,
 	denyCount: 0,
-	scrollBottom: true
+	scrollBottom: true,
+	droppedText: false
 };
 
 export default config;

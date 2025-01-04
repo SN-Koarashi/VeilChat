@@ -1,7 +1,7 @@
 {
   "version": "2.24.10804",
-  "short_name": "XCoreNET WebChat",
-  "name": "XCoreNET 匿名聊天室",
+  "short_name": "Veil Chat",
+  "name": "Veil Chat",
   "description": "以匿名主打的端對端加密網頁即時聊天室，免登入立即使用，與您的團隊或朋友進行小組討論、溝通聊天。",
   "icons": [
     {
