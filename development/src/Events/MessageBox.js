@@ -3,7 +3,7 @@ import $ from 'jquery';
 import config from '../config.js';
 import { isMobile } from '../Utils.js';
 import Dialog from '../Dialog.js';
-import { WebSocketBinaryHandler } from '../WebSocket.js';
+import { WebSocketBinaryHandler } from '../WebSocketRegister.js';
 import {
 	onKeyEnter,
 	uploadFiles,

@@ -4,7 +4,7 @@ import config from './config.js';
 import { crc32, isMobile, escapeHtml, checkImageURL, randomASCIICode } from './Utils.js';
 import Logger from './Logger.js';
 import Dialog from './Dialog.js';
-import { WebSocketBinaryHandler } from './WebSocket.js';
+import { WebSocketBinaryHandler } from './WebSocketRegister.js';
 import { decodePrivateKey, getSharedSecret, decryptMessage, hashString } from './Crypto.js';
 
 export function emojify(text) {
