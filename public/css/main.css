@@ -1487,23 +1487,19 @@ body.noOverflow{
     padding: 5px;
     cursor: pointer;
     border-radius: 5px;
-    display: inline-block;
+    display: inline-flex;
     vertical-align: middle;
     -webkit-user-drag: none;
 	user-select: none;
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+	align-items: center;
+    justify-content: center;
+    flex-wrap: nowrap;
 }
-.emoji-window .eBody .eContainer > div span{
-	background-image: var(--emoji-url);
-    background-position: center center;
-    background-repeat: no-repeat;
-	background-size: contain;
-	width: 32px;
-    height: 32px;
+.emoji-window .eBody .eContainer > div img{
     display: block;
-}
-.emoji-window .eBody .eContainer > div span:after{
-	
+    max-width: 32px;
+    max-height: 32px;
 }
 .emoji-window .eBody .eContainer > div:hover{
 	background: rgba(255,255,255,.25);

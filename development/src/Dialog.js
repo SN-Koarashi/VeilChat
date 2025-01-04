@@ -1,5 +1,6 @@
 "use strict";
 import $ from 'jquery';
+import { isMobile } from './Utils';
 
 var snkms = function ($) {
 	// *** 內部變數區域 *** //
@@ -86,7 +87,9 @@ var snkms = function ($) {
 		});
 
 		$(document).on('click', function () {
-			removeElements();
+			if (!isMobile()) {
+				removeElements();
+			}
 		});
 
 		var clicking = false;

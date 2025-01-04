@@ -92,7 +92,8 @@ function initSetup() {
 
 	let devicePixel = (window.devicePixelRatio == 1) ? 32 : (devicePixelRatio == 2) ? 64 : 96;
 	for (let e in window.emojis) {
-		$(".emoji-window .eBody .eContainer").append(`<div title=":${e}:" data-id="${e}" data-ripple><span style="--emoji-url: url(${window.emojis[e]}?size=${devicePixel});"></span></div>`);
+		// $(".emoji-window .eBody .eContainer").append(`<div title=":${e}:" data-id="${e}" data-ripple><span style="--emoji-url: url(${window.emojis[e]}?size=${devicePixel});"></span></div>`);
+		$(".emoji-window .eBody .eContainer").append(`<div title=":${e}:" data-id="${e}" data-ripple><img src="${window.emojis[e]}?size=${devicePixel}" crossorigin="anonymous" alt="emojis" loading="lazy" /></div>`);
 	}
 
 	$.fn.tagName = function () {
@@ -1326,7 +1327,7 @@ export function initFirst(window) {
 		return false;
 	});
 
-	$("body").on("dragstart", ".privateButton img, .msgWrapper img.emojis, .messageBox img, .menu .speedMove img", function () {
+	$("body").on("dragstart", ".emoji-window .eBody .eContainer div[data-id] > img, div.emojis > img, .privateButton img, .msgWrapper img.emojis, .messageBox img, .menu .speedMove img", function () {
 		return false;
 	});
 

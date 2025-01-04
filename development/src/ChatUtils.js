@@ -17,7 +17,8 @@ export function emojify(text) {
 			size = "small";
 
 
-		return `<div title=":${id}:" data-id="${id}" class="emojis ${size}"><span style="--emoji-url: url(${window.emojis[id]}?size=${pixel})"></span></div>`;
+		// return `<div title=":${id}:" data-id="${id}" class="emojis ${size}"><span style="--emoji-url: url(${window.emojis[id]}?size=${pixel})"></span></div>`;
+		return `<div title=":${id}:" data-id="${id}" class="emojis ${size}"><img src="${window.emojis[id]}?size=${pixel}" crossorigin="anonymous" alt="emojis" loading="lazy" /></div>`;
 	});
 }
 
