@@ -6,8 +6,6 @@ const { JSFuck } = require('./jsfuck.js');
 const JSOF = require('javascript-obfuscator');
 const UglifyJS = require("uglify-js");
 
-const minifyAPI = "https://www.toptal.com/developers/javascript-minifier/api/raw";
-
 var result;
 var isMinify = false;
 var isDeploy = false;
@@ -22,7 +20,7 @@ process.argv.forEach(function (val, index, array) {
   if(val == "--encrypt") isEncrypt = true;
 });
 console.log("---");
-const inputData = fs.readFileSync(path.join(__dirname, "src", "main.js"),{encoding:'utf8', flag:'r'});
+const inputData = fs.readFileSync(path.join(__dirname, "bin", "main.bundle.js"),{encoding:'utf8', flag:'r'});
 
 if(!isMinify && !isDeploy && !isEncrypt){
 	console.log("[INFO]","執行程式碼部署");

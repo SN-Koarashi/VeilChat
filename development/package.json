@@ -1,16 +1,25 @@
 {
-  "name": "Veil",
+  "name": "veil-chat",
   "version": "1.0.0",
   "description": "WebSocket WebChat",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack && node run.js --deploy"
   },
   "author": "5026",
   "license": "UNLICENSE",
   "dependencies": {
     "fs-extra": "^10.0.0",
-    "request": "latest",
     "javascript-obfuscator": "latest",
+    "jquery": "^2.2.4",
+    "request": "latest",
     "uglify-js": "latest"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "eslint": "^9.17.0",
+    "globals": "^15.14.0",
+    "terser-webpack-plugin": "^5.3.11",
+    "webpack": "^5.97.1",
+    "webpack-cli": "^6.0.1"
   }
 }

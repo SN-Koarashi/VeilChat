@@ -30,7 +30,7 @@
 <script src="https://i.snkms.com/highlight.js/highlight.min.js"></script>
 <script src="https://chat.snkms.com/js/debugger.js"></script>
 <script src="https://chat.snkms.com/js/emojis.js"></script>
-<script src="https://chat.snkms.com/js/main.encrypted.js?v2408142"></script>
+<script src="https://chat.snkms.com/js/main.encrypted.js?v2501041"></script>
 <?php require_once('C:/xampp/php_api/analytics.php');?>
 </head>
 <body>
