@@ -201,7 +201,8 @@ function WebSocketConnect(){
 				$('.headerTitle').text(channelName);
 				$('.textPlaceholder').text(`傳訊息到 ${channelName}`);
 				//document.title = channelName + " | XCoreNET 匿名聊天室 - 天夜之心";
-				document.title = channelName + " | EEACC - 端對端加密之社群匿名聊天系統";
+				//document.title = channelName + " | EEACC - 端對端加密之社群匿名聊天系統";
+				document.title = channelName + " | Veil Chat";
 				
 				if(data.isReserved || locate === "public" || !data.publicKeyBase64){
 					roomPublicKeyBase64 = undefined;
@@ -3340,6 +3341,14 @@ var snkms = function($){
 				$dom.click();
 			else
 				removeElements();
+		});
+		
+		$('body').on('click', '.snkms-content',function(e){
+			e.stopPropagation();
+		});
+		
+		$(document).on('click',function(e){
+			removeElements();
 		});
 		
 		var clicking = false;
