@@ -3,7 +3,7 @@
   "version": "4.0.0",
   "description": "WebSocket WebChat",
   "scripts": {
-    "build": "webpack && node run.js --deploy"
+    "build": "webpack && node index.js --deploy"
   },
   "author": "5026",
   "license": "UNLICENSE",
