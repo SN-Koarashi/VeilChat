@@ -79,6 +79,8 @@ export function initSetup() {
 					savingSettings();
 				});
 		});
+
+		initSettings();
 	}
 
 	window.emojis = Object.keys(window.emojis).sort().reduce(

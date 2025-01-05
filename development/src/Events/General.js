@@ -7,8 +7,8 @@ import { WebSocketBinaryHandler } from '../WebSocketRegister.js';
 import {
 	onKeyEnter,
 	onScroll,
-	openSettings,
-	closeSettings
+	closeSettings,
+	savingSettings
 } from '../ChatUtils.js';
 
 import { initSettings } from '../EventsRegister.js';
@@ -89,7 +89,14 @@ export default function RegisterEvent(window) {
 	});
 
 	$('#settings').on('click', function () {
-		openSettings();
+		// openSettings();
+
+		Dialog.prompt('設定', '該如何稱呼你？', config.userName ?? '',
+			function (evt, value) {
+				config.userName = value;
+				$('#userName').val(value);
+				savingSettings();
+			});
 	});
 	$('.wrapper_settings').on('click', '#onClose', function () {
 		closeSettings();
