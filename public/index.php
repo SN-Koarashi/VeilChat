@@ -4,9 +4,9 @@
 	<title>Veil Chat - 安全與隱私下的暢所欲言</title>
 	<meta charset="utf-8" />
 	<meta name="robots" content="noindex,nofollow" />
-	<meta property="og:title" content="Veil Chat" />
-	<meta property="og:description" content="以匿名主打的端對端加密網頁即時聊天室，免登入立即使用，與您的團隊或朋友進行小組討論、溝通聊天。" />
-	<meta name="description" content="以匿名主打的端對端加密網頁即時聊天室，免登入立即使用，與您的團隊或朋友進行小組討論、溝通聊天。" />
+	<meta property="og:title" content="Veil Chat - 安全與隱私下的暢所欲言" />
+	<meta property="og:description" content="專為隱私和安全設計的匿名聊天平台，透過端對端加密技術保障每段對話的安全性，支援即時通訊與私密交流，讓您在無憂的環境中自由表達，盡享安心溝通的體驗。" />
+	<meta name="description" content="專為隱私和安全設計的匿名聊天平台，透過端對端加密技術保障每段對話的安全性，支援即時通訊與私密交流，讓您在無憂的環境中自由表達，盡享安心溝通的體驗。" />
 	<meta name="viewport"
 		content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover, interactive-widget=resizes-content" />
 	<meta name="format-detection" content="telephone=no">
