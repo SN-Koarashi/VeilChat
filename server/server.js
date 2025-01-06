@@ -232,7 +232,7 @@ wssSrv.on('connection', (ws, req) => {
 				
 				// 檢查並更新同一個使用者在房間中的所有工作階段的暱稱
 				for(let c of roomList[locate][clientTokenHash]){
-					c.username = (data.username.length > 0)?data.username:"Unknown";
+					c.username = data.username || "Unknown";
 				}
 				
 				
@@ -318,7 +318,7 @@ wssSrv.on('connection', (ws, req) => {
 				
 				// 檢查並更新同一個使用者在房間中的所有工作階段的暱稱
 				for(let c of roomList[locate][clientTokenHash]){
-					c.username = (data.username?.length > 0)?data.username:"Unknown";
+					c.username = data.username || "Unknown";
 				}
 				
 				// 廣播更新後使用者列表給所有人 (Object)
@@ -358,6 +358,7 @@ wssSrv.on('connection', (ws, req) => {
 
 				// 將目前的訊息及發送訊息的使用者工作階段資訊記錄到歷史訊息中(在新使用者登入後要傳遞給他的)
 				let objHistory = {
+					message_id: getSHA256(clientList[clientUID].signature + crypto.randomUUID()).toUpperCase(),
 					session: clientUID,
 					id: clientList[clientUID].id,
 					username: clientList[clientUID].username,

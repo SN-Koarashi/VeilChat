@@ -1,5 +1,6 @@
 node_modules
 bin
 *.db
+public/js/main.encrypted.js
 public/files/*
 !public/files/.htaccess
