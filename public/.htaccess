@@ -12,7 +12,7 @@ RewriteRule ^cdn/(.*?)$ https://media.snkms.org/$1 [R,NC]
 #RewriteRule ^cdn/(.*?)$ https://chat.snkms.com/$1 [R,NC]
 
 #Header always set content-security-policy "frame-src 'self';block-all-mixed-content; object-src 'none';script-src 'self' *.snkms.com ajax.googleapis.com *.googletagmanager.com;"
-Header merge content-security-policy "script-src 'self' *.snkms.com ajax.googleapis.com *.googletagmanager.com 'sha256-oPKiATqjvYGrL2OJFli6lZw2naAkoCXSA/RkxxwSlQI=';"
+Header merge content-security-policy "script-src 'self' *.snkms.com ajax.googleapis.com *.googletagmanager.com 'sha256-+YmLbhETQChN+Sw7uWShN54vwUiebKODDWC/QVWhAv0=';"
 
 <FilesMatch "\.(ico|jpg|jpeg|png|gif|css|js)$">
     Header set Cache-Control "max-age=604800, public, must-revalidate"
