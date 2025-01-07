@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 	<title>Veil Chat - 安全與隱私下的暢所欲言</title>
 	<meta charset="utf-8" />
 	<meta name="robots" content="noindex,nofollow" />
 	<meta property="og:title" content="Veil Chat - 安全與隱私下的暢所欲言" />
-	<meta property="og:description" content="專為隱私和安全設計的匿名聊天平台，透過端對端加密技術保障每段對話的安全性，支援即時通訊與私密交流，讓您在無憂的環境中自由表達，盡享安心溝通的體驗。" />
+	<meta property="og:description"
+		content="專為隱私和安全設計的匿名聊天平台，透過端對端加密技術保障每段對話的安全性，支援即時通訊與私密交流，讓您在無憂的環境中自由表達，盡享安心溝通的體驗。" />
 	<meta name="description" content="專為隱私和安全設計的匿名聊天平台，透過端對端加密技術保障每段對話的安全性，支援即時通訊與私密交流，讓您在無憂的環境中自由表達，盡享安心溝通的體驗。" />
 	<meta name="viewport"
 		content="width=device-width, height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0, viewport-fit=cover, interactive-widget=resizes-content" />
@@ -31,7 +33,15 @@
 	<script src="https://chat.snkms.com/js/debugger.js"></script>
 	<script src="https://chat.snkms.com/js/emojis.js"></script>
 	<script src="https://chat.snkms.com/js/main.encrypted.js?v2501041"></script>
-	<?php require_once('C:/xampp/php_api/analytics.php'); ?>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDSH7052D5"></script>
+	<script>
+		window.dataLayer = window.dataLayer || [];
+		function gtag() { dataLayer.push(arguments); }
+		gtag('js', new Date());
+
+		gtag('config', 'G-YDSH7052D5');
+	</script>
 </head>
 
 <body>
@@ -123,4 +133,5 @@
 		</div>
 	</div>
 </body>
+
 </html>
