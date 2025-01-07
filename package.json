@@ -1,0 +1,12 @@
+{
+  "name": "veil-chat-root",
+  "private": true,
+  "workspaces": [
+    "src/server",
+    "src/client"
+  ],
+  "scripts": {
+    "start:server": "npm run start --workspace=src/server",
+    "build:client": "npm run build --workspace=src/client"
+  }
+}
