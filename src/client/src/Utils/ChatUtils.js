@@ -3,7 +3,7 @@
 
 import $ from 'jquery';
 import config from '../config.js';
-import { crc32, isMobile, escapeHtml, checkImageURL, randomASCIICode } from '../Utils.js';
+import { crc32, isMobile, escapeHtml, checkImageURL, randomASCIICode } from './Utils.js';
 import Logger from '../Functions/Logger.js';
 import Dialog from '../Functions/Dialog.js';
 import { WebSocketBinaryHandler } from '../Registers/WebSocket.js';

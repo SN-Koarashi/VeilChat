@@ -3,7 +3,7 @@ import $ from 'jquery';
 import config from '../config.js';
 import { getRandomNickname, isMobile, randomToken } from '../Utils/Utils.js';
 import Dialog from '../Functions/Dialog.js';
-import { WebSocketConnect } from '../WebSocketRegister.js';
+import { WebSocketConnect } from './WebSocket.js';
 import {
 	savingSettings
 } from '../Utils/ChatUtils.js';
