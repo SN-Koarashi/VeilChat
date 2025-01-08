@@ -100,6 +100,30 @@ const $ = {
 		catch (e) { }
 
 		return false;
+	},
+	isMalicious: function (ip) {
+		// 檢查請求頻率
+		const now = Date.now();
+		const timeWindow = 60 * 1000; // 1 分鐘
+		const requestInfo = ipRequestCounts.get(ip) || { count: 0, lastRequest: now };
+
+		// 如果在同一時間窗口內
+		if (now - requestInfo.lastRequest < timeWindow) {
+			requestInfo.count += 1;
+		} else {
+			// 時間窗口更新
+			requestInfo.count = 1;
+			requestInfo.lastRequest = now;
+		}
+
+		ipRequestCounts.set(ip, requestInfo);
+
+		if (requestInfo.count > MAX_REQUESTS_PER_MINUTE) {
+			$.Logger("WARN", `Client ${ip} exceeded request limit: ${requestInfo.count} requests in one minute`);
+			return true;
+		}
+
+		return false; // 合法請求
 	}
 };
 

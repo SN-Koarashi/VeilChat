@@ -1,7 +1,7 @@
 "use strict";
 // 部分程式碼源自 https://github.com/SN-Koarashi/discord-bot_sis
 require('./global.js');
-const { onSender, Logger, cryptPwd, isJSONString } = require('./function.js');
+const { onSender, Logger, cryptPwd, isJSONString, isMalicious } = require('./function.js');
 
 const crypto = require('crypto');
 const WebSocket = require('ws');
@@ -33,17 +33,23 @@ wssSrv.on('connection', (ws, req) => {
 	// 連結時執行提示
 	const ip = (req.connection.remoteAddress.match(/^(::ffff:127\.0\.0\.1)/ig)) ? req.headers['x-forwarded-for'] : req.connection.remoteAddress;
 	const port = req.connection.remotePort;
-	const addressCrypt = cryptPwd(ip);
-	const clientUID = crypto.randomUUID().toUpperCase();
 
-	const SocketData = { clientTokenHash: null, clientID: null, ip, port, addressCrypt, clientUID };
+	if (isMalicious(ip)) {
+		Logger("WARN", `Terminating malicious client: ${ip}`);
+		ws.terminate();
+		return;
+	}
 
-	if (!req.headers["origin"].match(/^https?:\/\/chat\.snkms\.com/ig)) {
-		ws.close();
+	if (!req.headers["origin"]?.match(/^https?:\/\/chat\.snkms\.com\/?$/ig)) {
+		ws.close(4003, "Forbidden origin");
 		Logger("ERROR", `Client ${ip} forbidden because invalid origin:`, req.headers["origin"]);
 		return;
 	}
 
+	const addressCrypt = cryptPwd(ip);
+	const clientUID = crypto.randomUUID().toUpperCase();
+
+	const SocketData = { clientTokenHash: null, clientID: null, ip, port, addressCrypt, clientUID };
 
 	// 驗證使用者是否合法
 	if (ip != req.headers['x-forwarded-for']) {
@@ -52,7 +58,7 @@ wssSrv.on('connection', (ws, req) => {
 			session: clientUID,
 			message: 'Session Verify Failed'
 		}, ws);
-		ws.close();
+		ws.close(4003, "Session Verify Failed");
 		Logger("ERROR", `Client ${ip} forbidden because ip verified failed:`, clientUID);
 		return;
 	}
@@ -101,7 +107,6 @@ wssSrv.on('connection', (ws, req) => {
 			console.log(err);
 		}
 	});
-
 
 	// 使用者工作階段關閉連線
 	ws.on('close', async () => {
@@ -153,6 +158,10 @@ wssSrv.on('connection', (ws, req) => {
 		}
 	});
 
+	ws.isAlive = true;
+	ws.on("pong", () => {
+		ws.isAlive = true;
+	});
 });
 
 server.listen(PORT, () => {
@@ -181,4 +190,15 @@ server.listen(PORT, () => {
 			}
 		}
 	}, 180000);
+
+	setInterval(() => {
+		wssSrv.clients.forEach((client) => {
+			if (client.isAlive === false) {
+				console.log(client, 'close');
+				return client.terminate();
+			}
+			client.isAlive = false;
+			client.ping();
+		});
+	}, 5000);
 });

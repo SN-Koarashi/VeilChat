@@ -22,3 +22,8 @@ globalThis.messageList = {
 	}
 };
 globalThis.wssSrv = null;
+
+// 儲存 IP 的請求次數 (用於頻率限制)
+globalThis.ipRequestCounts = new Map();
+// 設定最大請求頻率 (每分鐘)
+globalThis.MAX_REQUESTS_PER_MINUTE = 20;

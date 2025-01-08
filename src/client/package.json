@@ -1,5 +1,5 @@
 {
-  "name": "veil-chat",
+  "name": "veil-chat-client",
   "version": "4.0.0",
   "description": "WebSocket WebChat",
   "scripts": {

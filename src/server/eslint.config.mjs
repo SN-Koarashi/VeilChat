@@ -18,7 +18,9 @@ export default [
         roomListReserved: "writable",
         roomPassword: "writable",
         messageList: "writable",
-        wssSrv: "writable"
+        wssSrv: "writable",
+        ipRequestCounts: "writeable",
+        MAX_REQUESTS_PER_MINUTE: "readonly"
       }
     }
   },
