@@ -1,9 +1,9 @@
 "use strict";
 
 import config from '../../config.js';
-import Dialog from '../../Dialog.js'
-import { isMobile } from '../../Utils.js';
-import { WebSocketBinaryHandler } from '../../WebSocketRegister.js';
+import Dialog from '../../Functions/Dialog.js'
+import { isMobile } from '../../Utils/Utils.js';
+import { WebSocketBinaryHandler } from '../../Registers/WebSocket.js';
 
 export default function RegisterEvent(data) {
     let toast = "#房間 " + data.location + " 已不存在";

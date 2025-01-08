@@ -1,11 +1,13 @@
 "use strict";
+//? 這裡是屬於有與前端互動或呼叫前端元素的公用程式
+
 import $ from 'jquery';
-import config from './config.js';
-import { crc32, isMobile, escapeHtml, checkImageURL, randomASCIICode } from './Utils.js';
-import Logger from './Logger.js';
-import Dialog from './Dialog.js';
-import { WebSocketBinaryHandler } from './WebSocketRegister.js';
-import { decodePrivateKey, getSharedSecret, decryptMessage, hashString } from './Crypto.js';
+import config from '../config.js';
+import { crc32, isMobile, escapeHtml, checkImageURL, randomASCIICode } from '../Utils.js';
+import Logger from '../Functions/Logger.js';
+import Dialog from '../Functions/Dialog.js';
+import { WebSocketBinaryHandler } from '../Registers/WebSocket.js';
+import { decodePrivateKey, getSharedSecret, decryptMessage, hashString } from '../Functions/Crypto.js';
 
 export function emojify(text) {
 	const emojiRegex = /\[emoji\]:([0-9A-Za-z_]+):\[\/emoji\]/ig;

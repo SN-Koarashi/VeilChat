@@ -1,7 +1,7 @@
 "use strict";
 
 import config from '../../config.js';
-import { onMessage } from '../../ChatUtils.js';
+import { onMessage } from '../../Utils/ChatUtils.js';
 
 export default function RegisterEvent(data) {
     onMessage(data.type,

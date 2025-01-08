@@ -1,20 +1,20 @@
 "use strict";
 import $ from 'jquery';
-import config from './config.js';
-import { getRandomNickname, isMobile, randomToken } from './Utils.js';
-import Dialog from './Dialog.js';
-import { WebSocketConnect } from './WebSocketRegister.js';
+import config from '../config.js';
+import { getRandomNickname, isMobile, randomToken } from '../Utils/Utils.js';
+import Dialog from '../Functions/Dialog.js';
+import { WebSocketConnect } from '../WebSocketRegister.js';
 import {
 	savingSettings
-} from './ChatUtils.js';
+} from '../Utils/ChatUtils.js';
 
-import eGeneral from './Events/General.js';
-import eButton from './Events/Button.js';
-import eDragHandler from './Events/DragHandler.js';
-import eEmoji from './Events/Emoji.js';
-import eMessageBox from './Events/MessageBox.js';
-import eMobileUX from './Events/MobileUX.js';
-import eRipple from './Events/Ripple.js';
+import eGeneral from '../Events/General.js';
+import eButton from '../Events/Button.js';
+import eDragHandler from '../Events/DragHandler.js';
+import eEmoji from '../Events/Emoji.js';
+import eMessageBox from '../Events/MessageBox.js';
+import eMobileUX from '../Events/MobileUX.js';
+import eRipple from '../Events/Ripple.js';
 
 export function initSettings() {
 	if (isMobile() && window.innerWidth <= 480) {

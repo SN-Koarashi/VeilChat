@@ -2,11 +2,11 @@
 
 import $ from 'jquery';
 import config from '../../config.js';
-import Dialog from '../../Dialog.js';
-import { isMobile } from '../../Utils.js';
-import { privateChat } from '../../ChatUtils.js';
-import { hashString } from '../../Crypto.js';
-import { WebSocketBinaryHandler } from '../../WebSocketRegister.js';
+import Dialog from '../../Functions/Dialog.js';
+import { isMobile } from '../../Utils/Utils.js';
+import { privateChat } from '../../Utils/ChatUtils.js';
+import { hashString } from '../../Functions/Crypto.js';
+import { WebSocketBinaryHandler } from '../../Registers/WebSocket.js';
 
 export default function RegisterEvent(data) {
     const tempLocate = config.locate;

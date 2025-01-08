@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import config from '../../config.js';
-import { WebSocketBinaryHandler } from '../../WebSocketRegister.js';
+import { WebSocketBinaryHandler } from '../../Registers/WebSocket.js';
 
 export default function RegisterEvent(data) {
     $('.lobby > .chat').append(`<div data-id="system">伺服器拒絕您的連線: ${data.message}</div>`);

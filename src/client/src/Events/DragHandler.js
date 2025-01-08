@@ -4,7 +4,7 @@ import config from '../config.js';
 import {
 	onKeyEnter,
 	uploadPrepare
-} from '../ChatUtils.js';
+} from '../Utils/ChatUtils.js';
 
 export default function RegisterEvent() {
 	$(document).on("dragenter", function (e) {

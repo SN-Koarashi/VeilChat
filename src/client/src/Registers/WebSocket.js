@@ -1,11 +1,11 @@
 "use strict";
 
-import config from './config.js';
-import { decodePrivateKey, getSharedSecret, encryptMessage } from './Crypto.js';
-import onOpen from './WebSocket/Open.js';
-import onClose from './WebSocket/Close.js';
-import onError from './WebSocket/Error.js';
-import onMessage from './WebSocket/Message.js';
+import config from '../config.js';
+import { decodePrivateKey, getSharedSecret, encryptMessage } from '../Functions/Crypto.js';
+import onOpen from '../WebSocket/Open.js';
+import onClose from '../WebSocket/Close.js';
+import onError from '../WebSocket/Error.js';
+import onMessage from '../WebSocket/Message.js';
 
 export async function WebSocketBinaryHandler(obj) {
 	var str;

@@ -1,5 +1,5 @@
 "use strict";
-import { initFirst } from './EventsRegister.js';
+import { initFirst } from './Registers/Events.js';
 
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {

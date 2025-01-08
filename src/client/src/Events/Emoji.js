@@ -1,7 +1,7 @@
 "use strict";
 import $ from 'jquery';
 import config from '../config.js';
-import { isMobile } from '../Utils.js';
+import { isMobile } from '../Utils/Utils.js';
 
 export default function RegisterEvent() {
 	var downTarget;

@@ -1,6 +1,6 @@
 "use strict";
 import $ from 'jquery';
-import { isMobile } from './Utils';
+import { isMobile } from '../Utils/Utils';
 
 var snkms = function ($) {
 	// *** 內部變數區域 *** //

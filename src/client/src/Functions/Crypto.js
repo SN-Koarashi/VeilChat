@@ -1,5 +1,5 @@
 "use strict";
-import config from './config.js';
+import config from '../config.js';
 import ecdh from './ECDH.js';
 
 // 左位移位元

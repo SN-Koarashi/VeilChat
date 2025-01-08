@@ -1,13 +1,13 @@
 "use strict";
 import $ from 'jquery';
 import config from '../config.js';
-import { isMobile } from '../Utils.js';
-import Dialog from '../Dialog.js';
-import { WebSocketBinaryHandler } from '../WebSocketRegister.js';
+import { isMobile } from '../Utils/Utils.js';
+import Dialog from '../Functions/Dialog.js';
+import { WebSocketBinaryHandler } from '../Registers/WebSocket.js';
 
-import { toggleSidebar, privateChat, uploadPrepare } from '../ChatUtils.js';
-import { hashString, getSecretPublicKeyRaw, getNewSecretPublicKeyRaw, encodePrivateKey } from '../Crypto.js';
-import { crc32 } from '../Utils.js';
+import { toggleSidebar, privateChat, uploadPrepare } from '../Utils/ChatUtils.js';
+import { hashString, getSecretPublicKeyRaw, getNewSecretPublicKeyRaw, encodePrivateKey } from '../Functions/Crypto.js';
+import { crc32 } from '../Utils/Utils.js';
 
 export default function RegisterEvent(window) {
 	$(".headerButton.list").on("click", function () {

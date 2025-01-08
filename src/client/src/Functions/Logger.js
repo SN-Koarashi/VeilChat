@@ -1,5 +1,5 @@
 "use strict";
-import config from './config.js';
+import config from '../config.js';
 
 var Logger = function (isDebugger) {
 	if (window.Logger != undefined && typeof window.Logger === "object" && isDebugger) {

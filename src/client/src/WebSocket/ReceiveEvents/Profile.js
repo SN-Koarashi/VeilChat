@@ -2,7 +2,7 @@
 
 import $ from 'jquery';
 import config from '../../config.js';
-import { crc32 } from '../../Utils.js';
+import { crc32 } from '../../Utils/Utils.js';
 
 export default function RegisterEvent(data) {
     var downList = [];

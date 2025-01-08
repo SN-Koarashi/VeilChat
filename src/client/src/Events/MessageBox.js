@@ -1,16 +1,16 @@
 "use strict";
 import $ from 'jquery';
 import config from '../config.js';
-import { isMobile } from '../Utils.js';
-import Dialog from '../Dialog.js';
-import { WebSocketBinaryHandler } from '../WebSocketRegister.js';
+import { isMobile } from '../Utils/Utils.js';
+import Dialog from '../Functions/Dialog.js';
+import { WebSocketBinaryHandler } from '../Registers/WebSocket.js';
 import {
 	onKeyEnter,
 	uploadFiles,
 	onMessage
-} from '../ChatUtils.js';
+} from '../Utils/ChatUtils.js';
 
-import { base64ToBlob } from '../Utils.js';
+import { base64ToBlob } from '../Utils/Utils.js';
 
 export default function RegisterEvent() {
 	var lastRange = null;

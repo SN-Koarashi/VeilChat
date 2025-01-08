@@ -1,17 +1,17 @@
 "use strict";
 import $ from 'jquery';
 import config from '../config.js';
-import { isMobile } from '../Utils.js';
-import Dialog from '../Dialog.js';
-import { WebSocketBinaryHandler } from '../WebSocketRegister.js';
+import { isMobile } from '../Utils/Utils.js';
+import Dialog from '../Functions/Dialog.js';
+import { WebSocketBinaryHandler } from '../Registers/WebSocket.js';
 import {
 	onKeyEnter,
 	onScroll,
 	closeSettings,
 	savingSettings
-} from '../ChatUtils.js';
+} from '../Utils/ChatUtils.js';
 
-import { initSettings } from '../EventsRegister.js';
+import { initSettings } from '../Registers/Events.js';
 
 export default function RegisterEvent(window) {
 	$(window).on('popstate', function () {

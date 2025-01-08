@@ -1,7 +1,7 @@
 "use strict";
 import $ from 'jquery';
-import Dialog from '../Dialog.js';
-import { toggleSidebar, savingSettings } from '../ChatUtils.js';
+import Dialog from '../Functions/Dialog.js';
+import { toggleSidebar, savingSettings } from '../Utils/ChatUtils.js';
 
 export default function RegisterEvent() {
 	// eslint-disable-next-line no-unused-vars

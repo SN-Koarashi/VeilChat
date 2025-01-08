@@ -1,11 +1,11 @@
 "use strict";
 
 import config from '../config.js';
-import Logger from '../Logger.js';
-import Dialog from '../Dialog.js'
-import { onScroll } from '../ChatUtils.js';
-import { isMobile } from '../Utils.js';
-import { WebSocketBinaryHandler } from '../WebSocketRegister.js';
+import Logger from '../Functions/Logger.js';
+import Dialog from '../Functions/Dialog.js'
+import { onScroll } from '../Utils/ChatUtils.js';
+import { isMobile } from '../Utils/Utils.js';
+import { WebSocketBinaryHandler } from '../Registers/WebSocket.js';
 
 export default function RegisterEvent() {
     Logger.show(Logger.Types.LOG, '[WebSocketHandler]', { type: "init", reason: "server connected" });

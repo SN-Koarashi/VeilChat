@@ -1,16 +1,16 @@
 "use strict";
 
-import Logger from '../Logger.js';
+import Logger from '../Functions/Logger.js';
 
-import eProfile from './Events/Profile.js';
-import eVerified from './Events/Verified.js';
-import eHistory from './Events/History.js';
-import eMessage from './Events/Message.js';
-import ePrivateMessage from './Events/PrivateMessage.js';
-import eForbidden from './Events/Forbidden.js';
-import eVerifyFailed from './Events/VerifyFailed.js';
-import eRequireVerify from './Events/RequireVerify.js';
-import eNotFound from './Events/NotFound.js';
+import eProfile from './ReceiveEvents/Profile.js';
+import eVerified from './ReceiveEvents/Verified.js';
+import eHistory from './ReceiveEvents/History.js';
+import eMessage from './ReceiveEvents/Message.js';
+import ePrivateMessage from './ReceiveEvents/PrivateMessage.js';
+import eForbidden from './ReceiveEvents/Forbidden.js';
+import eVerifyFailed from './ReceiveEvents/VerifyFailed.js';
+import eRequireVerify from './ReceiveEvents/RequireVerify.js';
+import eNotFound from './ReceiveEvents/NotFound.js';
 
 export default function RegisterEvent(e) {
     var uint8View = new Uint8Array(e.data);

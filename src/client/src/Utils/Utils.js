@@ -1,5 +1,7 @@
 "use strict";
-import config from './config.js';
+//? 這裡是普通公用程式，函數之前相關性小且不呼叫前端元素與互動
+
+import config from '../config.js';
 
 function escapeHtml(unsafe) {
 	return unsafe.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');

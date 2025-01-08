@@ -1,8 +1,8 @@
 "use strict";
 
-import Dialog from '../../Dialog.js';
-import { isMobile } from '../../Utils';
-import { passwordVerify } from '../../ChatUtils.js';
+import Dialog from '../../Functions/Dialog.js';
+import { isMobile } from '../../Utils/Utils.js';
+import { passwordVerify } from '../../Utils/ChatUtils.js';
 
 export default function RegisterEvent(data) {
     let toast = "密碼錯誤";
