@@ -365,34 +365,6 @@ export function privateChat(targetSignature, message, previousLocate) {
 		onMessage("privateMessageSource", "private", targetSignature, config.clientList[targetSignature]?.at(0).username, config.clientList[targetSignature]?.at(0).id, message, new Date().getTime());
 	}
 	else {
-		/*
-		// 舊版悄悄話模式
-		if($("#sender").text().length > 0 || isMobile()){
-			snkms.prompt("傳送悄悄話",`傳送悄悄話給 ${clientList[targetSignature]?.at(0).username}#${crc32(targetSignature)}`,targetSignature,function(e,value){
-				WebSocketBinaryHandler({
-					type: 'privateMessage',
-					signature: targetSignature,
-					message: {
-						original: value
-					},
-					location: locate
-				});
-				onMessage("privateMessageSource","private",targetSignature,clientList[targetSignature]?.at(0).username,clientList[targetSignature]?.at(0).id,{original: value},new Date().getTime());
-			});
-		}
-		else{
-			$("#sender").text(`/msg ${targetSignature} `);
-			$("#sender").focus();
-			
-			// 移動至末尾
-			var range = document.getSelection().getRangeAt(0);
-			range.setStart(range.startContainer, range.startContainer.length);
-			range.setEnd(range.startContainer, range.startContainer.length);
-			document.getSelection().removeAllRanges();
-			document.getSelection().addRange(range);
-		}
-		*/
-
 		config.privateChatTarget = targetSignature;
 		if ($('.lobby > .privateStatus').length === 0) {
 			$('.lobby').append('<div class="privateStatus"><div class="privateText">悄悄話 <span></span></div><div title="關閉悄悄話模式" class="privateButton"><img src="' + config.MainDomain + '/images/close_black.png" /></div></div>');
