@@ -850,3 +850,65 @@ export function onScroll(force) {
 	else
 		$("#moveUp").hide();
 }
+
+export function sendMessageGeneral(e, $element) {
+	if ($('#sender').text().length > 8192) {
+		var blobData = new Blob([$('#sender').text()], {
+			type: 'text/plain'
+		});
+		var file = new File([blobData], "message.txt");
+
+		uploadFiles([file]);
+	}
+	else if (config.privateChatTarget?.length > 0) {
+		var targetSignature = config.privateChatTarget;
+		var message = $element.text();
+
+		if (!config.clientList[targetSignature]) {
+			let toast = "該使用者工作階段不存在";
+			if (isMobile())
+				Dialog.toastMessage(toast, 'close', 'red');
+			else
+				Dialog.error(toast);
+
+			// config.privateChatTarget = null;
+			$('body .privateStatus .privateButton').trigger('click');
+
+			e.preventDefault();
+			return false;
+		}
+		else {
+			if (message.trim().length == 0) {
+				let toast = "請輸入訊息內容";
+				if (isMobile())
+					Dialog.toastMessage(toast, 'close', 'red');
+				else
+					Dialog.error(toast);
+				e.preventDefault();
+				return false;
+			}
+
+			WebSocketBinaryHandler({
+				type: 'privateMessage',
+				signature: targetSignature,
+				message: {
+					original: message
+				},
+				location: config.locate
+			});
+
+			onMessage("privateMessageSource", "private", targetSignature, config.clientList[targetSignature]?.at(0).username, config.clientList[targetSignature]?.at(0).id, message, new Date().getTime());
+		}
+	}
+	else {
+		WebSocketBinaryHandler({
+			type: 'message',
+			location: config.locate,
+			message: {
+				original: $('#sender').text()
+			}
+		});
+	}
+
+	return true;
+}

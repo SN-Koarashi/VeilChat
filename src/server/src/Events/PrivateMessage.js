@@ -11,7 +11,7 @@ function RegisterEvent(data, sd) {
     source: {
       session: sd.clientUID,
       username: clientList[sd.clientUID].username,
-      signature: clientTokenHash,
+      signature: sd.clientTokenHash,
     },
     signature: data.signature,
     message: data.message,

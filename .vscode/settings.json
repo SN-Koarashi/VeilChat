@@ -1,0 +1,9 @@
+{
+    "search.exclude": {
+        "/_deprecated": true,
+        "**/bin": true,
+        "**/node_modules": true,
+    },
+    "search.useIgnoreFiles": true,
+    "search.useParentIgnoreFiles": true
+}

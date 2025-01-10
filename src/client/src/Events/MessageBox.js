@@ -3,11 +3,10 @@ import $ from 'jquery';
 import config from '../config.js';
 import { isMobile } from '../Utils/Utils.js';
 import Dialog from '../Functions/Dialog.js';
-import { WebSocketBinaryHandler } from '../Registers/WebSocket.js';
 import {
 	onKeyEnter,
 	uploadFiles,
-	onMessage
+	sendMessageGeneral
 } from '../Utils/ChatUtils.js';
 
 import { base64ToBlob } from '../Utils/Utils.js';
@@ -18,28 +17,16 @@ export default function RegisterEvent() {
 	$('#sendMessage').on('click', function (e) {
 		if (config.wss.readyState == 1 && $('#sender').text().replace(/\n|\r/g, "").length > 0) {
 			$(this).blur();
-			if ($('#sender').text().length > 4000) {
-				var blobData = new Blob([$('#sender').text()], {
-					type: 'text/plain'
-				});
-				var file = new File([blobData], "message.txt");
 
-				uploadFiles([file]);
+			let outResult = sendMessageGeneral(e, $(this));
+
+			if (outResult === true) {
+				$('#sender').text('');
+
+				if ($('.textArea').hasClass("maximum")) {
+					$('#sender').focus();
+				}
 			}
-			else {
-				WebSocketBinaryHandler({
-					type: 'message',
-					location: config.locate,
-					message: {
-						original: $('#sender').text()
-					}
-				});
-			}
-
-			$('#sender').text('');
-
-			if ($('.textArea').hasClass("maximum"))
-				$('#sender').focus();
 
 			onKeyEnter($('#sender'));
 			e.stopPropagation();
@@ -48,72 +35,21 @@ export default function RegisterEvent() {
 	$('#sender').on('keydown', function (e) {
 		if (e.keyCode == 13 && config.wss.readyState == 1 && $(this).text().replace(/\n|\r/g, "").length > 0) {
 			if (!e.shiftKey && !isMobile()) {
-				if (config.privateChatTarget?.length > 0) {
-					var targetSignature = config.privateChatTarget;
-					var message = $(this).text();
-
-					if (!config.clientList[targetSignature]) {
-						let toast = "該使用者工作階段不存在";
-						if (isMobile())
-							Dialog.toastMessage(toast, 'close', 'red');
-						else
-							Dialog.error(toast);
-
-						//$(this).text('');
-						config.privateChatTarget = null;
-						e.preventDefault();
-						return;
-					}
-					else {
-						if (message.trim().length == 0) {
-							let toast = "請輸入訊息內容";
-							if (isMobile())
-								Dialog.toastMessage(toast, 'close', 'red');
-							else
-								Dialog.error(toast);
-							e.preventDefault();
-							return;
-						}
-
-						WebSocketBinaryHandler({
-							type: 'privateMessage',
-							signature: targetSignature,
-							message: {
-								original: message
-							},
-							location: config.locate
-						});
-
-						onMessage("privateMessageSource", "private", targetSignature, config.clientList[targetSignature]?.at(0).username, config.clientList[targetSignature]?.at(0).id, message, new Date().getTime());
-					}
-				}
+				let outResult = true;
 				// 使用 Markdown 語法時不送出訊息
-				else if ($(this).text().startsWith("```") && !$(this).text().match(/```([a-zA-Z0-9]+)?\n*([^\n][^]*?)\n*```/g) ||
+				if ($(this).text().startsWith("```") && !$(this).text().match(/```([a-zA-Z0-9]+)?\n*([^\n][^]*?)\n*```/g) ||
 					$(this).text().match(/```/g) && $(this).text().match(/```/g).length % 2 == 1
 				) {
 					onKeyEnter($(this));
 					return;
 				}
 				else {
-					if ($('#sender').text().length > 4000) {
-						var blobData = new Blob([$('#sender').text()], {
-							type: 'text/plain'
-						});
-						var file = new File([blobData], "message.txt");
-
-						uploadFiles([file]);
-					}
-					else {
-						WebSocketBinaryHandler({
-							type: 'message',
-							location: config.locate,
-							message: {
-								original: $(this).text()
-							}
-						});
-					}
+					outResult = sendMessageGeneral(e, $(this));
 				}
-				$(this).text('');
+
+				if (outResult === true) {
+					$(this).text('');
+				}
 			}
 		}
 
