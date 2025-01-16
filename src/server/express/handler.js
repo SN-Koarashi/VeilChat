@@ -104,8 +104,14 @@ const $ = {
             // 如果請求的檔案存在，則進行下載
             res.download(filePath, downloadName, (err) => {
                 if (err) {
-                    console.error('File download failed:', err);
-                    return res.status(500).json({ message: "File download failed" });
+                    if (err.status === 404) {
+                        console.error('File not found:', err);
+                        return res.status(404).json({ message: "File not found" });
+                    }
+                    else {
+                        console.error('File download failed:', err);
+                        return res.status(500).json({ message: "File download failed" });
+                    }
                 }
             });
         }
