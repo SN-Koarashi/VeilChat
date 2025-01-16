@@ -43,7 +43,7 @@ export default function RegisterEvent(data) {
                 window.history.pushState(null, document.title, "/");
         }
         else {
-            window.history.pushState(null, document.title, '/private/' + config.locate);
+            window.history.pushState(null, document.title, '/p/' + config.locate);
             let toast = "加入成功";
             if (isMobile())
                 Dialog.toastMessage(toast, 'done', 'green');

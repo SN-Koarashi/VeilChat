@@ -36,7 +36,7 @@ export function parseInviteCode(text) {
 	const inviteRegex = /\[invite\]([0-9A-Za-z\-_]+)\[\/invite\]/g;
 	return text.replace(inviteRegex, function (matched, inviteCode) {
 		let notice = (config.locate == inviteCode) ? "已加入" : "加入";
-		let word = `${config.MainDomain}/private/${inviteCode}`;
+		let word = `${config.MainDomain}/p/${inviteCode}`;
 		return '<a class="inviteLink" target="_self" href="' + word + '" data-room="' + inviteCode + '">邀請您加入 #房間 ' + inviteCode + '<span>' + notice + '</span></a>';
 	});
 }
@@ -53,10 +53,10 @@ export function urlify(text) {
 	const urlRegex = /\[url\](https?:\/\/[^\s]+)\[\/url\]/g;
 	return text.replace(urlRegex, function (matched, matchSub) {
 
-		if (matchSub.startsWith(config.CDNRedirect)) {
-			let url = new URL(matchSub);
-			matchSub = config.CDNServer + '/' + url.pathname.split('/').slice(2).join('/');
-		}
+		// if (matchSub.startsWith(config.CDNRedirect)) {
+		// 	let url = new URL(matchSub);
+		// 	matchSub = config.CDNServer + '/' + url.pathname.split('/').slice(2).join('/');
+		// }
 
 		if (checkImageURL(matchSub)) {
 			let nowID = crc32(new Date().getTime().toString() + matchSub);
@@ -87,7 +87,7 @@ export function urlify(text) {
 
 			return '<div><a target="_blank" href="' + matchSub + '"><img loading="lazy" data-id="' + nowID + '" src="' + matchSub + '" /></a></div>';
 		}
-		else if (matchSub.startsWith(`https://${location.hostname}/private/`)) {
+		else if (matchSub.startsWith(`https://${location.hostname}/p/`)) {
 			return '[invite]' + matchSub.match(/([0-9a-zA-Z-]+)$/ig).join() + '[/invite]';
 		}
 		//else if(matchSub.startsWith(`${CDNServer}/files/`) && mediaList[matchSub.split(".").at(-1)]
@@ -140,14 +140,14 @@ export function urlify(text) {
 
 			let url = new URL(matchSub);
 
-			let CDNReplacement = config.CDNRedirect + url.pathname + url.search;
+			// let CDNReplacement = config.CDNRedirect + url.pathname + url.search;
 
 			let filename = matchSub.split("/").at(-1);
 			if (url.search.length > 0 && url.searchParams.get('fileName')) {
 				filename = url.searchParams.get('fileName');
 			}
 
-			return `<div class="file"><span><a class="linkName" href="${CDNReplacement}" title="${filename}" class="filename">${filename}</a><br/><span data-id="${timeID}" class="${crc32(matchSub)}">-</span></span><a target="_blank" href="${CDNReplacement}&download=true" class="linkButton" title="下載 ${filename}"><img src="${config.MainDomain}/images/download.png" /></a></div>`;
+			return `<div class="file"><span><a class="linkName" href="${matchSub}" title="${filename}" class="filename">${filename}</a><br/><span data-id="${timeID}" class="${crc32(matchSub)}">-</span></span><a target="_blank" href="${matchSub}&download=true" class="linkButton" title="下載 ${filename}"><img src="${config.MainDomain}/images/download.png" /></a></div>`;
 		}
 		else if (matchSub.match(/^https?:\/\/(www\.youtube\.com\/watch\?[^\s]+|youtu\.be\/[0-9a-zA-Z\-_]{11})/ig)) {
 			let videoCode = "";
@@ -183,11 +183,11 @@ export function parseCodeArea(text) {
 }
 
 export function ParseBBCode(text) {
-	const PrivateRoomURL = config.MainDomain + "/private/";
+	const PrivateRoomURL = config.MainDomain + "/p/";
 	const codeRegex = /```([a-z0-9]+)?\n\n*([^\n][^]*?)\n*```/ig;
 	const emojiRegex = /:([0-9A-Za-z_]+):/ig;
 	const urlRegex = /(https?:\/\/[^\s]+)/g;
-	// const inviteURLRegex = /(https?:\/\/chat\.snkms\.com\/private\/)([0-9A-Za-z\-]+)/g;
+	// const inviteURLRegex = /(https?:\/\/chat\.snkms\.com\/p\/)([0-9A-Za-z\-]+)/g;
 
 	text = text.replace(emojiRegex, (m, w) => {
 		return `[emoji]:${w.trim()}:[/emoji]`;
@@ -514,7 +514,7 @@ export function uploadFiles(files) {
 	fd.append('submit', true);
 
 	$.ajax({
-		url: config.CDNServer + '/upload.php',
+		url: config.CDNServer + '/files/upload',
 		cache: false,
 		processData: false,
 		contentType: false,

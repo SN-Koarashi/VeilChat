@@ -1,6 +1,7 @@
 node_modules
 bin
+temp
 *.db
-public/js/main.encrypted.js
-public/files/*
-!public/files/.htaccess
+**/public/js/main.encrypted.js
+**/public/files/*
+!**/public/files/README

@@ -1,17 +1,21 @@
 {
-  "name": "veil-chat-websocket-server",
+  "name": "veil-chat-server",
   "version": "1.0.0",
   "description": "TESTING",
   "type": "commonjs",
   "scripts": {
-    "start": "node ./src/server.js --debug"
+    "start:websocket": "node ./src/websocket/server.js --debug",
+    "start:express": "node ./src/express/server.js"
   },
   "author": "5026",
   "license": "UNLICENSED",
   "dependencies": {
     "crypto-js": "^4.1.1",
+    "express": "^4.21.2",
     "fs-extra": "^10.0.0",
     "https": "^1.0.0",
+    "mime-types": "^2.1.35",
+    "multer": "^1.4.5-lts.1",
     "ws": "^8.5.0"
   },
   "devDependencies": {

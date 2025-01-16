@@ -110,7 +110,7 @@ export default function RegisterEvent(window) {
 
 	$("#privateChatJoin").on("click", function () {
 		const $element = $(this);
-		Dialog.prompt("加入房間", "請輸入房間ID或網址", config.MainDomain + "/private/########", function (e, value) {
+		Dialog.prompt("加入房間", "請輸入房間ID或網址", config.MainDomain + "/p/########", function (e, value) {
 			if (config.locate === value.split("/").at(-1)) {
 				let toast = "您已經在這個房間了";
 				if (isMobile())
@@ -120,8 +120,8 @@ export default function RegisterEvent(window) {
 				return;
 			}
 
-			if (value.match(/^(https?:\/\/chat\.snkms\.com\/private)/ig) || value.match(/^([0-9A-Za-z\-_]{1,16})$/g)) {
-				config.locate = value.replace(config.MainDomain + "/private/", "");
+			if (value.match(/^(https?:\/\/chat\.snkms\.com\/p\/)/ig) || value.match(/^([0-9A-Za-z\-_]{1,16})$/g)) {
+				config.locate = value.replace(config.MainDomain + "/p/", "");
 
 				WebSocketBinaryHandler({
 					type: 'login',

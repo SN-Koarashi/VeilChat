@@ -3,6 +3,7 @@
         "/_deprecated": true,
         "**/bin": true,
         "**/node_modules": true,
+        "**/main.encrypted.js": true,
     },
     "search.useIgnoreFiles": true,
     "search.useParentIgnoreFiles": true

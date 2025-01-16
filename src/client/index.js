@@ -87,6 +87,6 @@ var encrypted = result.code;
 
 if (isDeploy) {
 	console.log("[INFO]", "執行程式碼部署");
-	fs.writeFileSync(path.join(__dirname, "../../public/js", "main.encrypted.js"), encrypted);
+	fs.writeFileSync(path.join(__dirname, "public/js", "main.encrypted.js"), encrypted);
 	console.log("[INFO]", "程式碼部署完成");
 }

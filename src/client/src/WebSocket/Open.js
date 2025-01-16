@@ -16,7 +16,7 @@ export default function RegisterEvent() {
         Dialog.success(toast);
 
     let joinLocation = location.pathname.replace(/\/$/, '').split('/').at(-1);
-    if (isMobile() && config.localStorage.getItem('lastRoom') && location.pathname.match(/^\/private\/([0-9A-Za-z\-_]+)/ig) === null) {
+    if (isMobile() && config.localStorage.getItem('lastRoom') && location.pathname.match(/^\/p\/([0-9A-Za-z\-_]+)/ig) === null) {
         joinLocation = config.localStorage.getItem('lastRoom');
     }
 
