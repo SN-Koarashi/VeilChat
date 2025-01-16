@@ -50,6 +50,7 @@ Environment=NVM_DIR=/home/yuriko/.nvm
 Environment=NODE_VERSION=20.18.0
 Environment=NODE_ENV=production
 ExecStart=/bin/bash -c 'source $NVM_DIR/nvm.sh && npm run start:express'
+
 [Install]
 WantedBy=multi-user.target
 ```
