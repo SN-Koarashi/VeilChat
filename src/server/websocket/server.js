@@ -31,7 +31,7 @@ wssSrv.binaryType = 'arraybuffer';
 // 當 WebSocket 從外部連結時執行
 wssSrv.on('connection', (ws, req) => {
 	// 連結時執行提示
-	const ip = (req.connection.remoteAddress.match(/^(::ffff:127\.0\.0\.1)/ig)) ? req.headers['x-forwarded-for'] : req.connection.remoteAddress;
+	const ip = (req.connection.remoteAddress.match(/^(::ffff:(127\.0\.0\.1|192\.168\.([0-9]{1,3})\.([0-9]{1,3})))/ig)) ? req.headers['x-forwarded-for'] : req.connection.remoteAddress;
 	const port = req.connection.remotePort;
 
 	if (isMalicious(ip)) {
