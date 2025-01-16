@@ -4,8 +4,9 @@
   "description": "TESTING",
   "type": "commonjs",
   "scripts": {
-    "start:websocket": "node ./src/websocket/server.js --debug",
-    "start:express": "node ./src/express/server.js"
+    "debug:websocket": "node ./websocket/server.js --debug",
+    "start:websocket": "node ./websocket/server.js",
+    "start:express": "node ./express/server.js"
   },
   "author": "5026",
   "license": "UNLICENSED",
