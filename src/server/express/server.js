@@ -43,7 +43,7 @@ app.use(express.static(Handler.publicPath, {
 
 app.get('/', Handler.HomePage);
 app.get('/p/:room', Handler.HomePage);
-app.post('/files/upload', upload.fields([{ name: 'fileToUpload[]', maxCount: 10 }]), Handler.UploadHandler);
+app.post('/files/upload', upload.fields([{ name: 'fileUpload[]', maxCount: 10 }]), Handler.UploadHandler);
 app.use(Handler.ErrorHandler);
 
 app.listen(8084, () => {

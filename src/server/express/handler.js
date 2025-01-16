@@ -1,4 +1,5 @@
 const path = require('path');
+const crypto = require('crypto');
 const multer = require('multer');
 const fs = require('fs-extra');
 const mime = require('mime-types');
@@ -22,14 +23,14 @@ const $ = {
         const origin = req.get('Origin') || req.headers.origin;
         const files = req.files;
 
-        if (!files['fileToUpload[]'] || files['fileToUpload[]'].length === 0) {
-            return res.sendStatus(422).json({ message: "Empty upload field" });
+        if (!files['fileUpload[]'] || files['fileUpload[]'].length === 0) {
+            return res.status(422).json({ message: "Empty upload field" });
         }
 
         var result = [];
 
         // 使用 Promise.all 來處理所有檔案
-        const promises = files['fileToUpload[]'].map(file => {
+        const promises = files['fileUpload[]'].map(file => {
             return new Promise((resolve, reject) => {
                 // 讀取檔案內容並計算 SHA1 雜湊值
                 const filePath = file.path;
@@ -81,7 +82,7 @@ const $ = {
             await Promise.all(promises); // 等待所有檔案處理完成
             return res.json(result); // 回應結果
         } catch (error) {
-            return res.sendStatus(500).json({ message: error.message }); // 伺服器錯誤
+            return res.status(500).json({ message: error.message }); // 伺服器錯誤
         }
     },
     FileProviderHandler: (req, res, next) => {
@@ -104,7 +105,7 @@ const $ = {
             res.download(filePath, downloadName, (err) => {
                 if (err) {
                     console.error('File download failed:', err);
-                    return res.sendStatus(500).json({ message: "File download failed" });
+                    return res.status(500).json({ message: "File download failed" });
                 }
             });
         }

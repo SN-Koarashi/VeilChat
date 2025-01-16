@@ -502,14 +502,14 @@ export function uploadPrepare(files, flag) {
 		if (!cancel && totalSize > 0 && files.length > 0)
 			uploadFiles(files);
 		else
-			$("#fileToUpload").val('');
+			$("#fileUpload").val('');
 	}
 }
 
 export function uploadFiles(files) {
 	var fd = new FormData();
 	for (let file of files) {
-		fd.append('fileToUpload[]', file);
+		fd.append('fileUpload[]', file);
 	}
 	fd.append('submit', true);
 
