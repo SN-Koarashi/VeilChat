@@ -69,3 +69,15 @@ sudo systemctl enable veilchat.express && sudo systemctl enable veilchat.websock
 ```
 sudo systemctl start veilchat.express && sudo systemctl start veilchat.websocket
 ```
+
+### 維護
+清除暫存檔案
+```
+sudo find ~/repo/VeilChat/src/client/public/files/ -mindepth 1 -type d -exec rm -rf {} + && echo '清除完成'
+```
+
+新增到 .bashrc
+```
+# veilchat
+alias veilchat.files.prune="sudo find ~/repo/VeilChat/src/client/public/files/ -mindepth 1 -type d -exec rm -rf {} + && echo '清除完成'"
+```
