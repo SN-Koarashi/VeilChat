@@ -4,7 +4,7 @@ const fs = require('fs-extra');
 const mime = require('mime-types');
 
 const $ = {
-    publicPath: path.join(__dirname, '..', '..', '..', 'client/public'),
+    publicPath: path.join(__dirname, '..', '..', 'client/public'),
     HomePage: (req, res) => {
         res.sendFile(path.join($.publicPath, 'index.html'));
     },

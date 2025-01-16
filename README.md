@@ -17,10 +17,13 @@ Description=VeilChat WebSocket Service
 After=network.target
 
 [Service]
-ExecStart=/home/yuriko/repo/VeilChat/src/server/start-websocket.sh
+WorkingDirectory=/home/yuriko/repo/VeilChat
 Restart=always
 User=yuriko
-Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NVM_DIR=/home/yuriko/.nvm
+Environment=NODE_VERSION=20.18.0
+Environment=NODE_ENV=production
+ExecStart=/bin/bash -c 'source $NVM_DIR/nvm.sh && npm run start:websocket'
 
 [Install]
 WantedBy=multi-user.target
@@ -40,10 +43,13 @@ Description=VeilChat Express Service
 After=network.target
 
 [Service]
-ExecStart=/home/yuriko/repo/VeilChat/src/server/start-express.sh
+WorkingDirectory=/home/yuriko/repo/VeilChat
 Restart=always
 User=yuriko
+Environment=NVM_DIR=/home/yuriko/.nvm
+Environment=NODE_VERSION=20.18.0
 Environment=NODE_ENV=production
+ExecStart=/bin/bash -c 'source $NVM_DIR/nvm.sh && npm run start:express'
 [Install]
 WantedBy=multi-user.target
 ```
