@@ -1,5 +1,4 @@
 "use strict";
-const request = require('request');
 const path = require('path');
 const fs = require('fs-extra');
 const JSOF = require('javascript-obfuscator');
@@ -9,7 +8,7 @@ var result;
 var isDeploy = false;
 console.log("[INFO]", "開始編譯", __dirname);
 
-process.argv.forEach(function (val, index, array) {
+process.argv.forEach(function (val, index) {
 	console.log("[INFO]", "獲取參數", index + ': ' + val);
 
 	if (val == "--deploy") isDeploy = true;

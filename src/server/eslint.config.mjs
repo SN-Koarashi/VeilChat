@@ -8,7 +8,14 @@ export default [
     languageOptions: {
       globals: {
         ...globals.browser,
-        ...globals.node,
+        ...globals.node
+      }
+    }
+  },
+  {
+    files: ["websocket/**/*.js"],
+    languageOptions: {
+      globals: {
         clientList: "writable",
         clientListID: "writable",
         roomTimer: "writable",

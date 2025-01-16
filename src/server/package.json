@@ -1,7 +1,7 @@
 {
   "name": "veil-chat-server",
-  "version": "1.0.0",
-  "description": "TESTING",
+  "version": "2.0.0",
+  "description": "Express server & Websocket server",
   "type": "commonjs",
   "scripts": {
     "debug:websocket": "node ./websocket/server.js --debug",
