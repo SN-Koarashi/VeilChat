@@ -1,0 +1,38 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Build Client Webpack",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/src/client/compiler.js",
+            "cwd": "${workspaceFolder}",
+            "args": [
+                "--deploy"
+            ],
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Start Express Server",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/src/server/express/server.js",
+            "cwd": "${workspaceFolder}",
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Start WebSocket Server",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/src/server/websocket/server.js",
+            "cwd": "${workspaceFolder}",
+        }
+    ]
+}
