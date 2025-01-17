@@ -3,7 +3,7 @@
   "version": "4.0.0",
   "description": "chat room frontend",
   "scripts": {
-    "build": "webpack && node index.js --deploy"
+    "build": "webpack && node compiler.js --deploy"
   },
   "author": "5026",
   "license": "UNLICENSE",
