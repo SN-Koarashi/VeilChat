@@ -32,19 +32,17 @@ const upload = multer({ storage: storage });
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ limit: '1mb', extended: true }));
+app.use(Handler.CacheHandler);
 
 app.use('/files', Handler.FileProviderHandler);
-
-app.use(express.static(Handler.publicPath, {
-	setHeaders: (res) => {
-		res.set('Cache-Control', 'public, max-age=86400'); // 設定快取一天（86400秒）
-	}
-}));
+app.post('/files/upload', upload.fields([{ name: 'fileUpload[]', maxCount: 10 }]), Handler.UploadHandler);
 
 app.get('/', Handler.HomePage);
 app.get('/p/:room', Handler.HomePage);
-app.post('/files/upload', upload.fields([{ name: 'fileUpload[]', maxCount: 10 }]), Handler.UploadHandler);
+
 app.use(Handler.ErrorHandler);
+
+app.use(express.static(Handler.publicPath));
 
 app.listen(8084, () => {
 	console.log('Veil Chat Express Server: http://localhost:8084');

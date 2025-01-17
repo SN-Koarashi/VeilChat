@@ -3,11 +3,40 @@ const crypto = require('crypto');
 const multer = require('multer');
 const fs = require('fs-extra');
 const mime = require('mime-types');
+const noCachePath = [
+    "/",
+    "index.html",
+    "/files/upload"
+];
+const monthCachePathStartsWith = [
+    "/images/"
+];
+
+const dailyCachePathStartsWith = [
+    "/js/",
+    "/css/"
+];
 
 const $ = {
     publicPath: path.join(__dirname, '..', '..', 'client/public'),
     HomePage: (req, res) => {
         res.sendFile(path.join($.publicPath, 'index.html'));
+    },
+    CacheHandler: (req, res, next) => {
+        if (noCachePath.includes(req.path) || req.path.startsWith("/p/")) {
+            res.set('Cache-Control', 'no-cache');
+        }
+        else if (monthCachePathStartsWith.some(path => req.path.startsWith(path))) {
+            res.set('Cache-Control', 'public, max-age=2419200'); // 設定快取28天 | 2419200秒
+        }
+        else if (dailyCachePathStartsWith.some(path => req.path.startsWith(path))) {
+            res.set('Cache-Control', 'public, max-age=86400'); // 設定快取1天 | 86400秒
+        }
+        else {
+            res.set('Cache-Control', 'public, max-age=604800'); // 設定快取7天 | 604800秒
+        }
+
+        next();
     },
     ErrorHandler: (err, _req, res, next) => {
         if (err instanceof multer.MulterError) {
