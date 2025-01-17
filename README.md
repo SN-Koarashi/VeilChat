@@ -79,5 +79,5 @@ sudo find ~/repo/VeilChat/src/client/public/files/ -mindepth 1 -type d -exec rm 
 新增到 .bashrc
 ```
 # veilchat
-alias veilchat.files.prune="sudo find ~/repo/VeilChat/src/client/public/files/ -mindepth 1 -type d -exec rm -rf {} + && echo '清除完成'"
+alias veilchat.files.prune="sudo find ~/repo/VeilChat/src/client/public/files/ -mindepth 1 -type d -exec rm -rf {} + && echo 'Prune Completed' && ls ~/repo/VeilChat/src/client/public/files/"
 ```
