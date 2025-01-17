@@ -18,7 +18,7 @@ export default function RegisterEvent() {
 		if (config.wss.readyState == 1 && $('#sender').text().replace(/\n|\r/g, "").length > 0) {
 			$(this).blur();
 
-			let outResult = sendMessageGeneral(e, $(this));
+			let outResult = sendMessageGeneral(e, $('#sender'));
 
 			if (outResult === true) {
 				$('#sender').text('');
