@@ -7,7 +7,6 @@ import { WebSocketBinaryHandler } from '../Registers/WebSocket.js';
 import {
 	onKeyEnter,
 	onScroll,
-	closeSettings,
 	savingSettings
 } from '../Utils/ChatUtils.js';
 
@@ -97,11 +96,11 @@ export default function RegisterEvent(window) {
 			});
 	});
 
-	$(document).on('keydown', function (e) {
-		if (e.which == 27) {
-			closeSettings();
-		}
-	});
+	// $(document).on('keydown', function (e) {
+	// 	if (e.which == 27) {
+	// 		closeSettings();
+	// 	}
+	// });
 
 	$('.lobby').on('scroll', function () {
 		let containerHeight = $(this).height();

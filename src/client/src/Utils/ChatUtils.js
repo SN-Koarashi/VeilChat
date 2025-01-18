@@ -657,27 +657,27 @@ export function openSettings() {
 	}
 }
 
-export function closeSettings() {
-	if ($('.wrapper_settings').css('display') == 'none')
-		return;
+// export function closeSettings() {
+// 	if ($('.wrapper_settings').css('display') == 'none')
+// 		return;
 
-	$(".wrapper_settings").animate({
-		width: "105vw",
-		height: "105vh"
-	}, 100, function () {
-		$(".wrapper_settings").animate({
-			opacity: 0,
-			width: "0vw",
-			height: "0vh"
-		}, 150, function () {
-			$('.openBackground').fadeOut(25);
-			$(".wrapper_settings").hide();
-		});
-	});
+// 	$(".wrapper_settings").animate({
+// 		width: "105vw",
+// 		height: "105vh"
+// 	}, 100, function () {
+// 		$(".wrapper_settings").animate({
+// 			opacity: 0,
+// 			width: "0vw",
+// 			height: "0vh"
+// 		}, 150, function () {
+// 			$('.openBackground').fadeOut(25);
+// 			$(".wrapper_settings").hide();
+// 		});
+// 	});
 
 
-	savingSettings();
-}
+// 	savingSettings();
+// }
 
 export function savingSettings() {
 	if (config.localStorage.getItem('username') != $('#userName').val()) {
