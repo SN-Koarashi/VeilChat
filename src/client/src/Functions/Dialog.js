@@ -5,6 +5,14 @@ import { isMobile } from '../Utils/Utils';
 var snkms = function ($) {
 	// *** 內部變數區域 *** //
 
+	// 點空白處可以關閉視窗的函數
+	// @private
+	function closeWindowHandler() {
+		if (!isMobile() && window.innerWidth >= 480) {
+			removeElements();
+		}
+	};
+
 	// 關閉動畫
 	// @private
 	function slideOut(selector, callback) {
@@ -86,11 +94,7 @@ var snkms = function ($) {
 			e.stopPropagation();
 		});
 
-		$(document).on('click', function () {
-			if (!isMobile()) {
-				removeElements();
-			}
-		});
+		$(document).on('click', closeWindowHandler);
 
 		var clicking = false;
 		var downx = 0;
@@ -147,7 +151,8 @@ var snkms = function ($) {
 		$(document).off('mouseup', '.snkms-jsd-m');
 		$(document).off('mousedown', '.snkms-title');
 
-		$(window).unbind('keydown', keyboardEventHandler);
+		$(document).off('click', closeWindowHandler);
+		$(window).off('keydown', keyboardEventHandler);
 
 		// 淡出並移除元素
 		$('.snkms-jsd-m').fadeOut(400, function () { $(this).remove(); });

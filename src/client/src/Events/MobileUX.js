@@ -44,6 +44,18 @@ export default function RegisterEvent() {
 		touchScrolling = true;
 	});
 
+	// 電腦版小螢幕模擬手機版介面(不實作手勢操作，但需要可以關閉側欄)
+	$(".openBackground").on("click", function (e) {
+		if (e.originalEvent.pointerType === "mouse" && window.innerWidth <= 480) {
+			if (parseInt($('.lobby').css('left')) < 0) {
+				toggleSidebar($(".rightSide"), false, "right");
+			}
+			else {
+				toggleSidebar($(".wrapper_settings"), false, "left");
+			}
+		}
+	});
+
 	$("body").on("touchstart", function (e) {
 		if (e.originalEvent.touches.length > 1 || $(e.originalEvent.target).parents('.messageBox,.channelHeader').length > 0) return;
 		if ($(e.originalEvent.target).parents('.openBackground').length > 0 && $(e.originalEvent.target).tagName() === 'span') return;

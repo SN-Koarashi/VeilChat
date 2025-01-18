@@ -88,18 +88,13 @@ export default function RegisterEvent(window) {
 		initSettings();
 	});
 
-	$('#settings').on('click', function () {
-		// openSettings();
-
-		Dialog.prompt('設定', '該如何稱呼你？', config.userName ?? '',
+	$('#nickname').on('click', function () {
+		Dialog.prompt('修改暱稱', '該如何稱呼你？', config.userName ?? '',
 			function (evt, value) {
 				config.userName = value;
 				$('#userName').val(value);
 				savingSettings();
 			});
-	});
-	$('.wrapper_settings').on('click', '#onClose', function () {
-		closeSettings();
 	});
 
 	$(document).on('keydown', function (e) {
@@ -136,9 +131,11 @@ export default function RegisterEvent(window) {
 		}
 	});
 
-	if (!isMobile() || window.innerWidth > 480) {
-		$('.wrapper_settings').fadeIn(10, function () {
-			$('.wrapper_settings').hide();
-		});
-	}
+	//? 舊版電腦版介面初始化
+	//! 現在不需要，因為一律統一成按鈕型式，不需要全視窗設定頁面
+	// if (!isMobile() || window.innerWidth > 480) {
+	// 	$('.wrapper_settings').fadeIn(10, function () {
+	// 		$('.wrapper_settings').hide();
+	// 	});
+	// }
 }

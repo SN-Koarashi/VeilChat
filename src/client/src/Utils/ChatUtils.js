@@ -281,8 +281,8 @@ export function ParseBBCode(text) {
 	return text;
 }
 
-export function toggleSidebar($element, flag, openDirection) {
-	if (window.innerWidth > 480) return;
+export function toggleSidebar($element, flag, openDirection, force) {
+	if (window.innerWidth > 480 && force !== true) return;
 
 	if (flag) {
 		//$element.css(openDirection,"5px");

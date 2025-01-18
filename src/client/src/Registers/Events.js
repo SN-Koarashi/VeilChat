@@ -5,7 +5,8 @@ import { getRandomNickname, isMobile, randomToken } from '../Utils/Utils.js';
 import Dialog from '../Functions/Dialog.js';
 import { WebSocketConnect } from './WebSocket.js';
 import {
-	savingSettings
+	savingSettings,
+	toggleSidebar
 } from '../Utils/ChatUtils.js';
 
 import eGeneral from '../Events/General.js';
@@ -17,11 +18,15 @@ import eMobileUX from '../Events/MobileUX.js';
 import eRipple from '../Events/Ripple.js';
 
 export function initSettings() {
-	if (isMobile() && window.innerWidth <= 480) {
+	if (isMobile() || window.innerWidth <= 480) {
 		let elements = $(".additional").find('div');
 
 		elements.each(function () {
 			$(this).addClass("additionalSetting");
+			if (this.id === "nickname") {
+				$(this).hide();
+			}
+
 			$(".settings_body").append($(this));
 		});
 
@@ -32,12 +37,24 @@ export function initSettings() {
 		var k = 0;
 		elements.each(function () {
 			k++;
+			if (this.id === "nickname") {
+				$(this).show();
+			}
+
 			$(this).removeClass("additionalSetting");
 			$(".additional").append($(this));
 
 			if (k % 2 == 0 && k != elements.length)
 				$(".additional").append("<br/>");
 		});
+
+		if ($(".wrapper_settings").attr("data-open")) {
+			toggleSidebar($(".wrapper_settings"), false, "left", true);
+		}
+
+		if ($(".rightSide").attr("data-open")) {
+			toggleSidebar($(".rightSide"), false, "right", true);
+		}
 	}
 
 	//$('.userList').css('bottom', $('.chatInfo').outerHeight() + 'px');
@@ -68,7 +85,8 @@ export function initSetup() {
 		$('.userlist > div').show();
 	}
 
-	if (isMobile()) {
+	// 初始化手機版介面
+	if (isMobile() || window.innerWidth <= 480) {
 		$('.room').css('height', $(window).height() - $('.messageBox').height() - 20);
 		$('#userName').attr('readonly', true);
 		$('#userName').on('click', function () {
