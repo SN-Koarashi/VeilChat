@@ -8,11 +8,15 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/src/client/compiler.js",
-            "cwd": "${workspaceFolder}",
-            "args": [
-                "--deploy"
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "build:client"
             ],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development" // 如果需要設定環境變數，可以在這裡添加
+            }
         },
         {
             "type": "node",
@@ -21,18 +25,32 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/src/server/express/server.js",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "start:express"
+            ],
             "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development" // 如果需要設定環境變數，可以在這裡添加
+            }
         },
         {
             "type": "node",
             "request": "launch",
-            "name": "Start WebSocket Server",
+            "name": "Start Websocket Server",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}/src/server/websocket/server.js",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "start:websocket"
+            ],
             "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development" // 如果需要設定環境變數，可以在這裡添加
+            }
         }
     ]
 }
