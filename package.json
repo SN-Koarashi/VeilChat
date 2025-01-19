@@ -6,6 +6,8 @@
     "src/client"
   ],
   "scripts": {
+    "dev:websocket": "npm run dev:websocket --workspace=src/server",
+    "dev:express": "npm run dev:express --workspace=src/server",
     "start:websocket": "npm run start:websocket --workspace=src/server",
     "start:express": "npm run start:express --workspace=src/server",
     "build:client": "npm run build --workspace=src/client"

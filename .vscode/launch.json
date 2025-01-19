@@ -28,7 +28,7 @@
             "runtimeExecutable": "npm",
             "runtimeArgs": [
                 "run",
-                "debug:express"
+                "dev:express"
             ],
             "cwd": "${workspaceFolder}",
             "env": {
@@ -45,7 +45,7 @@
             "runtimeExecutable": "npm",
             "runtimeArgs": [
                 "run",
-                "debug:websocket"
+                "dev:websocket"
             ],
             "cwd": "${workspaceFolder}",
             "env": {

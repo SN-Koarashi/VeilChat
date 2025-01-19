@@ -4,8 +4,8 @@
   "description": "Express server & Websocket server",
   "type": "commonjs",
   "scripts": {
-    "debug:websocket": "PORT=9001 node ./websocket/server.js --debug",
-    "debug:express": "PORT=9002 node ./express/server.js",
+    "dev:websocket": "PORT=9001 node ./websocket/server.js --debug",
+    "dev:express": "PORT=9002 node ./express/server.js",
     "start:websocket": "node ./websocket/server.js",
     "start:express": "node ./express/server.js"
   },
