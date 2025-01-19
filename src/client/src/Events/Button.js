@@ -67,45 +67,60 @@ export default function RegisterEvent(window) {
 		if (elements.length > 0)
 			elements = `<hr/>${elements}`;
 
-		Dialog.option("建立房間", "要建立臨時私聊房間嗎？<br/>建立私聊後可以分享連結以向您的朋友一同進行隱密又安全的聊天！<div style='font-size:12px;margin-top: 15px;'>設有密碼之房間將受到端對端加密保護</div>", [{ name: "無密碼", value: "noPassword" }], "有密碼", function (evt, value) {
-			const choosen = value;
-			const senderWorker = async function (private_key) {
-				let obj = {
-					type: "create",
-					session: config.sessionSelf
+		Dialog.option(
+			"建立房間",
+			"要建立臨時私聊房間嗎？<br/>建立私聊後可以分享連結以向您的朋友一同進行隱密又安全的聊天！<div style='font-size:12px;margin-top: 15px;'>設有密碼之房間將受到端對端加密保護</div>",
+			[],
+			"設定密碼",
+			function (evt, value) {
+				const choosen = value;
+
+				const senderWorker = async function (private_key) {
+					let obj = {
+						type: "create",
+						session: config.sessionSelf
+					};
+
+					if (private_key != null && private_key.trim().length > 0) {
+						obj.password = await hashString(private_key);
+						config.roomPassword = private_key;
+
+						let creatorKeyPair = await getSecretPublicKeyRaw();
+						let keyPair = await getNewSecretPublicKeyRaw();
+
+						obj.publicKeyBase64 = keyPair.publicKeyRawBase64;
+						obj.creatorPrivateKeyBase64 = await encodePrivateKey(creatorKeyPair.privateKey);
+					}
+
+					WebSocketBinaryHandler(obj);
+					if ($element.hasClass("additionalSetting"))
+						toggleSidebar($(".wrapper_settings"), false, "left");
 				};
 
-				if (private_key !== "noPassword" && private_key.trim().length > 0) {
-					obj.password = await hashString(private_key);
-					config.roomPassword = private_key;
+				if (elements.length > 0) {
+					setTimeout(() => {
+						Dialog.confirm(`選擇要邀請到新建立的私人房間的對象，若都沒有勾選對象也可以在建立後發送房間ID給他們。${elements}`, function () {
+							$('input[name="inviteList"]:checked').each(function () {
+								config.inviteList.push($(this).val());
+							});
 
-					let creatorKeyPair = await getSecretPublicKeyRaw();
-					let keyPair = await getNewSecretPublicKeyRaw();
-
-					obj.publicKeyBase64 = keyPair.publicKeyRawBase64;
-					obj.creatorPrivateKeyBase64 = await encodePrivateKey(creatorKeyPair.privateKey);
-				}
-
-				WebSocketBinaryHandler(obj);
-				if ($element.hasClass("additionalSetting"))
-					toggleSidebar($(".wrapper_settings"), false, "left");
-			};
-
-			if (elements.length > 0) {
-				setTimeout(() => {
-					Dialog.confirm(`選擇要邀請到新建立的私人房間的對象，若都沒有勾選對象也可以在建立後發送房間ID給他們。${elements}`, function () {
-						$('input[name="inviteList"]:checked').each(function () {
-							config.inviteList.push($(this).val());
+							senderWorker(choosen);
 						});
-
-						senderWorker(choosen);
-					});
-				}, 250);
+					}, 250);
+				}
+				else {
+					senderWorker(choosen);
+				}
+			}, null,
+			{
+				defaultSelectedNumber: 1,
+				allowDefaultSubmit: true,
+				customDefault: {
+					name: "未設定",
+					value: null
+				}
 			}
-			else {
-				senderWorker(choosen);
-			}
-		}, null, 2);
+		);
 	});
 
 	$("#privateChatJoin").on("click", function () {

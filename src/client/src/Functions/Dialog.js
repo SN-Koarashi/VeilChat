@@ -378,18 +378,33 @@ var snkms = function ($) {
 		 * 
 		 * @param {string} title - 對話框的標題
 		 * @param {string} content - 對話框的內容
-		 * @param {Object} options - 額外的選項
+		 * @param {Array<Object>} options - 額外的選項
+		 * @param {string} options[].name - 選項的名稱
+		 * @param {string} options[].value - 選項的值
 		 * @param {boolean} hasOtherInput - 是否有其他輸入框
 		 * @param {function} ok - 確認按鈕的回調函數
 		 * @param {function} cancel - 取消按鈕的回調函數
 		 * @param {Object} extObj - 擴展物件
 		 * @param {number} extObj.defaultSelectedNumber - 預設選擇索引
+		 * @param {boolean} extObj.allowDefaultSubmit - 是否允許預設值送出
+		 * @param {Object} extObj.customDefault - 自訂預設顯示內容
+		 * @param {string} extObj.customDefault.name - 自訂預設顯示內容名稱
+		 * @param {string|null} extObj.customDefault.value - 自訂預設顯示內容值
 		 */
 		option: function (title, content, options, hasOtherInput, ok, cancel, extObj) {
 			initializeElements(true);
 			$('.snkms-title .content').text(title);
-			$('.snkms-content .content-text').html(content + '<div><select id="option-input"><option value="DEFAULT">-</option></select></div>');
+			$('.snkms-content .content-text').html(content + '<div><select id="option-input"></select></div>');
 			$('.snkms-content .content-text #option-input').focus();
+
+			const hasCustomDefault = extObj.customDefault && extObj.customDefault.name && extObj.customDefault.value !== undefined;
+
+			if (hasCustomDefault) {
+				$('.snkms-content .content-text #option-input').append(`<option value="${extObj.customDefault.value}">${extObj.customDefault.name}</option>`);
+			}
+			else {
+				$('.snkms-content .content-text #option-input').append('<option value="DEFAULT">-</option>');
+			}
 
 			if (typeof options === 'object' && Array.isArray(options)) {
 				for (let o of options) {
@@ -406,8 +421,6 @@ var snkms = function ($) {
 				throw new Error(`The option type should be array.`);
 			}
 
-			var inputCount = 1 + options.length;
-
 			if (typeof hasOtherInput === 'boolean' && hasOtherInput === true || typeof hasOtherInput === 'string' && hasOtherInput.length > 0) {
 				if (typeof hasOtherInput === 'string' && hasOtherInput.length > 0)
 					$('.snkms-content .content-text #option-input').append('<option value="OTHER">' + hasOtherInput + '</option>');
@@ -417,7 +430,10 @@ var snkms = function ($) {
 				$('.snkms-content .content-text #option-input').parent().append('<input style="display:none;" type="text" id="prompt-input" />');
 
 				$('body').on('change', '.snkms-content .content-text #option-input', function () {
-					if ($(this).val() === 'OTHER') {
+					var totalOptions = $('.snkms-content .content-text #option-input option').length;
+					var selectedIndex = $('.snkms-content .content-text #option-input').prop('selectedIndex');
+
+					if (totalOptions - 1 === selectedIndex) {
 						$('.snkms-content .content-text #prompt-input').show();
 						$('.snkms-content .content-text #prompt-input').focus();
 					}
@@ -425,33 +441,39 @@ var snkms = function ($) {
 						$('.snkms-content .content-text #prompt-input').hide();
 					}
 				});
-
-				inputCount++;
 			}
 
 			if (typeof extObj.defaultSelectedNumber === 'number') {
-				if (extObj.defaultSelectedNumber < inputCount) {
+				let totalOptions = $('.snkms-content .content-text #option-input option').length;
+				if (extObj.defaultSelectedNumber < totalOptions) {
 					$('.snkms-content .content-text #option-input option').filter(function (idx) {
 						return extObj.defaultSelectedNumber === idx;
 					}).attr('selected', true).change();
 				}
 				else {
 					removeElements();
-					throw new Error(`The number selected by default must be less than the number of options. choose: ${extObj.defaultSelectedNumber}, maximum: ${inputCount}`);
+					throw new Error(`The number selected by default must be less than the number of options. choose: ${extObj.defaultSelectedNumber}, maximum: ${totalOptions}`);
 				}
 			}
 
 
 			$('body').on('click', '.snkms-content .body-bottom #ok', function () {
+				var totalOptions = $('.snkms-content .content-text #option-input option').length;
+				var selectedIndex = $('.snkms-content .content-text #option-input').prop('selectedIndex');
+
 				var value = $('.snkms-content .content-text #option-input').val();
-				if (!value || value === 'DEFAULT') {
+				if (!value && selectedIndex !== 0 || selectedIndex === 0 && !extObj.allowDefaultSubmit) {
 					shakingWindow();
 				}
 				else {
-					if (value === 'OTHER' && $('.snkms-content .content-text #prompt-input').length > 0 && $('.snkms-content .content-text #prompt-input').val())
+					if (totalOptions - 1 === selectedIndex && $('.snkms-content .content-text #prompt-input').length > 0) {
 						value = $('.snkms-content .content-text #prompt-input').val();
+					}
+					else if (selectedIndex === 0 && extObj.customDefault && extObj.customDefault.value === null) {
+						value = null;
+					}
 
-					if (value === 'OTHER' || value.trim().length === 0) {
+					if (typeof value === 'string' && value.trim().length === 0) {
 						shakingWindow();
 					}
 					else {
