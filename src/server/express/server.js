@@ -6,6 +6,7 @@ const fs = require('fs-extra');
 const path = require('path');
 const Handler = require('./handler');
 const app = express();
+const PORT = process.env.PORT || 8084;
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
@@ -44,6 +45,6 @@ app.use(Handler.ErrorHandler);
 
 app.use(express.static(Handler.publicPath));
 
-app.listen(8084, () => {
-	console.log('Veil Chat Express Server: http://localhost:8084');
+app.listen(PORT, () => {
+	console.log(`Veil Chat Express Server: http://localhost:${PORT}`);
 });

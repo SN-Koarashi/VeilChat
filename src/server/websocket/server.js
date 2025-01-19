@@ -15,7 +15,7 @@ const onMessage = require('./Events/Message.js');
 const onPrivateMessage = require('./Events/PrivateMessage.js');
 
 // 指定開啟的 port
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 const server = new http.createServer();
 
 // SocketServer 開啟 WebSocket 服務
