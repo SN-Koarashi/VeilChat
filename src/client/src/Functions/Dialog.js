@@ -163,7 +163,14 @@ var snkms = function ($) {
 		isShownDialog: function (target) {
 			return $(target).parents(".snkms-jsd-m").length > 0;
 		},
-		// 手機版訊息
+		/**
+		 * 手機版訊息上層
+		 * 
+		 * @param {string} content - 對話框的內容
+		 * @param {string} icon - Material 圖示
+		 * @param {string} color - Material 圖示顏色
+		 * @param {function} callback - 回呼函數
+		 */
 		toastMessage: function (content, icon, color, callback) {
 			icon = (typeof icon === 'string') ? icon : '';
 			color = (typeof icon === 'string') ? ' ' + color : '';
@@ -205,7 +212,13 @@ var snkms = function ($) {
 				*/
 			});
 		},
-		// success 函數
+		/**
+		 * popup 滑入成功提示
+		 * 
+		 * @param {string} content - 對話框的內容
+		 * @param {function} callback - 回呼函數
+		 * @param {number} [duration=3000] - 持續時間，預設為5000毫秒
+		 */
 		success: function (content, callback, duration) {
 			duration = (duration && typeof duration === 'number') ? duration : 3000;
 
@@ -228,7 +241,13 @@ var snkms = function ($) {
 				$(this).attr('data-registered', true);
 			});
 		},
-		// error 函數
+		/**
+		 * popup 滑入錯誤提示
+		 * 
+		 * @param {string} content - 對話框的內容
+		 * @param {function} callback - 回呼函數
+		 * @param {number} [duration=3000] - 持續時間，預設為5000毫秒
+		 */
 		error: function (content, callback, duration) {
 			duration = (duration && typeof duration === 'number') ? duration : 3000;
 
@@ -251,7 +270,12 @@ var snkms = function ($) {
 				$(this).attr('data-registered', true);
 			});
 		},
-		// alert 彈出視窗函數
+		/**
+		 * 彈出視窗函數
+		 * 
+		 * @param {string} title - 對話框的標題
+		 * @param {string} content - 對話框的內容
+		 */
 		alert: function (title, content) {
 			initializeElements(false);
 			if (!content) {
@@ -265,7 +289,13 @@ var snkms = function ($) {
 				removeElements();
 			});
 		},
-		// confirm 彈出確認視窗函數
+		/**
+		 * 彈出確認視窗函數
+		 * 
+		 * @param {string} content - 對話框的內容
+		 * @param {function} ok - 確認按鈕的回調函數
+		 * @param {function} cancel - 取消按鈕的回調函數
+		 */
 		confirm: function (content, ok, cancel) {
 			initializeElements(true);
 			$('.snkms-title .content').text('系統訊息');
@@ -294,7 +324,15 @@ var snkms = function ($) {
 				});
 			}
 		},
-		// prompt 彈出輸入視窗函數
+		/**
+		 * 彈出輸入視窗函數
+		 * 
+		 * @param {string} title - 對話框的標題
+		 * @param {string} content - 對話框的內容
+		 * @param {string} placeholder - 提示內容
+		 * @param {function} ok - 確認按鈕的回調函數
+		 * @param {function} cancel - 取消按鈕的回調函數
+		 */
 		prompt: function (title, content, placeholder, ok, cancel) {
 			initializeElements(true);
 			$('.snkms-title .content').text(title);
@@ -335,8 +373,19 @@ var snkms = function ($) {
 			}
 
 		},
-		// option 彈出下拉選單視窗函數
-		option: function (title, content, options, hasOtherInput, ok, cancel, defaultSelectedNumber) {
+		/**
+		 * 彈出下拉選單視窗函數
+		 * 
+		 * @param {string} title - 對話框的標題
+		 * @param {string} content - 對話框的內容
+		 * @param {Object} options - 額外的選項
+		 * @param {boolean} hasOtherInput - 是否有其他輸入框
+		 * @param {function} ok - 確認按鈕的回調函數
+		 * @param {function} cancel - 取消按鈕的回調函數
+		 * @param {Object} extObj - 擴展物件
+		 * @param {number} extObj.defaultSelectedNumber - 預設選擇索引
+		 */
+		option: function (title, content, options, hasOtherInput, ok, cancel, extObj) {
 			initializeElements(true);
 			$('.snkms-title .content').text(title);
 			$('.snkms-content .content-text').html(content + '<div><select id="option-input"><option value="DEFAULT">-</option></select></div>');
@@ -344,7 +393,7 @@ var snkms = function ($) {
 
 			if (typeof options === 'object' && Array.isArray(options)) {
 				for (let o of options) {
-					if (o.value && o.name)
+					if (o.value !== undefined && o.name)
 						$('.snkms-content .content-text #option-input').append('<option value="' + o.value + '">' + o.name + '</option>');
 					else {
 						removeElements();
@@ -380,15 +429,15 @@ var snkms = function ($) {
 				inputCount++;
 			}
 
-			if (typeof defaultSelectedNumber === 'number') {
-				if (defaultSelectedNumber < inputCount) {
+			if (typeof extObj.defaultSelectedNumber === 'number') {
+				if (extObj.defaultSelectedNumber < inputCount) {
 					$('.snkms-content .content-text #option-input option').filter(function (idx) {
-						return defaultSelectedNumber === idx;
+						return extObj.defaultSelectedNumber === idx;
 					}).attr('selected', true).change();
 				}
 				else {
 					removeElements();
-					throw new Error(`The number selected by default must be less than the number of options. choose: ${defaultSelectedNumber}, maximum: ${inputCount}`);
+					throw new Error(`The number selected by default must be less than the number of options. choose: ${extObj.defaultSelectedNumber}, maximum: ${inputCount}`);
 				}
 			}
 
