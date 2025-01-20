@@ -226,15 +226,15 @@ export default function RegisterEvent() {
 	});
 
 	$('#sender').on('focus', function () {
-		setTimeout(() => {
-			// 防止拖曳文字進入輸入框內時，錯誤的重設游標停頓位置
-			if (config.lastRange !== null && !config.droppedText) {
-				document.getSelection().removeAllRanges();
-				document.getSelection().addRange(config.lastRange);
-			}
+		// setTimeout(() => {
+		// 	// 防止拖曳文字進入輸入框內時，錯誤的重設游標停頓位置
+		// 	if (config.lastRange !== null && !config.droppedText) {
+		// 		document.getSelection().removeAllRanges();
+		// 		document.getSelection().addRange(config.lastRange);
+		// 	}
 
-			config.droppedText = false;
-		}, 1);
+		// 	config.droppedText = false;
+		// }, 1);
 
 		setTimeout(() => {
 			onKeyEnter($('#sender'));

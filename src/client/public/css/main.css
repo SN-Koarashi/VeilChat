@@ -1187,6 +1187,7 @@ body.noOverflow {
 	transition: background 0.15s;
 	white-space: pre-wrap;
 	overflow-wrap: break-word;
+	word-break: break-all;
 	line-height: 26px;
 }
 
