@@ -9,7 +9,11 @@ var snkms = function ($) {
 	// @private
 	function closeWindowHandler() {
 		if (!isMobile() && window.innerWidth >= 480) {
-			removeElements();
+			let $dom = $('.snkms-content .body-bottom #cancel');
+			if ($dom.length > 0)
+				$dom.click();
+			else
+				removeElements();
 		}
 	};
 
