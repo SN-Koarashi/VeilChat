@@ -14,6 +14,7 @@ const onRefresh = require('./Events/Refresh.js');
 const onMessage = require('./Events/Message.js');
 const onPrivateMessage = require('./Events/PrivateMessage.js');
 const onEditMessage = require('./Events/EditMessage.js');
+const onDeleteMessage = require('./Events/DeleteMessage.js');
 
 // 指定開啟的 port
 const PORT = process.env.PORT || 8080;
@@ -106,7 +107,7 @@ wssSrv.on('connection', (ws, req) => {
 			}
 			// 刪除訊息
 			else if (data.type == "deleteMessage") {
-				onPrivateMessage(data, SocketData, ws);
+				onDeleteMessage(data, SocketData, ws);
 			}
 			else {
 				Logger("WARN", `Client ${ip} invalid type:`, clientUID);

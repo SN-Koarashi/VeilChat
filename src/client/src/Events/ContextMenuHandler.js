@@ -1,8 +1,9 @@
 "use strict";
 import $ from 'jquery';
 import config from '../config';
-import { copyTextToClipboard } from '../Utils/Utils';
-// import config from '../config.js';
+import { copyTextToClipboard } from '../Utils/Utils.js';
+import Dialog from '../Functions/Dialog.js';
+import { WebSocketBinaryHandler } from '../Registers/WebSocket';
 
 export default function RegisterEvent() {
     function checkBoundary(element, x, y) {
@@ -49,7 +50,7 @@ export default function RegisterEvent() {
         if (config.messageList[message_id].author === config.tokenHashSelf) {
             $('div.contextmenu_wrapper > .contextmenu').append(`<div data-id="editMessage">編輯訊息</div>`);
             $('div.contextmenu_wrapper > .contextmenu').append(`<hr/>`);
-            $('div.contextmenu_wrapper > .contextmenu').append(`<div data-id="deleteMessage">刪除訊息</div>`);
+            $('div.contextmenu_wrapper > .contextmenu').append(`<div data-id="deleteMessage" data-danger>刪除訊息</div>`);
         }
 
         const fixingPosition = checkBoundary(document.querySelector('div.contextmenu_wrapper > .contextmenu'), x, y);
@@ -74,11 +75,13 @@ export default function RegisterEvent() {
         if (config.messageList[message_id] == null) return;
 
 
-
         if (action === "copyMessage") {
             copyTextToClipboard(config.messageList[message_id].message);
         }
-        else if (action === "editMessage" && config.messageList[message_id].author === config.tokenHashSelf) {
+        else if (
+            action === "editMessage"
+            && config.messageList[message_id].author === config.tokenHashSelf
+        ) {
             config.editMessageTarget = message_id;
             config.lastRange = null;
 
@@ -104,8 +107,26 @@ export default function RegisterEvent() {
             // 將範圍添加到選擇中
             selection.addRange(range);
         }
-        else if (action === "deleteMessage" && config.messageList[message_id].author === config.tokenHashSelf) {
-            console.log();
+        else if (
+            action === "deleteMessage"
+            && config.messageList[message_id].author === config.tokenHashSelf
+        ) {
+            if (e.shiftKey) {
+                deleteMessage(message_id);
+            }
+            else {
+                Dialog.confirm("確定要刪除此訊息嗎？", function () {
+                    deleteMessage(message_id);
+                });
+            }
         }
     });
+
+    function deleteMessage(message_id) {
+        WebSocketBinaryHandler({
+            type: 'deleteMessage',
+            message_id: message_id,
+            location: config.locate
+        });
+    }
 }

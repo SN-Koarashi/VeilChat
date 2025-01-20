@@ -864,6 +864,7 @@ body.noOverflow {
 	background: #202020;
 	padding: 5px;
 	border-radius: 7px;
+	user-select: none;
 }
 
 .contextmenu>div {
@@ -884,6 +885,10 @@ body.noOverflow {
 .contextmenu>div:hover {
 	cursor: pointer;
 	background: #131313;
+}
+
+.contextmenu>div[data-danger] {
+	color: #ff2828;
 }
 
 .openBackground {

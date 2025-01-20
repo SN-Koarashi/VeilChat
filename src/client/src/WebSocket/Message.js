@@ -1,6 +1,7 @@
 "use strict";
 
 import Logger from '../Functions/Logger.js';
+import Dialog from '../Functions/Dialog.js';
 
 import eProfile from './ReceiveEvents/Profile.js';
 import eVerified from './ReceiveEvents/Verified.js';
@@ -12,6 +13,7 @@ import eVerifyFailed from './ReceiveEvents/VerifyFailed.js';
 import eRequireVerify from './ReceiveEvents/RequireVerify.js';
 import eNotFound from './ReceiveEvents/NotFound.js';
 import eEditMessage from './ReceiveEvents/EditMessage.js';
+import eDeleteMessage from './ReceiveEvents/DeleteMessage.js';
 
 export default function RegisterEvent(e) {
     var uint8View = new Uint8Array(e.data);
@@ -43,6 +45,10 @@ export default function RegisterEvent(e) {
     else if (data.type == 'editMessage') {
         eEditMessage(data);
     }
+    // 編輯訊息
+    else if (data.type == 'deleteMessage') {
+        eDeleteMessage(data);
+    }
     // 傳送悄悄話訊息
     else if (data.type == 'privateMessage') {
         ePrivateMessage(data);
@@ -62,6 +68,10 @@ export default function RegisterEvent(e) {
     // 進入的房間不存在
     else if (data.type == 'notFound') {
         eNotFound(data);
+    }
+    // 操作驗證失敗
+    else if (data.type == 'deleteMessageFailed' || data.type == 'editMessageFailed') {
+        Dialog.error("執行失敗");
     }
     // 未知/未定義的事件類型
     else {

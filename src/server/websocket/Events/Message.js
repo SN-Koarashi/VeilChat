@@ -18,7 +18,7 @@ function RegisterEvent(data, sd, ws) {
 
   Logger("INFO", `Client ${sd.ip} sent message in #${locate}:`, sd.clientUID);
 
-  const message_id = getSHA256(clientList[sd.clientUID].signature + locate + crypto.randomUUID()).toUpperCase();
+  const message_id = getSHA256(sd.clientTokenHash + locate + crypto.randomUUID()).toUpperCase();
 
   // 訊息所要包含的資訊
   let obj = {
