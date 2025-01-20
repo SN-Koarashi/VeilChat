@@ -73,7 +73,10 @@ export function getNowDate() {
 }
 
 export function getRandomNickname() {
-	var list = ["Emily", "Amy", "Alice", "Grace", "Tina", "Joyce", "Vivian", "Cindy", "Ivy", "Jenny", "Claire", "Annie", "Vicky", "Jessica", "Peggy", "Sandy", "Irene", "Iris", "Maggie", "Winnie"];
+	var list = [
+		"Emily", "Amy", "Alice", "Grace", "Tina", "Joyce", "Vivian", "Cindy", "Ivy", "Jenny", "Claire", "Annie", "Vicky", "Jessica", "Peggy", "Sandy", "Irene", "Iris", "Maggie", "Winnie",
+		"Sophia", "Bella", "Mia", "Lily", "Chloe", "Ruby", "Zoe", "Stella", "Lucy", "Ella", "Natalie", "Sarah", "Hannah", "Kate", "Laura", "Michelle", "Amber", "Rachel", "Tiffany", "Vanessa"
+	];
 	return list.at(Math.floor(Math.random() * list.length));
 }
 
