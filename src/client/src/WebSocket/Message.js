@@ -11,6 +11,7 @@ import eForbidden from './ReceiveEvents/Forbidden.js';
 import eVerifyFailed from './ReceiveEvents/VerifyFailed.js';
 import eRequireVerify from './ReceiveEvents/RequireVerify.js';
 import eNotFound from './ReceiveEvents/NotFound.js';
+import eEditMessage from './ReceiveEvents/EditMessage.js';
 
 export default function RegisterEvent(e) {
     var uint8View = new Uint8Array(e.data);
@@ -37,6 +38,10 @@ export default function RegisterEvent(e) {
     // 傳送訊息
     else if (data.type == 'message') {
         eMessage(data);
+    }
+    // 編輯訊息
+    else if (data.type == 'editMessage') {
+        eEditMessage(data);
     }
     // 傳送悄悄話訊息
     else if (data.type == 'privateMessage') {

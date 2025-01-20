@@ -18,10 +18,13 @@ function RegisterEvent(data, sd, ws) {
 
   Logger("INFO", `Client ${sd.ip} sent message in #${locate}:`, sd.clientUID);
 
+  const message_id = getSHA256(clientList[sd.clientUID].signature + locate + crypto.randomUUID()).toUpperCase();
+
   // 訊息所要包含的資訊
   let obj = {
     session: sd.clientUID,
     message: data.message,
+    message_id: message_id,
     signature: sd.clientTokenHash,
     location: locate,
     type: 'message'
@@ -29,7 +32,7 @@ function RegisterEvent(data, sd, ws) {
 
   // 將目前的訊息及發送訊息的使用者工作階段資訊記錄到歷史訊息中(在新使用者登入後要傳遞給他的)
   let objHistory = {
-    message_id: getSHA256(clientList[sd.clientUID].signature + locate + crypto.randomUUID()).toUpperCase(),
+    message_id: message_id,
     session: sd.clientUID,
     id: clientList[sd.clientUID].id,
     username: clientList[sd.clientUID].username,
@@ -38,16 +41,20 @@ function RegisterEvent(data, sd, ws) {
     time: new Date().getTime(),
     message: data.message,
     location: locate,
+    is_edited: false,
     type: 'history'
   };
 
-  if (!messageList[locate])
+  if (!messageList[locate]) {
     messageList[locate] = {
-      messages: [objHistory],
+      messages: [],
+      messageIndexes: {},
       type: "history"
     };
-  else
-    messageList[locate].messages.push(objHistory);
+  }
+
+  let objLength = messageList[locate].messages.push(objHistory);
+  messageList[locate].messageIndexes[message_id] = objLength - 1;
 
   // 傳遞上述建立物件 obj 之內容給房間中的所有使用者
   onSender(obj, null, locate);

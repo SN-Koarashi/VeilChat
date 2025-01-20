@@ -10,12 +10,14 @@ const config = {
 	token: null,
 	crcTableGlobal: null,
 	privateChatTarget: null,
+	editMessageTarget: null,
 	localStorage: window.localStorage,
 	crypto: window.crypto,
 	roomPassword: undefined,
 	roomPublicKeyBase64: undefined,
 	roomPrivateKeyBase64: undefined,
 	clientList: {},
+	messageList: {},
 	inviteList: [],
 	globalObserverTimer: [],
 	userName: "Unknown",
@@ -25,7 +27,8 @@ const config = {
 	isInited: false,
 	denyCount: 0,
 	scrollBottom: true,
-	droppedText: false
+	droppedText: false,
+	lastRange: null
 };
 
 export default config;

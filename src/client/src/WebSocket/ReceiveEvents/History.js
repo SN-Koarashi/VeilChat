@@ -12,9 +12,10 @@ export default function RegisterEvent(data) {
                 e.session,
                 e.signature,
                 e.username,
-                e.id,
+                e.message_id,
                 e.message,
-                e.time
+                e.time,
+                e
             );
             onScroll(true);
         }, 1 * index);

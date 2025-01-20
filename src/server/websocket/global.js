@@ -18,6 +18,7 @@ globalThis.roomPassword = {
 globalThis.messageList = {
 	public: {
 		messages: [],
+		messageIndexes: {},
 		type: "history"
 	}
 };

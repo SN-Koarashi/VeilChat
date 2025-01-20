@@ -2,12 +2,13 @@
 //? 這裡是普通公用程式，函數之前相關性小且不呼叫前端元素與互動
 
 import config from '../config.js';
+import { decodePrivateKey, getSharedSecret, decryptMessage } from '../Functions/Crypto.js';
 
-function escapeHtml(unsafe) {
+export function escapeHtml(unsafe) {
 	return unsafe.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
 }
 
-function isMobile() {
+export function isMobile() {
 	var userAgentInfo = navigator.userAgent;
 	var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone");
 	var flag = false;
@@ -17,7 +18,7 @@ function isMobile() {
 	return flag;
 }
 
-function base64ToBlob(base64, mime) {
+export function base64ToBlob(base64, mime) {
 	mime = mime || '';
 	var sliceSize = 1024;
 	var byteChars = window.atob(base64);
@@ -37,7 +38,7 @@ function base64ToBlob(base64, mime) {
 };
 
 // https://stackoverflow.com/a/18639999/14486292
-function crc32(str) {
+export function crc32(str) {
 	var crcTable = config.crcTableGlobal || (config.crcTableGlobal = makeCRCTable());
 	var crc = 0 ^ (-1);
 
@@ -48,7 +49,7 @@ function crc32(str) {
 	return (crc ^ (-1)) >>> 0;
 };
 
-function makeCRCTable() {
+export function makeCRCTable() {
 	var c;
 	var crcTable = [];
 	for (var n = 0; n < 256; n++) {
@@ -61,7 +62,7 @@ function makeCRCTable() {
 	return crcTable;
 }
 
-function getNowDate() {
+export function getNowDate() {
 	let date = new Date();
 	let year = date.getFullYear();
 	let month = (date.getMonth() + 1 < 10) ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
@@ -70,16 +71,16 @@ function getNowDate() {
 	return `${year}/${month}/${day}`;
 }
 
-function getRandomNickname() {
+export function getRandomNickname() {
 	var list = ["Emily", "Amy", "Alice", "Grace", "Tina", "Joyce", "Vivian", "Cindy", "Ivy", "Jenny", "Claire", "Annie", "Vicky", "Jessica", "Peggy", "Sandy", "Irene", "Iris", "Maggie", "Winnie"];
 	return list.at(Math.floor(Math.random() * list.length));
 }
 
-function checkImageURL(url) {
+export function checkImageURL(url) {
 	return (url.match(/\.(jpeg|jpg|gif|png|webp)(\?.*?)?$/i) != null);
 }
 
-function randomToken(length) {
+export function randomToken(length) {
 	var result = '';
 	var charactersMax = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
 	var charactersMin = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -93,7 +94,7 @@ function randomToken(length) {
 	return result;
 }
 
-function randomASCIICode(length) {
+export function randomASCIICode(length) {
 	var result = '';
 	var dictionary = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
@@ -110,7 +111,7 @@ function randomASCIICode(length) {
 	return result.substring(0, length);
 }
 
-function getASCIIXOR(str) {
+export function getASCIIXOR(str) {
 	str = str.split('');
 	for (let i = 0; i < str.length; i++)
 		str[i] = str[i].charCodeAt();
@@ -118,4 +119,22 @@ function getASCIIXOR(str) {
 	return parseInt(str.join('').toString().substring(0, 8));
 }
 
-export { getRandomNickname, getNowDate, makeCRCTable, crc32, base64ToBlob, isMobile, escapeHtml, checkImageURL, randomToken, randomASCIICode, getASCIIXOR };
+export async function getPlainMessage(messageObj) {
+	var message;
+	if (messageObj.original) {
+		message = messageObj.original;
+	}
+	else if (messageObj.encryptedMessage && messageObj.iv) {
+		let privateKey = await decodePrivateKey(config.roomPrivateKeyBase64)
+		let { secretKey } = await getSharedSecret(config.roomPublicKeyBase64, privateKey);
+		message = await decryptMessage(secretKey, messageObj.iv, messageObj.encryptedMessage);
+	}
+	else if (typeof messageObj === 'string') {
+		message = messageObj;
+	}
+	else {
+		message = "";
+	}
+
+	return message;
+}

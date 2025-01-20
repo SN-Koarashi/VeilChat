@@ -13,6 +13,7 @@ const onCreate = require('./Events/Create.js');
 const onRefresh = require('./Events/Refresh.js');
 const onMessage = require('./Events/Message.js');
 const onPrivateMessage = require('./Events/PrivateMessage.js');
+const onEditMessage = require('./Events/EditMessage.js');
 
 // 指定開啟的 port
 const PORT = process.env.PORT || 8080;
@@ -97,6 +98,14 @@ wssSrv.on('connection', (ws, req) => {
 			}
 			// 傳送悄悄話 (悄悄話會在重新整理後消失，不會顯示在訊息歷史中)
 			else if (data.type == "privateMessage") {
+				onPrivateMessage(data, SocketData, ws);
+			}
+			// 編輯訊息
+			else if (data.type == "editMessage") {
+				onEditMessage(data, SocketData, ws);
+			}
+			// 刪除訊息
+			else if (data.type == "deleteMessage") {
 				onPrivateMessage(data, SocketData, ws);
 			}
 			else {

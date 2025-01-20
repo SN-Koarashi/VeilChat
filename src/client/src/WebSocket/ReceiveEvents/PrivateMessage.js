@@ -8,7 +8,7 @@ export default function RegisterEvent(data) {
         "private",
         data.source.signature,
         config.clientList[data.source.signature]?.at(0).username,
-        config.clientList[data.source.signature]?.at(0).id,
+        null,
         data.message,
         new Date().getTime()
     );

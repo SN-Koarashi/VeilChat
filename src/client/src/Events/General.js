@@ -7,7 +7,8 @@ import { WebSocketBinaryHandler } from '../Registers/WebSocket.js';
 import {
 	onKeyEnter,
 	onScroll,
-	savingSettings
+	savingSettings,
+	cancelPrivateMode
 } from '../Utils/ChatUtils.js';
 
 import { initSettings } from '../Registers/Events.js';
@@ -25,8 +26,13 @@ export default function RegisterEvent(window) {
 	});
 
 	$('body').on('click', '.privateStatus .privateButton', function () {
-		config.privateChatTarget = null;
-		$('.privateStatus').remove();
+		cancelPrivateMode();
+	});
+
+	$(document).on('keydown', function (e) {
+		if (e.which == 27) {
+			cancelPrivateMode();
+		}
 	});
 
 	$('body').on('click', '.inviteLink', function (e) {

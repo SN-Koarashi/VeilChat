@@ -3,11 +3,11 @@
 
 import $ from 'jquery';
 import config from '../config.js';
-import { crc32, isMobile, escapeHtml, checkImageURL, randomASCIICode } from './Utils.js';
+import { crc32, isMobile, escapeHtml, checkImageURL, randomASCIICode, getPlainMessage } from './Utils.js';
 import Logger from '../Functions/Logger.js';
 import Dialog from '../Functions/Dialog.js';
 import { WebSocketBinaryHandler } from '../Registers/WebSocket.js';
-import { decodePrivateKey, getSharedSecret, decryptMessage, hashString } from '../Functions/Crypto.js';
+import { hashString } from '../Functions/Crypto.js';
 
 export function emojify(text) {
 	const emojiRegex = /\[emoji\]:([0-9A-Za-z_]+):\[\/emoji\]/ig;
@@ -366,9 +366,8 @@ export function privateChat(targetSignature, message, previousLocate) {
 	}
 	else {
 		config.privateChatTarget = targetSignature;
-		if ($('.lobby > .privateStatus').length === 0) {
-			$('.lobby').append('<div class="privateStatus"><div class="privateText">悄悄話 <span></span></div><div title="關閉悄悄話模式" class="privateButton"><img src="' + config.MainDomain + '/images/close_black.png" /></div></div>');
-		}
+		$('.privateStatus').remove();
+		$('.lobby').append('<div class="privateStatus"><div class="privateText">悄悄話 <span></span></div><div title="關閉悄悄話模式" class="privateButton"><img src="' + config.MainDomain + '/images/close_black.png" /></div></div>');
 		$('.lobby > .privateStatus > .privateText > span').text(`${config.clientList[targetSignature]?.at(0).username}#${crc32(targetSignature)}`);
 	}
 }
@@ -693,22 +692,8 @@ export function savingSettings() {
 	config.localStorage.setItem('username', $('#userName').val());
 }
 
-export async function onMessage(messageType, session, signature, username, id, messageObj, timestamp) {
-	var message;
-	if (messageObj.original) {
-		message = messageObj.original;
-	}
-	else if (messageObj.encryptedMessage && messageObj.iv) {
-		let privateKey = await decodePrivateKey(config.roomPrivateKeyBase64)
-		let { secretKey } = await getSharedSecret(config.roomPublicKeyBase64, privateKey);
-		message = await decryptMessage(secretKey, messageObj.iv, messageObj.encryptedMessage);
-	}
-	else if (typeof messageObj === 'string') {
-		message = messageObj;
-	}
-	else {
-		message = "";
-	}
+export async function onMessage(messageType, session, signature, username, message_id, messageObj, timestamp, obj) {
+	var message = await getPlainMessage(messageObj);
 
 	let date = new Date(timestamp);
 	let year = date.getFullYear();
@@ -727,28 +712,27 @@ export async function onMessage(messageType, session, signature, username, id, m
 		if (messageType.endsWith("Source"))
 			sourceText = "[發送給]";
 
-		$('.lobby > .chat').append(`<div data-id="T${randomSeed}" data-ripple><author data-id="${session}" data-user="${signature}" title="${username}#${crc32(signature)}" class="private">${sourceText} ${username}#${crc32(signature)}</author> <span title="${year}/${month}/${day} ${hour}:${minute}">${DateFormatter(timestamp)}</span><div data-convert="true" class="msgWrapper"></div></div>`);
+		$('.lobby > .chat').append(`<div data-id="T${randomSeed}" data-ripple><author data-id="${session}" data-user="${signature}" title="${username}#${crc32(signature)}" class="private">${sourceText} ${username}#${crc32(signature)}</author> <span class="tips" title="${year}/${month}/${day} ${hour}:${minute}">${DateFormatter(timestamp)}</span><div data-convert="true" class="msgWrapper"></div></div>`);
 	}
 	else {
-		$('.lobby > .chat').append(`<div data-id="T${randomSeed}" data-ripple><author data-id="${session}" data-user="${signature}" data-self-id="${crc32(signature)}" class="${session}" title="${username}#${crc32(signature)}">${username}#${crc32(signature)}</author> <span title="${year}/${month}/${day} ${hour}:${minute}">${DateFormatter(timestamp)}</span><div data-convert="true" class="msgWrapper"></div></div>`);
+		$('.lobby > .chat').append(`<div data-id="T${randomSeed}" data-message-id="${message_id}" data-ripple><author data-id="${session}" data-user="${signature}" data-self-id="${crc32(signature)}" class="${session}" title="${username}#${crc32(signature)}">${username}#${crc32(signature)}</author> <span class="tips" title="${year}/${month}/${day} ${hour}:${minute}">${DateFormatter(timestamp)}</span><div data-convert="true" class="msgWrapper"></div></div>`);
+
+		config.messageList[message_id] = {
+			message,
+			author: signature
+		};
 	}
 
 	// 將訊息內容放入
 	$('.lobby > .chat div[data-id="T' + randomSeed + '"]').find('div.msgWrapper').text(message);
+	if (obj != null && obj.is_edited && obj.edited_timestamp) {
+		$('.lobby > .chat div[data-id="T' + randomSeed + '"] > .msgWrapper').before(`<span class="tips edited" title="${new Date(obj.edited_timestamp).toLocaleString()}">(已編輯)</span>`);
+	}
 
 
 	var messageArray = $('.lobby > .chat div.msgWrapper[data-convert="true"]').toArray();
 	for (let msg of messageArray) {
-		let content = $(msg).text();
-		let formatterContent = ContentFormatter(content);
-
-		$(msg).html(formatterContent);
-
-		$(msg).find("pre code").each(function () {
-			window.hljs.highlightElement(this);
-		});
-
-		$(msg).removeAttr('data-convert');
+		executeFormattedMessage(msg);
 	}
 
 	$('.lobby > .chat').find(`.${config.sessionSelf}`).addClass('me');
@@ -757,6 +741,19 @@ export async function onMessage(messageType, session, signature, username, id, m
 		$('.lobby > .chat').find(`author[data-self-id="${crc32(config.tokenHashSelf)}"]`).addClass('sameWorker');
 
 	onScroll(messageType == "history");
+}
+
+export function executeFormattedMessage(element) {
+	let content = $(element).text();
+	let formatterContent = ContentFormatter(content);
+
+	$(element).html(formatterContent);
+
+	$(element).find("pre code").each(function () {
+		window.hljs.highlightElement(this);
+	});
+
+	$(element).removeAttr('data-convert');
 }
 
 export function DateFormatter(timestamp) {
@@ -900,6 +897,18 @@ export function sendMessageGeneral(e, $element) {
 			onMessage("privateMessageSource", "private", targetSignature, config.clientList[targetSignature]?.at(0).username, config.clientList[targetSignature]?.at(0).id, message, new Date().getTime());
 		}
 	}
+	else if (config.editMessageTarget?.length > 0) {
+		WebSocketBinaryHandler({
+			type: 'editMessage',
+			location: config.locate,
+			message: {
+				original: $('#sender').text()
+			},
+			message_id: config.editMessageTarget
+		});
+
+		cancelPrivateMode();
+	}
 	else {
 		WebSocketBinaryHandler({
 			type: 'message',
@@ -911,4 +920,14 @@ export function sendMessageGeneral(e, $element) {
 	}
 
 	return true;
+}
+
+export function cancelPrivateMode() {
+	if (config.editMessageTarget != null) {
+		$('#sender').text('');
+	}
+
+	config.privateChatTarget = null;
+	config.editMessageTarget = null;
+	$('.privateStatus').remove();
 }

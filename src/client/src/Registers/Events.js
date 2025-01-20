@@ -16,6 +16,7 @@ import eEmoji from '../Events/Emoji.js';
 import eMessageBox from '../Events/MessageBox.js';
 import eMobileUX from '../Events/MobileUX.js';
 import eRipple from '../Events/Ripple.js';
+import eContextMenuHandler from '../Events/ContextMenuHandler.js';
 
 export function initSettings() {
 	if (isMobile() || window.innerWidth <= 480) {
@@ -145,6 +146,8 @@ export function initFirst(window) {
 	eDragHandler(window);
 	eMobileUX(window);
 	eRipple(window);
+
+	eContextMenuHandler(window);
 
 	initSetup();
 

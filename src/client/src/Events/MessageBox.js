@@ -12,8 +12,6 @@ import {
 import { base64ToBlob } from '../Utils/Utils.js';
 
 export default function RegisterEvent() {
-	var lastRange = null;
-
 	$('#sendMessage').on('click', function (e) {
 		if (config.wss.readyState == 1 && $('#sender').text().replace(/\n|\r/g, "").length > 0) {
 			$(this).blur();
@@ -194,8 +192,9 @@ export default function RegisterEvent() {
 				var imageURL = event.target.result;
 				var base64ImageContent = imageURL.replace(/^data:(image\/[a-zA-Z]+);base64,/, "");
 				var base64ContentType = imageURL.match(/^data:(image\/[a-zA-Z]+);base64,/)[1];
-				var blob = base64ToBlob(base64ImageContent, base64ContentType);
-				uploadFiles([blob]);
+				var blobConvert = base64ToBlob(base64ImageContent, base64ContentType);
+				var file = new File([blobConvert], `screenshot.${blobConvert.type.split('/').at(-1)}`, { type: blobConvert.type });
+				uploadFiles([file]);
 			};
 			reader.readAsDataURL(blob);
 		}
@@ -229,9 +228,9 @@ export default function RegisterEvent() {
 	$('#sender').on('focus', function () {
 		setTimeout(() => {
 			// 防止拖曳文字進入輸入框內時，錯誤的重設游標停頓位置
-			if (lastRange !== null && !config.droppedText) {
+			if (config.lastRange !== null && !config.droppedText) {
 				document.getSelection().removeAllRanges();
-				document.getSelection().addRange(lastRange);
+				document.getSelection().addRange(config.lastRange);
 			}
 
 			config.droppedText = false;
@@ -246,7 +245,7 @@ export default function RegisterEvent() {
 		if (document.getSelection().rangeCount > 0 &&
 			($(document.getSelection().focusNode.parentElement).parents('#sender').length > 0 || $(document.getSelection().focusNode.parentElement).is('#sender'))
 		) {
-			lastRange = document.getSelection().getRangeAt(0);
+			config.lastRange = document.getSelection().getRangeAt(0);
 		}
 	});
 	$('#sender').on('input', function () {
@@ -258,7 +257,7 @@ export default function RegisterEvent() {
 
 		$('#sender').focus();
 
-		let range = (lastRange === null) ? document.getSelection().getRangeAt(0) : lastRange;
+		let range = (config.lastRange === null) ? document.getSelection().getRangeAt(0) : config.lastRange;
 
 		if (!$(document.getSelection().focusNode.parentElement).is('#sender') && $(document.getSelection().focusNode.parentElement).parents('#sender').length === 0) {
 			range = document.getSelection().getRangeAt(0);
@@ -304,7 +303,7 @@ export default function RegisterEvent() {
 		}
 
 		if (e.ctrlKey && v.length === 0) {
-			e = $.Event("keydown", { keyCode: 13 });
+			e = $.Event("keydown", { keyCode: 13, which: 13 });
 			$('#sender').trigger(e);
 		}
 	});

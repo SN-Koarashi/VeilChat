@@ -4,7 +4,7 @@ import $ from 'jquery';
 import config from '../../config.js';
 import Dialog from '../../Functions/Dialog.js';
 import { isMobile } from '../../Utils/Utils.js';
-import { privateChat } from '../../Utils/ChatUtils.js';
+import { privateChat, cancelPrivateMode } from '../../Utils/ChatUtils.js';
 import { hashString } from '../../Functions/Crypto.js';
 import { WebSocketBinaryHandler } from '../../Registers/WebSocket.js';
 
@@ -13,6 +13,10 @@ export default function RegisterEvent(data) {
     config.locate = data.location;
     config.sessionSelf = data.session;
     config.tokenHashSelf = data.signature;
+    config.messageList = {};
+
+    cancelPrivateMode();
+
     $('.settings_footer span').text(config.sessionSelf);
 
     // 無狀態參數，表示為加入房間
