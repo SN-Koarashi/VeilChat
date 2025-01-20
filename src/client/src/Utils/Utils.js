@@ -3,6 +3,7 @@
 
 import config from '../config.js';
 import { decodePrivateKey, getSharedSecret, decryptMessage } from '../Functions/Crypto.js';
+import Logger from '../Functions/Logger.js';
 
 export function escapeHtml(unsafe) {
 	return unsafe.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;').replaceAll("'", '&#039;');
@@ -137,4 +138,13 @@ export async function getPlainMessage(messageObj) {
 	}
 
 	return message;
+}
+
+export function copyTextToClipboard(text) {
+	// 使用 Clipboard API 複製文字
+	navigator.clipboard.writeText(text).then(() => {
+		//
+	}).catch(err => {
+		Logger.show(Logger.Types.ERROR, '複製失敗:', err);
+	});
 }

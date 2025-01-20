@@ -1,6 +1,7 @@
 "use strict";
 import $ from 'jquery';
 import config from '../config';
+import { copyTextToClipboard } from '../Utils/Utils';
 // import config from '../config.js';
 
 export default function RegisterEvent() {
@@ -75,7 +76,7 @@ export default function RegisterEvent() {
 
 
         if (action === "copyMessage") {
-            console.log();
+            copyTextToClipboard(config.messageList[message_id].message);
         }
         else if (action === "editMessage" && config.messageList[message_id].author === config.tokenHashSelf) {
             config.editMessageTarget = message_id;
