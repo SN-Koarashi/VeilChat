@@ -898,6 +898,7 @@ body.noOverflow {
 	padding: 5px;
 	border-radius: 7px;
 	user-select: none;
+	box-shadow: 0px -2px 10px #000;
 }
 
 .contextmenu>div {
