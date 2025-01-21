@@ -906,6 +906,7 @@ body.noOverflow {
 	padding: 8px 10px;
 	font-size: 14px;
 	border-radius: 7px;
+	background: inherit;
 }
 
 .contextmenu>div::before {
