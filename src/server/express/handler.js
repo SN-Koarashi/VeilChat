@@ -126,7 +126,13 @@ const $ = {
         const filePath = path.join($.publicPath, 'files', fileName.slice(0, 2), fileName);
         const mimeType = mime.lookup(filePath) || 'application/octet-stream'; // 默認為二進位檔案
 
-        if (mimeType.startsWith("text/") && !req.query.download) {
+
+        if (
+            mimeType.startsWith("image/") && !req.query.download ||
+            mimeType.startsWith("text/") && !req.query.download
+        ) {
+            // 設定檔案名稱
+            res.setHeader('Content-Disposition', `inline; filename="${downloadName}"`);
             next();
         }
         else {
