@@ -49,6 +49,7 @@ export default function RegisterEvent() {
 
         $('.lobby > .chat > div[data-id].focus').removeClass('focus');
         $(e.currentTarget).addClass('focus');
+        $('body').addClass('noOverflow');
 
         $('div.contextmenu_wrapper').remove();
         $('body').append('<div class="contextmenu_wrapper"></div>');
@@ -76,6 +77,7 @@ export default function RegisterEvent() {
         e.stopPropagation();
         $('div.contextmenu_wrapper').remove();
         $('.lobby > .chat > div[data-id].focus').removeClass('focus');
+        $('body').removeClass('noOverflow');
     });
 
 
@@ -83,6 +85,7 @@ export default function RegisterEvent() {
         e.stopPropagation();
         $('div.contextmenu_wrapper').remove();
         $('.lobby > .chat > div[data-id].focus').removeClass('focus');
+        $('body').removeClass('noOverflow');
 
         const message_id = $(this).parent().attr('data-message-id');
         const action = $(this).attr('data-id');
@@ -168,7 +171,7 @@ export default function RegisterEvent() {
 
         clearInterval(timer);
         timer = setInterval(() => {
-            if (diffY != 0 && diffY == Y) {
+            if (diffY != 0 && Math.abs(diffY - Y) <= 10) {
                 touchStaying = true;
             }
             else {

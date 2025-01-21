@@ -4,6 +4,10 @@ body {
 	margin: 0px;
 }
 
+body.noOverflow {
+	overflow: hidden;
+}
+
 pre {
 	margin: 0px;
 }
