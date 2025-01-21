@@ -723,6 +723,7 @@ body.noOverflow {
 	position: fixed;
 	right: 10px;
 	bottom: 15px;
+	animation: spinoffPulse 0.5s infinite linear;
 	-moz-animation: spinoffPulse 0.5s infinite linear;
 	-webkit-animation: spinoffPulse 0.5s infinite linear;
 	-o-animation: spinoffPulse 0.5s infinite linear;
@@ -734,6 +735,34 @@ body.noOverflow {
 	border: 2px solid rgba(255, 47, 0, 0.9);
 	border-left: 2px solid rgba(0, 0, 0, 0);
 	border-right: 2px solid rgba(0, 0, 0, 0);
+}
+
+@keyframes spinPulse {
+	0% {
+		-moz-transform: rotate(160deg);
+		opacity: 0;
+		box-shadow: 0 0 1px #505050;
+	}
+
+	50% {
+		-moz-transform: rotate(145deg);
+		opacity: 1;
+	}
+
+	100% {
+		-moz-transform: rotate(-320deg);
+		opacity: 0;
+	}
+}
+
+@keyframes spinoffPulse {
+	0% {
+		-moz-transform: rotate(0deg);
+	}
+
+	100% {
+		-moz-transform: rotate(360deg);
+	}
 }
 
 @-moz-keyframes spinPulse {
@@ -891,6 +920,7 @@ body.noOverflow {
 	white-space: nowrap;
 	word-wrap: normal;
 	direction: ltr;
+	font-feature-settings: 'liga';
 	-webkit-font-feature-settings: 'liga';
 	-webkit-font-smoothing: antialiased;
 	width: 18px;
