@@ -868,9 +868,35 @@ body.noOverflow {
 }
 
 .contextmenu>div {
+	position: relative;
 	padding: 8px 10px;
 	font-size: 14px;
 	border-radius: 7px;
+}
+
+.contextmenu>div::before {
+	content: attr(data-icon);
+	font-family: 'Material Icons';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 18px;
+	line-height: 1;
+	letter-spacing: normal;
+	text-transform: none;
+	display: block;
+	white-space: nowrap;
+	word-wrap: normal;
+	direction: ltr;
+	-webkit-font-feature-settings: 'liga';
+	-webkit-font-smoothing: antialiased;
+	width: 18px;
+	height: 18px;
+	color: rgba(255, 255, 255, 0.85);
+	float: right;
+}
+
+.contextmenu>div[data-danger]::before {
+	color: rgba(255, 40, 40, 0.85);
 }
 
 .contextmenu>hr {
@@ -2022,6 +2048,61 @@ body.noOverflow {
 		background: rgba(255, 255, 255, 0.15);
 	}
 
+	.contextmenu_wrapper {
+		background: rgba(0, 0, 0, .45);
+	}
+
+	.contextmenu {
+		left: 0px;
+		top: unset;
+		bottom: 0px;
+		width: 100%;
+		transform: translateY(0%);
+		transition: transform 0.25s, background 0.25s;
+
+		@starting-style {
+			transform: translateY(100%);
+		}
+	}
+
+	.contextmenu.hasAnime {
+		transition: transform 0.25s, background 0.25s, bottom 0.25s;
+	}
+
+	.contextmenu::before {
+		content: '';
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+		top: -15px;
+		height: 5px;
+		background: #fff;
+		width: 55px;
+		border-radius: 15px;
+	}
+
+	.contextmenu>div {
+		padding: 16px;
+		font-size: 16px;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.contextmenu>div::before {
+		float: left;
+		font-size: 20px;
+		width: 20px;
+		height: 20px;
+		margin-right: 10px;
+	}
+
+	.contextmenu>div:hover {
+		background: unset;
+	}
+
+	.contextmenu>div:active {
+		background: #131313;
+	}
+
 	.channelHeader {
 		display: block;
 		position: fixed;
@@ -2161,6 +2242,10 @@ body.noOverflow {
 
 	.wrapper_settings .settings_title #onClose {
 		display: none;
+	}
+
+	.lobby {
+		user-select: none;
 	}
 
 	.lobby>.menu {

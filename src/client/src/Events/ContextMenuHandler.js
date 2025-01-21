@@ -1,7 +1,7 @@
 "use strict";
 import $ from 'jquery';
 import config from '../config';
-import { copyTextToClipboard } from '../Utils/Utils.js';
+import { copyTextToClipboard, isMobile } from '../Utils/Utils.js';
 import Dialog from '../Functions/Dialog.js';
 import { WebSocketBinaryHandler } from '../Registers/WebSocket';
 
@@ -32,6 +32,15 @@ export default function RegisterEvent() {
         return { x: adjustedX, y: adjustedY }; // 返回調整後的 x 和 y
     }
 
+    $('body').on('contextmenu', function (e) {
+        // 手機版不顯示原生選單 (輸入框除外)
+        if (isMobile() || window.innerWidth <= 480) {
+            const sender = document.querySelector('#sender');
+            if (e.target !== sender && $(e.target).parents('#sender')[0] !== sender) {
+                e.preventDefault();
+            }
+        }
+    });
 
     $('body').on('contextmenu', '.lobby > .chat > div[data-id]', function (e) {
         e.preventDefault();
@@ -49,12 +58,12 @@ export default function RegisterEvent() {
 
         $('div.contextmenu_wrapper').append(`<div class="contextmenu" data-message-id="${message_id}" style="--click-x:${x}px;--click-y:${y}px"></div>`);
 
-        $('div.contextmenu_wrapper > .contextmenu').append(`<div data-id="copyMessage">複製訊息</div>`);
+        $('div.contextmenu_wrapper > .contextmenu').append(`<div data-icon="content_copy" data-id="copyMessage">複製訊息</div>`);
 
         if (!config.messageList[message_id].type.startsWith("privateMessage") && config.messageList[message_id].author === config.tokenHashSelf) {
-            $('div.contextmenu_wrapper > .contextmenu').append(`<div data-id="editMessage">編輯訊息</div>`);
+            $('div.contextmenu_wrapper > .contextmenu').append(`<div data-icon="edit" data-id="editMessage">編輯訊息</div>`);
             $('div.contextmenu_wrapper > .contextmenu').append(`<hr/>`);
-            $('div.contextmenu_wrapper > .contextmenu').append(`<div data-id="deleteMessage" data-danger>刪除訊息</div>`);
+            $('div.contextmenu_wrapper > .contextmenu').append(`<div data-icon="delete" data-id="deleteMessage" data-danger>刪除訊息</div>`);
         }
 
         const fixingPosition = checkBoundary(document.querySelector('div.contextmenu_wrapper > .contextmenu'), x, y);
@@ -127,6 +136,102 @@ export default function RegisterEvent() {
                     deleteMessage(message_id);
                 });
             }
+        }
+    });
+
+    var moveEndY = 0,
+        moveEndX = 0,
+        touchY = 0,
+        diffY = 0,
+        X = 0,
+        Y = 0,
+        dragStartX = 0,
+        dragStartY = 0,
+        // eslint-disable-next-line no-unused-vars
+        touchStarting = false,
+        touchStaying = false,
+        timer = null;
+
+    const tirggerY = 210
+    const triggerSelector = '.contextmenu_wrapper > .contextmenu';
+
+    $('body').on('touchstart touchmove touchend', '.contextmenu_wrapper', function (e) {
+        e.stopPropagation();
+    });
+
+    $('body').on('touchstart', '.contextmenu_wrapper', function (e) {
+        let screenHeight = $(window).height();
+        touchY = screenHeight - e.originalEvent.changedTouches[0].pageY;
+        if (touchY > tirggerY) return;
+
+        touchStarting = true;
+
+        clearInterval(timer);
+        timer = setInterval(() => {
+            if (diffY != 0 && diffY == Y) {
+                touchStaying = true;
+            }
+            else {
+                touchStaying = false;
+            }
+
+            diffY = Y;
+        }, 100);
+
+        dragStartX = e.originalEvent.changedTouches[0].pageX;
+        dragStartY = screenHeight - e.originalEvent.changedTouches[0].pageY;
+
+        $(triggerSelector).removeClass('hasAnime');
+    });
+
+    $('body').on('touchmove', '.contextmenu_wrapper', function (e) {
+        if (touchY > tirggerY) return;
+
+        let screenHeight = $(window).height();
+
+        moveEndX = e.originalEvent.changedTouches[0].pageX;
+        moveEndY = e.originalEvent.changedTouches[0].pageY;
+        X = moveEndX - dragStartX;
+        Y = screenHeight - moveEndY;
+
+        let movePosition = dragStartY - Y;
+
+        // 判斷是否在合理範圍，讓使用者只能在螢幕範圍內拖曳
+        if (movePosition >= 0)
+            $(triggerSelector).css('bottom', `-${movePosition}px`);
+        else
+            $(triggerSelector).css('bottom', `0px`);
+    });
+
+    $('body').on('touchend', '.contextmenu_wrapper', function (e) {
+        if (touchY > tirggerY) return;
+
+        let screenHeight = $(window).height();
+
+        touchStarting = false;
+
+        clearInterval(timer);
+
+        let maxHeight = $(triggerSelector).outerHeight();
+
+        moveEndX = e.originalEvent.changedTouches[0].pageX;
+        moveEndY = e.originalEvent.changedTouches[0].pageY;
+        X = moveEndX - dragStartX;
+        Y = screenHeight - moveEndY;
+
+        let movePosition = dragStartY - Y;
+
+        if (
+            Math.abs(X) - 25 < Math.abs(Y) &&
+            movePosition > maxHeight / 2 ||
+            Math.abs(X) - 25 < Math.abs(Y) &&
+            movePosition > 35 && !touchStaying
+        ) {
+            $(this).remove();
+        }
+        else {
+            $(triggerSelector).addClass('hasAnime');
+            $(triggerSelector).css('bottom', `0px`);
         }
     });
 
