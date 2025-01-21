@@ -73,6 +73,7 @@ export default function RegisterEvent() {
     $('body').on('click', '.contextmenu_wrapper > .contextmenu > div', function (e) {
         e.stopPropagation();
         $('div.contextmenu_wrapper').remove();
+        $('.lobby > .chat > div[data-id].focus').removeClass('focus');
 
         const message_id = $(this).parent().attr('data-message-id');
         const action = $(this).attr('data-id');
