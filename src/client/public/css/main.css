@@ -929,10 +929,21 @@ body.noOverflow {
 	height: 18px;
 	color: rgba(255, 255, 255, 0.85);
 	float: right;
+	text-overflow: clip;
+	overflow: hidden;
 }
 
 .contextmenu>div[data-danger]::before {
 	color: rgba(255, 40, 40, 0.85);
+}
+
+.contextmenu>div.no-icon::before {
+	content: attr(data-icon);
+	font-family: monospace;
+	width: fit-content;
+	font-size: 14px;
+	height: 14px;
+	line-height: 20px;
 }
 
 .contextmenu>hr {

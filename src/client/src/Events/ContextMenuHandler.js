@@ -59,6 +59,11 @@ export default function RegisterEvent() {
 
         $('div.contextmenu_wrapper').append(`<div class="contextmenu" data-message-id="${message_id}" style="--click-x:${x}px;--click-y:${y}px"></div>`);
 
+        if (window.getSelection()?.toString().length > 0) {
+            $('div.contextmenu_wrapper > .contextmenu').append(`<div class="no-icon" data-icon="Ctrl+C" data-id="copy">複製</div>`);
+            $('div.contextmenu_wrapper > .contextmenu').append(`<hr/>`);
+        }
+
         $('div.contextmenu_wrapper > .contextmenu').append(`<div data-icon="content_copy" data-id="copyMessage">複製訊息</div>`);
 
         if (!config.messageList[message_id].type.startsWith("privateMessage") && config.messageList[message_id].author === config.tokenHashSelf) {
@@ -93,7 +98,10 @@ export default function RegisterEvent() {
         if (config.messageList[message_id] == null) return;
 
 
-        if (action === "copyMessage") {
+        if (action === "copy") {
+            copyTextToClipboard(window.getSelection()?.toString());
+        }
+        else if (action === "copyMessage") {
             copyTextToClipboard(config.messageList[message_id].message);
         }
         else if (
