@@ -32,6 +32,8 @@ export default function RegisterEvent() {
         return { x: adjustedX, y: adjustedY }; // 返回調整後的 x 和 y
     }
 
+    var triggerElement = {};
+
     $('body').on('contextmenu', function (e) {
         // 手機版不顯示原生選單 (輸入框除外)
         if (isMobile() || window.innerWidth <= 480) {
@@ -72,6 +74,25 @@ export default function RegisterEvent() {
             $('div.contextmenu_wrapper > .contextmenu').append(`<div data-icon="delete" data-id="deleteMessage" data-danger>刪除訊息</div>`);
         }
 
+        if (e.target.nodeName === "IMG" && window.getComputedStyle(e.target).userSelect !== "none") {
+            triggerElement["IMG"] = e.target;
+
+            $('div.contextmenu_wrapper > .contextmenu').append(`<hr/>`);
+
+            if (triggerElement["IMG"].src && isImage(triggerElement["IMG"].src)) {
+                $('div.contextmenu_wrapper > .contextmenu').append(`<div class="no-icon" data-id="copyImage">複製圖片</div>`);
+            }
+            $('div.contextmenu_wrapper > .contextmenu').append(`<div class="no-icon" data-id="saveImage">儲存圖片</div>`);
+        }
+
+        if (e.target.nodeName === "A" || e.target?.parentNode.nodeName === "A") {
+            triggerElement["A"] = (e.target.nodeName === "A") ? e.target : e.target?.parentNode;
+
+            $('div.contextmenu_wrapper > .contextmenu').append(`<hr/>`);
+            $('div.contextmenu_wrapper > .contextmenu').append(`<div class="no-icon" data-id="copyLink">複製連結</div>`);
+            $('div.contextmenu_wrapper > .contextmenu').append(`<div class="no-icon" data-id="openLink">開啟連結</div>`);
+        }
+
         const fixingPosition = checkBoundary(document.querySelector('div.contextmenu_wrapper > .contextmenu'), x, y);
         $('div.contextmenu_wrapper > .contextmenu').attr('style', `--click-x:${fixingPosition.x}px;--click-y:${fixingPosition.y}px`);
     });
@@ -86,7 +107,7 @@ export default function RegisterEvent() {
     });
 
 
-    $('body').on('click', '.contextmenu_wrapper > .contextmenu > div', function (e) {
+    $('body').on('click', '.contextmenu_wrapper > .contextmenu > div', async function (e) {
         e.stopPropagation();
         $('div.contextmenu_wrapper').remove();
         $('.lobby > .chat > div[data-id].focus').removeClass('focus');
@@ -103,6 +124,31 @@ export default function RegisterEvent() {
         }
         else if (action === "copyMessage") {
             copyTextToClipboard(config.messageList[message_id].message);
+        }
+        else if (action === "copyLink" && triggerElement["A"] != null) {
+            copyTextToClipboard(triggerElement["A"].href);
+        }
+        else if (action === "openLink" && triggerElement["A"] != null) {
+            window.open(triggerElement["A"].href);
+        }
+        else if (action === "copyImage" && triggerElement["IMG"]?.src && isImage(triggerElement["IMG"].src)) {
+            const mimeType = getImageType(triggerElement["IMG"].src);
+            const response = await fetch(triggerElement["IMG"].src);
+            const blob = await response.blob();
+
+            const item = new ClipboardItem({ [mimeType]: blob });
+
+            await navigator.clipboard.write([item]);
+        }
+        else if (action === "saveImage" && triggerElement["IMG"]?.src) {
+            const filename = new URL(triggerElement["IMG"].src).pathname.split('/').pop();
+
+            const link = document.createElement('a');
+            link.href = triggerElement["IMG"].src;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
         else if (
             action === "editMessage"
@@ -148,6 +194,8 @@ export default function RegisterEvent() {
                 });
             }
         }
+
+        triggerElement = {};
     });
 
     var moveEndY = 0,
@@ -252,5 +300,32 @@ export default function RegisterEvent() {
             message_id: message_id,
             location: config.locate
         });
+    }
+
+    function getImageType(url) {
+        const extension = new URL(url).pathname.split('.').pop().toLowerCase();
+        const mimeTypes = {
+            'jpg': 'image/jpeg',
+            'jpeg': 'image/jpeg',
+            'png': 'image/png',
+            'gif': 'image/gif',
+            'bmp': 'image/bmp',
+            'svg': 'image/svg+xml'
+        };
+        return mimeTypes[extension] || 'image/png';
+    }
+
+    function isImage(url) {
+        const extension = new URL(url).pathname.split('.').pop().toLowerCase();
+        const mimeTypes = [
+            'jpg',
+            'jpeg',
+            'png',
+            'gif',
+            'bmp',
+            'svg'
+        ];
+
+        return mimeTypes.includes(extension);
     }
 }
