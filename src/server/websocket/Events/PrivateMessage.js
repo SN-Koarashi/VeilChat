@@ -1,10 +1,11 @@
 "use strict";
 require('../global.js');
-const { onSender, Logger } = require('../function.js');
+const { onSender, Logger, getSHA256 } = require('../function.js');
 
 function RegisterEvent(data, sd) {
   Logger("INFO", `Client ${sd.ip} sent private message:`, sd.clientUID);
   var locate = (data.location && roomList[data.location]) ? data.location : "public";
+  const message_id = getSHA256(sd.clientTokenHash + locate + crypto.randomUUID()).toUpperCase();
 
   // 訊息所要包含的資訊
   let obj = {
@@ -13,6 +14,7 @@ function RegisterEvent(data, sd) {
       username: clientList[sd.clientUID].username,
       signature: sd.clientTokenHash,
     },
+    message_id: message_id,
     signature: data.signature,
     message: data.message,
     location: locate,

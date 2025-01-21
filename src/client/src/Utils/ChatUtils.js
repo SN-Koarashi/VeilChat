@@ -362,7 +362,7 @@ export function privateChat(targetSignature, message, previousLocate) {
 			location: previousLocate ?? config.locate // 有攜帶前一房間位置的話就使用前一房間位置 (通常發生於建立私人房間的同時透過UI邀請對象)
 		});
 
-		onMessage("privateMessageSource", "private", targetSignature, config.clientList[targetSignature]?.at(0).username, config.clientList[targetSignature]?.at(0).id, message, new Date().getTime());
+		onMessage("privateMessageSource", "private", targetSignature, config.clientList[targetSignature]?.at(0).username, config.crypto.randomUUID(), message, new Date().getTime());
 	}
 	else {
 		config.privateChatTarget = targetSignature;
@@ -588,7 +588,7 @@ export function uploadFiles(files) {
 						location: config.locate
 					});
 
-					onMessage("privateMessageSource", "private", config.privateChatTarget, config.clientList[config.privateChatTarget]?.at(0).username, config.clientList[config.privateChatTarget]?.at(0).id, message.join(' '), new Date().getTime());
+					onMessage("privateMessageSource", "private", config.privateChatTarget, config.clientList[config.privateChatTarget]?.at(0).username, config.crypto.randomUUID(), message.join(' '), new Date().getTime());
 				}
 				else {
 					WebSocketBinaryHandler({
@@ -712,16 +712,17 @@ export async function onMessage(messageType, session, signature, username, messa
 		if (messageType.endsWith("Source"))
 			sourceText = "[發送給]";
 
-		$('.lobby > .chat').append(`<div data-id="T${randomSeed}" data-ripple><author data-id="${session}" data-user="${signature}" title="${username}#${crc32(signature)}" class="private">${sourceText} ${username}#${crc32(signature)}</author> <span class="tips" title="${year}/${month}/${day} ${hour}:${minute}">${DateFormatter(timestamp)}</span><div data-convert="true" class="msgWrapper"></div></div>`);
+		$('.lobby > .chat').append(`<div data-id="T${randomSeed}" data-message-id="${message_id}" data-ripple><author data-id="${session}" data-user="${signature}" title="${username}#${crc32(signature)}" class="private">${sourceText} ${username}#${crc32(signature)}</author> <span class="tips" title="${year}/${month}/${day} ${hour}:${minute}">${DateFormatter(timestamp)}</span><div data-convert="true" class="msgWrapper"></div></div>`);
 	}
 	else {
 		$('.lobby > .chat').append(`<div data-id="T${randomSeed}" data-message-id="${message_id}" data-ripple><author data-id="${session}" data-user="${signature}" data-self-id="${crc32(signature)}" class="${session}" title="${username}#${crc32(signature)}">${username}#${crc32(signature)}</author> <span class="tips" title="${year}/${month}/${day} ${hour}:${minute}">${DateFormatter(timestamp)}</span><div data-convert="true" class="msgWrapper"></div></div>`);
-
-		config.messageList[message_id] = {
-			message,
-			author: signature
-		};
 	}
+
+	config.messageList[message_id] = {
+		type: messageType,
+		message,
+		author: signature
+	};
 
 	// 將訊息內容放入
 	$('.lobby > .chat div[data-id="T' + randomSeed + '"]').find('div.msgWrapper').text(message);
@@ -894,7 +895,7 @@ export function sendMessageGeneral(e, $element) {
 				location: config.locate
 			});
 
-			onMessage("privateMessageSource", "private", targetSignature, config.clientList[targetSignature]?.at(0).username, config.clientList[targetSignature]?.at(0).id, message, new Date().getTime());
+			onMessage("privateMessageSource", "private", targetSignature, config.clientList[targetSignature]?.at(0).username, config.crypto.randomUUID(), message, new Date().getTime());
 		}
 	}
 	else if (config.editMessageTarget?.length > 0) {

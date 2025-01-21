@@ -1276,7 +1276,8 @@ body.noOverflow {
 	padding: 7px 15px;
 }
 
-.lobby>.chat div[data-id]:not(.emojis):hover {
+.lobby>.chat div[data-id]:not(.emojis):hover,
+.lobby>.chat div[data-id].focus:not(.emojis) {
 	background: #202020;
 }
 

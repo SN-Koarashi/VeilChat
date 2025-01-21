@@ -36,6 +36,10 @@ export default function RegisterEvent() {
     $('body').on('contextmenu', '.lobby > .chat > div[data-id]', function (e) {
         e.preventDefault();
         const message_id = $(e.currentTarget).attr('data-message-id');
+        if ($(e.currentTarget).attr('data-id') === 'system') return;
+
+        $('.lobby > .chat > div[data-id].focus').removeClass('focus');
+        $(e.currentTarget).addClass('focus');
 
         $('div.contextmenu_wrapper').remove();
         $('body').append('<div class="contextmenu_wrapper"></div>');
@@ -47,7 +51,7 @@ export default function RegisterEvent() {
 
         $('div.contextmenu_wrapper > .contextmenu').append(`<div data-id="copyMessage">複製訊息</div>`);
 
-        if (config.messageList[message_id].author === config.tokenHashSelf) {
+        if (!config.messageList[message_id].type.startsWith("privateMessage") && config.messageList[message_id].author === config.tokenHashSelf) {
             $('div.contextmenu_wrapper > .contextmenu').append(`<div data-id="editMessage">編輯訊息</div>`);
             $('div.contextmenu_wrapper > .contextmenu').append(`<hr/>`);
             $('div.contextmenu_wrapper > .contextmenu').append(`<div data-id="deleteMessage" data-danger>刪除訊息</div>`);
@@ -62,6 +66,7 @@ export default function RegisterEvent() {
         e.preventDefault();
         e.stopPropagation();
         $('div.contextmenu_wrapper').remove();
+        $('.lobby > .chat > div[data-id].focus').removeClass('focus');
     });
 
 
@@ -81,6 +86,7 @@ export default function RegisterEvent() {
         else if (
             action === "editMessage"
             && config.messageList[message_id].author === config.tokenHashSelf
+            && !config.messageList[message_id].type.startsWith("privateMessage")
         ) {
             config.editMessageTarget = message_id;
             config.lastRange = null;
@@ -110,6 +116,7 @@ export default function RegisterEvent() {
         else if (
             action === "deleteMessage"
             && config.messageList[message_id].author === config.tokenHashSelf
+            && !config.messageList[message_id].type.startsWith("privateMessage")
         ) {
             if (e.shiftKey) {
                 deleteMessage(message_id);
