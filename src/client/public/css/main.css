@@ -2075,6 +2075,10 @@ body.noOverflow {
 		overflow: hidden;
 	}
 
+	.lobby>.chat {
+		padding-top: 55px;
+	}
+
 	.lobby>.chat div.msgWrapper .file>span>span.filename {
 		max-width: 240px;
 	}

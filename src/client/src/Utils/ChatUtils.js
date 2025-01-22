@@ -926,6 +926,8 @@ export function sendMessageGeneral(e, $element) {
 export function cancelPrivateMode() {
 	if (config.editMessageTarget != null) {
 		$('#sender').text('');
+		$('.lobby > .chat > div[data-id].focus').removeClass('focus');
+		onKeyEnter($('#sender'));
 	}
 
 	config.privateChatTarget = null;
