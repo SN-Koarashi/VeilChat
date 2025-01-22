@@ -98,6 +98,11 @@ export default function RegisterEvent() {
     });
 
 
+    $('body').on('contextmenu', '.contextmenu_wrapper > .contextmenu', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+    });
+
     $('body').on('click contextmenu', '.contextmenu_wrapper', function (e) {
         e.preventDefault();
         e.stopPropagation();
