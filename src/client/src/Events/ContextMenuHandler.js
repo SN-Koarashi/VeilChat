@@ -93,6 +93,8 @@ export default function RegisterEvent() {
         if (window.getSelection()?.toString().length > 0) {
             $('div.contextmenu_wrapper > .contextmenu').append(`<div class="no-icon" data-icon="Ctrl+C" data-id="copy">複製</div>`);
             $('div.contextmenu_wrapper > .contextmenu').append(`<hr/>`);
+            $('div.contextmenu_wrapper > .contextmenu').append(`<div class="no-icon" data-id="googleSearch">Google 搜尋</div>`);
+            $('div.contextmenu_wrapper > .contextmenu').append(`<hr/>`);
         }
 
         $('div.contextmenu_wrapper > .contextmenu').append(`<div data-icon="content_copy" data-id="copyMessage">複製訊息</div>`);
@@ -155,6 +157,9 @@ export default function RegisterEvent() {
 
         if (action === "copy") {
             copyTextToClipboard(window.getSelection()?.toString());
+        }
+        else if (action === "googleSearch") {
+            window.open(`https://www.google.com/search?q=${encodeURIComponent(window.getSelection()?.toString())}`);
         }
         else if (action === "copyMessage") {
             copyTextToClipboard(config.messageList[message_id].message);
