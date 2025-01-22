@@ -111,9 +111,9 @@ export default function RegisterEvent() {
 	});
 
 	$("#search").on("keyup", function () {
-		var id = $(this).val();
+		var id = $(this).val().toLocaleLowerCase();
 		$(".emoji-window .eBody .eContainer div").each(function () {
-			if ($(this).attr("data-id").indexOf(id) == -1) {
+			if ($(this).attr("data-id")?.toLocaleLowerCase().indexOf(id) === -1) {
 				$(this).hide();
 			}
 			else {
