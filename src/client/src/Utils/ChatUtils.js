@@ -294,7 +294,7 @@ export function toggleSidebar($element, flag, openDirection, force) {
 		$(".lobby, #container, .channelHeader").css(openDirection, '');
 		$(".lobby > .menu").css('right', '');
 
-		$('body').attr('style', 'overflow:hidden;');
+		$('body').addClass("noOverflow");
 		$(".channelHeader, #container, .lobby, .lobby > .menu").addClass("hasAnime");
 		$(".lobby").addClass("inHidden");
 		$(".messageBox #container").addClass("inHidden");
@@ -316,7 +316,7 @@ export function toggleSidebar($element, flag, openDirection, force) {
 		$(".lobby, #container, .channelHeader").css(openDirection, '');
 		$(".lobby > .menu").css('right', '');
 
-		$('body').attr('style', '');
+		$('body').removeClass("noOverflow");
 		$(".lobby").removeClass("inHidden");
 		$(".messageBox #container").removeClass("inHidden");
 		$(".lobby").removeClass(openDirection);
