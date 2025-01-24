@@ -40,7 +40,10 @@ var snkms = function ($) {
 	// @private
 	function shakingWindow(time) {
 		$('.snkms-content').addClass('shake');
+
 		$('.snkms-content .content-text #option-input').focus();
+		$('.snkms-content .content-text #prompt-input').focus();
+
 		$('.snkms-content').removeClass('noAnime');
 		setTimeout(function () {
 			$('.snkms-content').removeClass('shake');
