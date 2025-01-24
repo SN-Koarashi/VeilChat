@@ -23,7 +23,7 @@
 	<link rel="manifest" href="/manifest.json" />
 	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" crossorigin="anonymous" />
 	<link rel="stylesheet" href="https://i.snkms.com/highlight.js/atom-one-dark.css" />
-	<link rel="stylesheet" href="/css/main.css?v250122-3" />
+	<link rel="stylesheet" href="/css/main.css?v250124-2" />
 	<script
 		type="application/ld+json">[{"@context":"http:\/\/schema.org","@type":"WebSite","name":"Veil Chat","url":"https:\/\/chat.snkms.com\/","alternateName":"\u5929\u591c\u4e4b\u5fc3"}]</script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"
@@ -32,7 +32,7 @@
 	<script src="https://i.snkms.com/highlight.js/highlight.min.js"></script>
 	<script src="/js/debugger.js"></script>
 	<script src="/js/emojis.js"></script>
-	<script src="/js/main.encrypted.js?v250122-2"></script>
+	<script src="/js/main.encrypted.js?v250124-1"></script>
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-YDSH7052D5"></script>
 	<script>
@@ -56,9 +56,19 @@
 	<div class="wrapper_settings">
 		<div class="settings_title">Veil Chat</div>
 		<div class="settings_body">
-			<label>使用者<input id="userName" type="text" /></label>
+			<label data-ripple>
+				<div>使用者</div>
+				<div class="userProfile">
+					<div><img src="/images/avatar.png" /></div>
+					<div>
+						<input id="userName" type="text" readonly />
+						ID <span id="userTokenId">#000000</span>
+					</div>
+				</div>
+			</label>
+			<hr />
 		</div>
-		<div class="settings_footer">目前的工作階段: <span></span></div>
+		<div class="settings_footer">工作階段 <span></span></div>
 	</div>
 	<div class="room">
 		<div class="channelHeader">

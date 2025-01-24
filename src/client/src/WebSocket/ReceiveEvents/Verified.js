@@ -3,7 +3,7 @@
 import $ from 'jquery';
 import config from '../../config.js';
 import Dialog from '../../Functions/Dialog.js';
-import { isMobile } from '../../Utils/Utils.js';
+import { crc32, isMobile } from '../../Utils/Utils.js';
 import { privateChat, cancelPrivateMode } from '../../Utils/ChatUtils.js';
 import { hashString } from '../../Functions/Crypto.js';
 import { WebSocketBinaryHandler } from '../../Registers/WebSocket.js';
@@ -18,6 +18,7 @@ export default function RegisterEvent(data) {
     cancelPrivateMode();
 
     $('.settings_footer span').text(config.sessionSelf);
+    $('#userTokenId').text(`#${crc32(config.tokenHashSelf)}`);
 
     // 無狀態參數，表示為加入房間
     if (!data.status) {

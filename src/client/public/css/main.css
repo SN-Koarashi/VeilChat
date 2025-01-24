@@ -1144,13 +1144,22 @@ body.noOverflow {
 .wrapper_settings .settings_body {
 	position: relative;
 	padding: 10px;
-	top: 10px;
+	top: 0px;
 	left: 0px;
 	right: 0px;
 	text-align: center;
 	color: #fff;
 	font-size: 16px;
 	font-family: Arial, '微軟正黑體';
+}
+
+.wrapper_settings .settings_body hr {
+	display: block;
+	height: 1px;
+	border: 0;
+	border-top: 1px solid #494949;
+	margin: 7px 0;
+	padding: 0;
 }
 
 .wrapper_settings .settings_footer {
@@ -1163,28 +1172,61 @@ body.noOverflow {
 	font-size: 12px;
 }
 
-.wrapper_settings .settings_body input {
+.wrapper_settings .settings_body input#userName {
 	background: transparent;
-	border: 1px solid #fff;
 	outline: 0px;
-	padding: 7px;
+	padding: 0px;
 	color: #FFF;
 	display: block;
 	transition: background 0.15s;
+	margin: 0px;
+	width: inherit;
+	box-sizing: border-box;
+	font-size: 20px;
+	border: none;
 }
 
-.wrapper_settings .settings_body input:hover,
-.wrapper_settings .settings_body input:focus {
-	background: rgba(255, 255, 255, .15);
+.wrapper_settings .settings_body label input#userName:focus,
+.wrapper_settings .settings_body label input#userName:hover {
+	background: transparent;
+}
+
+.wrapper_settings .settings_body span#userTokenId {
+	font-size: 16px;
+	color: #ccc;
 }
 
 .wrapper_settings .settings_body label {
-	display: inline-block;
+	display: flex;
 	text-align: left;
+	font-size: 13px;
+	width: 100%;
+	padding: 10px;
+	box-sizing: border-box;
+	border-radius: 7px;
+	position: relative;
+	flex-direction: column;
+	align-items: flex-start;
 }
 
-.wrapper_settings .settings_body label>input {
-	margin-top: 7px;
+.wrapper_settings .settings_body label img {
+	display: inline-block;
+	width: 48px;
+	height: 48px;
+	filter: invert(1);
+	vertical-align: middle;
+}
+
+.wrapper_settings .settings_body label div.userProfile {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-top: 5px;
+}
+
+.wrapper_settings .settings_body label div.userProfile div:last-child {
+	flex: 1;
+	padding-left: 7px;
 }
 
 #fileUpload {
@@ -2265,19 +2307,6 @@ body.noOverflow {
 
 	.wrapper_settings .settings_body {
 		text-align: left;
-	}
-
-	.wrapper_settings .settings_body label {
-		font-size: 18px;
-		width: 100%;
-		border-bottom: 1px solid #686868;
-		padding-bottom: 15px;
-	}
-
-	.wrapper_settings .settings_body label>input {
-		width: inherit;
-		box-sizing: border-box;
-		font-size: 16px;
 	}
 
 	.wrapper_settings .settings_title {

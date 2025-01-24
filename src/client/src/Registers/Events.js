@@ -89,18 +89,19 @@ export function initSetup() {
 	// 初始化手機版介面
 	if (isMobile() || window.innerWidth <= 480) {
 		$('.room').css('height', $(window).height() - $('.messageBox').height() - 20);
-		$('#userName').attr('readonly', true);
-		$('#userName').on('click', function () {
-			Dialog.prompt('設定', '該如何稱呼你？', '',
-				function (evt, value) {
-					config.userName = value;
-					$('#userName').val(value);
-					savingSettings();
-				});
-		});
-
 		initSettings();
 	}
+
+	// 初始化名稱設定介面
+	// $('#userName').attr('readonly', true);
+	$('#userName').on('click', function () {
+		Dialog.prompt('設定', '該如何稱呼你？', '',
+			function (evt, value) {
+				config.userName = value;
+				$('#userName').val(value);
+				savingSettings();
+			});
+	});
 
 	window.emojis = Object.keys(window.emojis).sort().reduce(
 		(obj, key) => {
