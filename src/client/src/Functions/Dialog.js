@@ -201,6 +201,7 @@ var snkms = function ($) {
 				$('.channelName').addClass('slideDown');
 				$('.settings_title').addClass('slideDown');
 				$('.userList').addClass('slideDown');
+				$('.lobby>.chat').addClass('slideDown');
 
 				setTimeout(() => {
 					$(this).attr('data-readyRemove', true);
@@ -210,6 +211,7 @@ var snkms = function ($) {
 						$('.channelName').removeClass('slideDown');
 						$('.settings_title').removeClass('slideDown');
 						$('.userList').removeClass('slideDown');
+						$('.lobby>.chat').removeClass('slideDown');
 					}
 
 					$(this).slideUp(250, function () {

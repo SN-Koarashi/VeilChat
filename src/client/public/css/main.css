@@ -2119,6 +2119,11 @@ body.noOverflow {
 
 	.lobby>.chat {
 		padding-top: 55px;
+		transition: padding-top 0.25s;
+	}
+
+	.lobby>.chat.slideDown {
+		padding-top: 85px;
 	}
 
 	.lobby>.chat div.msgWrapper .file>span>span.filename {
