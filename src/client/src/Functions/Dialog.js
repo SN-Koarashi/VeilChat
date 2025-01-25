@@ -5,6 +5,8 @@ import { isMobile } from '../Utils/Utils';
 var snkms = function ($) {
 	// *** 內部變數區域 *** //
 
+	var isOverflowing = false;
+
 	// 點空白處可以關閉視窗的函數
 	// @private
 	function closeWindowHandler() {
@@ -74,7 +76,13 @@ var snkms = function ($) {
 		}
 		var DragDOM = undefined;
 
-		$('body').addClass('noOverflow');
+		if ($('body').hasClass('noOverflow')) {
+			isOverflowing = true;
+		}
+		else {
+			$('body').addClass('noOverflow');
+		}
+
 		$('body').append('<div class="snkms-jsd-m">');
 		$('.snkms-jsd-m').append(`<div class="snkms-content">`);
 		$('.snkms-content').append('<div class="snkms-title">');
@@ -145,7 +153,10 @@ var snkms = function ($) {
 
 	// 全域移除DOM函數
 	function removeElements() {
-		$('body').removeClass('noOverflow');
+		if (!isOverflowing) {
+			$('body').removeClass('noOverflow');
+		}
+
 		$('.snkms-jsd-m .snkms-content').removeClass('noAnime');
 		$('.snkms-jsd-m .snkms-content').addClass('close');
 

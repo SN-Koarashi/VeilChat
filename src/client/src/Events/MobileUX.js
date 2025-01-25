@@ -84,7 +84,7 @@ export default function RegisterEvent() {
 		dragStartX = e.originalEvent.changedTouches[0].pageX;
 		dragStartY = e.originalEvent.changedTouches[0].pageY;
 
-		$('.emoji-window').css('display') == 'block';
+		// $('.emoji-window').css('display') == 'block';
 
 		if (Dialog.isShownDialog(e.target))
 			createDragElementsObject($(e.target).parents(".snkms-content").get(0));

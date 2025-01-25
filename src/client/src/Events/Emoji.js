@@ -30,6 +30,7 @@ export default function RegisterEvent() {
 					$(".emoji-window").removeClass('close');
 					$(".emoji-window").hide();
 					$(".messageBox").removeClass('fixed');
+					$("body").removeClass('noOverflow');
 				}, 375);
 			}
 			else
@@ -45,7 +46,6 @@ export default function RegisterEvent() {
 			$("#add img").attr("src", config.MainDomain + "/images/add.png");
 		}
 		$(".messageBox").removeClass("unhidden");
-		$("body").removeClass('noOverflow');
 	});
 
 	$(".emoji-window").on("click", function (e) {
