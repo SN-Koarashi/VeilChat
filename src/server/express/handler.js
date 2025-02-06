@@ -17,6 +17,12 @@ const dailyCachePathStartsWith = [
     "/css/"
 ];
 
+const fileExpiringTag = {
+    'weekly': 'b8228950',
+    'daily': 'e425f454',
+    'hourly': '57442048'
+};
+
 const $ = {
     publicPath: path.join(__dirname, '..', '..', 'client/public'),
     HomePage: (req, res) => {
@@ -66,6 +72,20 @@ const $ = {
                 const hash = crypto.createHash('sha1');
                 const stream = fs.createReadStream(filePath);
 
+                var expiringTag;
+
+                // 64 MB
+                if (file.size > 67108864) {
+                    expiringTag = fileExpiringTag.hourly;
+                }
+                else if (file.size > 8388608) {
+                    expiringTag = fileExpiringTag.daily;
+                }
+                else {
+                    expiringTag = fileExpiringTag.weekly;
+                }
+
+
                 stream.on('data', (data) => {
                     hash.update(data); // 更新雜湊值
                 });
@@ -76,7 +96,7 @@ const $ = {
                     const finalFileName = `${sha1Hash}${ext}`; // 最終檔名
 
                     // 移動檔案到最終位置
-                    const finalDestination = path.join($.publicPath, 'files', sha1Hash.slice(0, 2)); // 取得雜湊值的前兩位作為資料夾
+                    const finalDestination = path.join($.publicPath, 'files', expiringTag, sha1Hash.slice(0, 2)); // 取得雜湊值的前兩位作為資料夾
                     fs.mkdirSync(finalDestination, { recursive: true }); // 確保資料夾存在
                     const finalPath = path.join(finalDestination, finalFileName);
 
@@ -87,7 +107,7 @@ const $ = {
                         }
 
                         result.push({
-                            url: `${origin}/files/${sha1Hash.slice(0, 2)}/${finalFileName}?fileName=${encodeURIComponent(file.originalname)}`,
+                            url: `${origin}/files/${expiringTag}/${sha1Hash.slice(0, 2)}/${finalFileName}?fileName=${encodeURIComponent(file.originalname)}`,
                             name: file.originalname,
                             compressed: false,
                             size: {
