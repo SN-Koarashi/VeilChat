@@ -15,7 +15,7 @@
             ],
             "cwd": "${workspaceFolder}",
             "env": {
-                "NODE_ENV": "development" // 如果需要設定環境變數，可以在這裡添加
+                "NODE_ENV": "development"
             }
         },
         {
@@ -32,7 +32,7 @@
             ],
             "cwd": "${workspaceFolder}",
             "env": {
-                "NODE_ENV": "development" // 如果需要設定環境變數，可以在這裡添加
+                "NODE_ENV": "development"
             }
         },
         {
@@ -49,8 +49,42 @@
             ],
             "cwd": "${workspaceFolder}",
             "env": {
-                "NODE_ENV": "development" // 如果需要設定環境變數，可以在這裡添加
+                "NODE_ENV": "development"
             }
-        }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Start Express Server - hot reload",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "nodemon:express"
+            ],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Start Websocket Server - hot reload",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "runtimeExecutable": "npm",
+            "runtimeArgs": [
+                "run",
+                "nodemon:websocket"
+            ],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "NODE_ENV": "development"
+            }
+        },
     ]
 }

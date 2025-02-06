@@ -8,6 +8,8 @@
   "scripts": {
     "dev:websocket": "npm run dev:websocket --workspace=src/server",
     "dev:express": "npm run dev:express --workspace=src/server",
+    "nodemon:websocket": "npm run nodemon:websocket --workspace=src/server",
+    "nodemon:express": "npm run nodemon:express --workspace=src/server",
     "start:websocket": "npm run start:websocket --workspace=src/server",
     "start:express": "npm run start:express --workspace=src/server",
     "build:client": "npm run build --workspace=src/client"

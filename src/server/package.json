@@ -6,6 +6,8 @@
   "scripts": {
     "dev:websocket": "PORT=9001 node ./websocket/server.js --debug",
     "dev:express": "PORT=9002 node ./express/server.js",
+    "nodemon:websocket": "nodemon ./websocket/server.js --debug",
+    "nodemon:express": "nodemon ./express/server.js",
     "start:websocket": "node ./websocket/server.js",
     "start:express": "node ./express/server.js"
   },
@@ -23,6 +25,7 @@
   "devDependencies": {
     "@eslint/js": "^9.17.0",
     "eslint": "^9.17.0",
-    "globals": "^15.14.0"
+    "globals": "^15.14.0",
+    "nodemon": "^3.1.9"
   }
 }
