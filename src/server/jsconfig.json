@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
-        "target": "ES2021", // 支持最新語法
-        "module": "CommonJS" // 指定模組系統為 CommonJS
+        "target": "ES2021",
+        "module": "CommonJS"
     },
     "exclude": [
         "node_modules"
-    ] // 排除不必要的文件夾
+    ]
 }

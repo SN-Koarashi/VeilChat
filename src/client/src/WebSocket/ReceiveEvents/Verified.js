@@ -12,16 +12,16 @@ export default function RegisterEvent(data) {
     const tempLocate = config.locate;
     config.locate = data.location;
     config.sessionSelf = data.session;
-    config.tokenHashSelf = data.signature;
     config.messageList = {};
 
     cancelPrivateMode();
 
-    $('.settings_footer span').text(config.sessionSelf);
-    $('#userTokenId').text(`#${crc32(config.tokenHashSelf)}`);
-
     // 無狀態參數，表示為加入房間
     if (!data.status) {
+        config.tokenHashSelf = data.signature;
+        $('.settings_footer span').text(config.sessionSelf);
+        $('#userTokenId').text(`#${crc32(config.tokenHashSelf)}`);
+
         let channelName = (config.locate == "public") ? "#大廳" : (data.isReserved) ? "#房間 " + config.locate : "#私聊 " + config.locate;
 
         $('.lobby > .chat').empty();
