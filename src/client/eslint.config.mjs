@@ -6,7 +6,7 @@ import pluginJs from "@eslint/js";
 export default [
   { files: ["**/*.js"], languageOptions: { globals: globals.browser } },
   {
-    files: ["compiler.js"],
+    files: ["compiler.js", "webpack.config.js"],
     sourceType: "commonjs",
     languageOptions: {
       globals: {

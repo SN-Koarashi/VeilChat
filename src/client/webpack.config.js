@@ -1,6 +1,8 @@
 const path = require('path');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     mode: 'production', // 設定為生產模式
@@ -43,6 +45,15 @@ module.exports = {
             `.trim(), // 自定義許可證內容
             raw: true, // 使用原始字串，避免包裹註解
         }),
+        new HtmlWebpackPlugin({
+            template: './index.html', // 替換為你的 HTML 模板路徑
+            filename: '../public/index.html', // 輸出的 HTML 檔名
+            inject: false,
+            // 動態添加查詢參數
+            templateParameters: {
+                buildTime: new Date().getTime() // 使用當前時間作為查詢參數
+            }
+        })
     ],
     resolve: {
         alias: {
