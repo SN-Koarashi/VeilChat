@@ -1,3 +1,4 @@
+const { Worker } = require('worker_threads');
 const path = require('path');
 const crypto = require('crypto');
 const multer = require('multer');
@@ -21,6 +22,12 @@ const fileExpiringTag = {
     'weekly': 'b8228950',
     'daily': 'e425f454',
     'hourly': '57442048'
+};
+
+const fileExpiringTime = {
+    'weekly': 7 * 24 * 60 * 60 * 1000,
+    'daily': 24 * 60 * 60 * 1000,
+    'hourly': 60 * 60 * 1000
 };
 
 const $ = {
@@ -170,6 +177,41 @@ const $ = {
                 }
             });
         }
+    },
+    runFileCleanerWorker: function () {
+        // 建立所有工作的 Promise 陣列
+        const workerPromises = Object.keys(fileExpiringTag).map(tag => {
+            return new Promise((resolve, reject) => {
+                const worker = new Worker(path.join(__dirname, 'worker/fileCleaner.js'));
+
+                // 收到工作者發送的消息
+                worker.on('message', (data) => {
+                    resolve(data);
+                });
+
+                // 當工作者發生錯誤時拒絕 Promise
+                worker.on('error', reject);
+
+                // 當工作者退出時檢查退出狀態
+                worker.on('exit', (code) => {
+                    if (code !== 0) {
+                        reject(new Error(`Worker exited, code: ${code}`));
+                    }
+                });
+
+                // 傳遞必要的資料給工作者
+                worker.postMessage({
+                    directory: path.join($.publicPath, 'files', fileExpiringTag[tag]),
+                    expirationTime: fileExpiringTime[tag]
+                });
+            });
+        });
+
+        // 等待所有工作者完成
+        return Promise.all(workerPromises).then(results => {
+            // console.log('All workers have completed:', results);
+            return results; // 可以根據需要返回結果
+        });
     }
 };
 

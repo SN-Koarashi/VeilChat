@@ -7,6 +7,7 @@ const path = require('path');
 const Handler = require('./handler');
 const app = express();
 const PORT = process.env.PORT || 8084;
+var workerRunning = false;
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
@@ -47,4 +48,17 @@ app.use(express.static(Handler.publicPath));
 
 app.listen(PORT, () => {
 	console.log(`Veil Chat Express Server: http://localhost:${PORT}`);
+
+	setInterval(() => {
+		if (!workerRunning) {
+			workerRunning = true;
+			Handler.runFileCleanerWorker().catch(err => {
+				console.error(err);
+			}).finally(() => {
+				workerRunning = false;
+			});
+		} else {
+			console.log('The worker is still running and will not start new cleanup jobs.');
+		}
+	}, 1000 * 60 * 30);
 });
