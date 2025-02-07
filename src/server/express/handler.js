@@ -104,26 +104,32 @@ const $ = {
 
                     // 移動檔案到最終位置
                     const finalDestination = path.join($.publicPath, 'files', expiringTag, sha1Hash.slice(0, 2)); // 取得雜湊值的前兩位作為資料夾
-                    fs.mkdirSync(finalDestination, { recursive: true }); // 確保資料夾存在
                     const finalPath = path.join(finalDestination, finalFileName);
 
-                    fs.rename(filePath, finalPath, (err) => {
+                    fs.mkdir(finalDestination, { recursive: true }, (err) => {
                         if (err) {
-                            console.error('File move failed:', err);
-                            return reject(err); // 拒絕 Promise
+                            console.error('Directory creation failed:', err);
+                            return reject(err);
                         }
 
-                        result.push({
-                            url: `${origin}/files/${expiringTag}/${sha1Hash.slice(0, 2)}/${finalFileName}?fileName=${encodeURIComponent(file.originalname)}`,
-                            name: file.originalname,
-                            compressed: false,
-                            size: {
-                                upload: file.size,
-                                cloud: file.size
+                        fs.rename(filePath, finalPath, (err) => {
+                            if (err) {
+                                console.error('File move failed:', err);
+                                return reject(err); // 拒絕 Promise
                             }
-                        });
 
-                        resolve(); // 解決 Promise
+                            result.push({
+                                url: `${origin}/files/${expiringTag}/${sha1Hash.slice(0, 2)}/${finalFileName}?fileName=${encodeURIComponent(file.originalname)}`,
+                                name: file.originalname,
+                                compressed: false,
+                                size: {
+                                    upload: file.size,
+                                    cloud: file.size
+                                }
+                            });
+
+                            resolve(); // 解決 Promise
+                        });
                     });
                 });
 
