@@ -32,6 +32,22 @@ const fileExpiringTime = {
 
 const $ = {
     publicPath: path.join(__dirname, '..', '..', 'client/public'),
+    sanitizePath: function (reqPath) {
+        // 只允許字母、數字和部分特殊字符
+        return reqPath.replace(/\/+/g, '/').replace(/[^a-zA-Z0-9/_\-.]/g, '');
+    },
+    getSafePath: function (reqPath) {
+        var rootPath = $.publicPath;
+        var accessPath = path.normalize(path.join($.publicPath, $.sanitizePath(reqPath)));
+
+        if (!accessPath.includes("..") && accessPath.startsWith(rootPath)) {
+            return accessPath;
+        }
+        else {
+            console.warn("Invalid access attempt to: ", reqPath, "Resolved path:", accessPath);
+            return null;
+        }
+    },
     HomePage: (req, res) => {
         res.sendFile(path.join($.publicPath, 'index.html'));
     },
@@ -156,9 +172,13 @@ const $ = {
         const downloadName = req.query.fileName || fileName; // 下載檔名
 
         // 構建檔案的完整路徑
-        const filePath = path.join($.publicPath, 'files', fileName.slice(0, 2), fileName);
-        const mimeType = mime.lookup(filePath) || 'application/octet-stream'; // 默認為二進位檔案
+        const filePath = $.getSafePath(path.join('files', path.normalize(req.path)));
 
+        if (filePath == null) {
+            return res.status(400).json({ message: "Bad Request" });
+        }
+
+        const mimeType = mime.lookup(filePath) || 'application/octet-stream'; // 默認為二進位檔案
 
         if (
             mimeType.startsWith("image/") && !req.query.download ||
