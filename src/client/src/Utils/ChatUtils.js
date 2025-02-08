@@ -92,7 +92,7 @@ export function urlify(text) {
 		}
 		//else if(matchSub.startsWith(`${CDNServer}/files/`) && mediaList[matchSub.split(".").at(-1)]
 		else if (matchSub.startsWith(`https://`) && mediaList[matchSub.split(".").at(-1)]) {
-			return `<${mediaList[matchSub.split(".").at(-1)].split("/")[0]} onloadeddata="onScroll(false);" controls><source src="${matchSub}" type="${mediaList[matchSub.split(".").at(-1)]}"></${mediaList[matchSub.split(".").at(-1)].split("/")[0]}>`;
+			return `<${mediaList[matchSub.split(".").at(-1)].split("/")[0]} onloadeddata="$(document).trigger('medialoaded');" controls><source src="${matchSub}" type="${mediaList[matchSub.split(".").at(-1)]}"></${mediaList[matchSub.split(".").at(-1)].split("/")[0]}>`;
 		}
 		else if (matchSub.startsWith(`${config.CDNServer}/files/`)) {
 			let timeID = new Date().getTime();

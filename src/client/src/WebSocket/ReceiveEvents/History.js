@@ -1,7 +1,6 @@
 "use strict";
 
-import { onScroll } from "../../Utils/ChatUtils";
-import { onMessage } from "../../Utils/ChatUtils";
+import { onScroll, onMessage } from "../../Utils/ChatUtils.js";
 
 export default function RegisterEvent(data) {
     let index = 0;

@@ -35,6 +35,11 @@ export default function RegisterEvent(window) {
 		}
 	});
 
+	// 當影片/音訊載入時觸發自訂事件
+	$(document).on('medialoaded', function () {
+		onScroll(false);
+	});
+
 	$('body').on('click', '.inviteLink', function (e) {
 		if ($(this).attr('data-room') === config.locate) {
 			let toast = "您已經在這個房間了";
