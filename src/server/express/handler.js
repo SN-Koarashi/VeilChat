@@ -52,6 +52,11 @@ const $ = {
         res.sendFile(path.join($.publicPath, 'index.html'));
     },
     CacheHandler: (req, res, next) => {
+        // 檢查是否響應已經發送
+        if (res.headersSent) {
+            return next();
+        }
+
         if (noCachePath.includes(req.path) || req.path.startsWith("/p/")) {
             res.set('Cache-Control', 'no-cache');
         }
@@ -192,13 +197,19 @@ const $ = {
             // 如果請求的檔案存在，則進行下載
             res.download(filePath, downloadName, (err) => {
                 if (err) {
-                    if (err.status === 404) {
-                        console.error('File not found:', err);
-                        return res.status(404).json({ message: "File not found" });
-                    }
-                    else {
-                        console.error('File download failed:', err);
-                        return res.status(500).json({ message: "File download failed" });
+                    if (!res.headersSent) {
+                        if (err.status === 404) {
+                            console.error('File not found:', err);
+                            return res.status(404).json({ message: "File not found" });
+                        }
+                        else if (err.code === 'EPIPE') {
+                            console.error('Connection broken during write:', err);
+                            return res.status(500).json({ message: "Connection error" });
+                        }
+                        else {
+                            console.error('File download failed:', err);
+                            return res.status(500).json({ message: "File download failed" });
+                        }
                     }
                 }
             });
@@ -236,7 +247,7 @@ const $ = {
         // 等待所有工作者完成
         return Promise.all(workerPromises).then(results => {
             // console.log('All workers have completed:', results);
-            return results; // 可以根據需要返回結果
+            return results;
         });
     }
 };

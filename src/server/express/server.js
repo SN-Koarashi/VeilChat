@@ -30,7 +30,10 @@ const storage = multer.diskStorage({
 });
 
 // 初始化 multer
-const upload = multer({ storage: storage });
+const upload = multer({
+	storage: storage,
+	limits: { fileSize: 8 * 1024 * 1024 }
+});
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ limit: '1mb', extended: true }));
