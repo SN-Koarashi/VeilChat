@@ -4,6 +4,8 @@ const crypto = require('crypto');
 const multer = require('multer');
 const fs = require('fs-extra');
 const mime = require('mime-types');
+const { publicPath, getSafePath, uploadFileMaximumSize } = require('./utils.js');
+
 const noCachePath = [
     "/",
     "index.html",
@@ -31,25 +33,8 @@ const fileExpiringTime = {
 };
 
 const $ = {
-    publicPath: path.join(__dirname, '..', '..', 'client/public'),
-    sanitizePath: function (reqPath) {
-        // 只允許字母、數字和部分特殊字符
-        return reqPath.replace(/\/+/g, '/').replace(/[^a-zA-Z0-9/_\-.]/g, '');
-    },
-    getSafePath: function (reqPath) {
-        var rootPath = $.publicPath;
-        var accessPath = path.normalize(path.join($.publicPath, $.sanitizePath(reqPath)));
-
-        if (!accessPath.includes("..") && accessPath.startsWith(rootPath)) {
-            return accessPath;
-        }
-        else {
-            console.warn("Invalid access attempt to: ", reqPath, "Resolved path:", accessPath);
-            return null;
-        }
-    },
     HomePage: (req, res) => {
-        res.sendFile(path.join($.publicPath, 'index.html'));
+        res.sendFile(path.join(publicPath, 'index.html'));
     },
     CacheHandler: (req, res, next) => {
         // 檢查是否響應已經發送
@@ -90,6 +75,11 @@ const $ = {
             return res.status(422).json({ message: "Empty upload field" });
         }
 
+        const totalSize = files['fileUpload[]'].reduce((acc, file) => acc + file.size, 0);
+        if (totalSize > uploadFileMaximumSize) {
+            return res.status(400).json({ message: "Total uploaded file size is too large" });
+        }
+
         var result = [];
 
         // 使用 Promise.all 來處理所有檔案
@@ -124,7 +114,7 @@ const $ = {
                     const finalFileName = `${sha1Hash}${ext}`; // 最終檔名
 
                     // 移動檔案到最終位置
-                    const finalDestination = path.join($.publicPath, 'files', expiringTag, sha1Hash.slice(0, 2)); // 取得雜湊值的前兩位作為資料夾
+                    const finalDestination = path.join(publicPath, 'files', expiringTag, sha1Hash.slice(0, 2)); // 取得雜湊值的前兩位作為資料夾
                     const finalPath = path.join(finalDestination, finalFileName);
 
                     fs.mkdir(finalDestination, { recursive: true }, (err) => {
@@ -177,7 +167,7 @@ const $ = {
         const downloadName = req.query.fileName || fileName; // 下載檔名
 
         // 構建檔案的完整路徑
-        const filePath = $.getSafePath(path.join('files', path.normalize(req.path)));
+        const filePath = getSafePath(path.join('files', path.normalize(req.path)));
 
         if (filePath == null) {
             return res.status(400).json({ message: "Bad Request" });
@@ -238,7 +228,7 @@ const $ = {
 
                 // 傳遞必要的資料給工作者
                 worker.postMessage({
-                    directory: path.join($.publicPath, 'files', fileExpiringTag[tag]),
+                    directory: path.join(publicPath, 'files', fileExpiringTag[tag]),
                     expirationTime: fileExpiringTime[tag]
                 });
             });

@@ -4,14 +4,15 @@ const multer = require('multer');
 const crypto = require('crypto');
 const fs = require('fs-extra');
 const path = require('path');
-const Handler = require('./handler');
+const Handler = require('./handler.js');
+const { publicPath, uploadFileMaximumSize } = require('./utils.js');
 const app = express();
 const PORT = process.env.PORT || 8084;
 var workerRunning = false;
 
 const storage = multer.diskStorage({
 	destination: (req, file, cb) => {
-		const tempPath = path.join(Handler.publicPath, '../temp');
+		const tempPath = path.join(publicPath, '../temp');
 		fs.mkdirSync(tempPath, { recursive: true });
 		cb(null, tempPath);
 	},
@@ -32,7 +33,7 @@ const storage = multer.diskStorage({
 // 初始化 multer
 const upload = multer({
 	storage: storage,
-	limits: { fileSize: 8 * 1024 * 1024 }
+	limits: { fileSize: uploadFileMaximumSize }
 });
 
 app.use(express.json({ limit: '1mb' }));
@@ -47,7 +48,7 @@ app.get('/p/:room', Handler.HomePage);
 
 app.use(Handler.ErrorHandler);
 
-app.use(express.static(Handler.publicPath));
+app.use(express.static(publicPath));
 
 app.listen(PORT, () => {
 	console.log(`Veil Chat Express Server: http://localhost:${PORT}`);

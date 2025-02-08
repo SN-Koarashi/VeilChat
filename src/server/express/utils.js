@@ -2,6 +2,24 @@ const path = require('path');
 const fs = require('fs-extra').promises;
 
 const $ = {
+    uploadFileMaximumSize: 8 * 1024 * 1024,
+    publicPath: path.join(__dirname, '..', '..', 'client/public'),
+    sanitizePath: function (reqPath) {
+        // 只允許字母、數字和部分特殊字符
+        return reqPath.replace(/\/+/g, '/').replace(/[^a-zA-Z0-9/_\-.]/g, '');
+    },
+    getSafePath: function (reqPath) {
+        var rootPath = $.publicPath;
+        var accessPath = path.normalize(path.join($.publicPath, $.sanitizePath(reqPath)));
+
+        if (!accessPath.includes("..") && accessPath.startsWith(rootPath)) {
+            return accessPath;
+        }
+        else {
+            console.warn("Invalid access attempt to: ", reqPath, "Resolved path:", accessPath);
+            return null;
+        }
+    },
     // 判斷檔案是否超過指定的存放時間
     isExpired: async function (filePath, expirationTime) {
         const stats = await fs.stat(filePath);
