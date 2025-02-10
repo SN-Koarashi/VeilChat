@@ -96,7 +96,7 @@ if (isDeploy) {
 	fs.writeFileSync(path.join(__dirname, "public/assets/js", "main.encrypted.js"), encrypted);
 
 	const manifestData = fs.readFileSync(path.join(__dirname, "manifest.json"), { encoding: 'utf8', flag: 'r' });
-	fs.writeFileSync(path.join(__dirname, "public", "manifest.json"), manifestData);
+	fs.writeFileSync(path.join(__dirname, "public", "manifest.json"), manifestData.replace('{APP_URL}', `${process.env.APP_URL}/`));
 
 	console.log("Deploying completed");
 }
