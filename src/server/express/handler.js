@@ -12,12 +12,13 @@ const noCachePath = [
     "/files/upload"
 ];
 const monthCachePathStartsWith = [
-    "/images/"
+    "/assets/images/",
+    "/assets/highlight.js/"
 ];
 
 const dailyCachePathStartsWith = [
-    "/js/",
-    "/css/"
+    "/assets/js/",
+    "/assets/css/"
 ];
 
 const fileExpiringTag = {

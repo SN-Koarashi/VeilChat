@@ -572,7 +572,7 @@ body.noOverflow {
 }
 
 .dragHover>div {
-	background-image: url(../images/upload.svg);
+	background-image: url(/assets/images/upload.svg);
 	background-position: center;
 	background-size: 150px;
 	filter: invert(1) drop-shadow(4px 4px 4px black);
@@ -1072,7 +1072,7 @@ body.noOverflow {
 
 .wrapper_settings .additionalSetting:after {
 	content: '';
-	background-image: url(/images/arrow_right.png);
+	background-image: url(/assets/images/arrow_right.png);
 	background-position: center;
 	background-repeat: no-repeat;
 	background-size: 32px;
@@ -1746,7 +1746,7 @@ body.noOverflow {
 }
 
 .userList .userWrapper #dropdown>div {
-	background-image: url(/images/arrow_down.png);
+	background-image: url(/assets/images/arrow_down.png);
 	height: 20px;
 	width: 20px;
 	background-position: center;
@@ -1755,7 +1755,7 @@ body.noOverflow {
 }
 
 .userList .userWrapper #dropdown.down>div {
-	background-image: url(/images/arrow_up.png);
+	background-image: url(/assets/images/arrow_up.png);
 }
 
 .userList .userWrapper div span {
@@ -1972,7 +1972,7 @@ body.noOverflow {
 
 .searcher::after {
 	content: '';
-	background-image: url(/images/search.png);
+	background-image: url(/assets/images/search.png);
 	background-size: 24px;
 	width: 24px;
 	height: 24px;

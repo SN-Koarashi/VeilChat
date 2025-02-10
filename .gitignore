@@ -3,6 +3,7 @@ bin
 temp
 *.db
 **/public/index.html
+**/public/manifest.json
 **/public/js/main.encrypted.js
 **/public/files/*
 !**/public/files/README

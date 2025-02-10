@@ -93,6 +93,10 @@ var encrypted = result.code;
 if (isDeploy) {
 	console.log("");
 	console.log("> Starting deployment");
-	fs.writeFileSync(path.join(__dirname, "public/js", "main.encrypted.js"), encrypted);
+	fs.writeFileSync(path.join(__dirname, "public/assets/js", "main.encrypted.js"), encrypted);
+
+	const manifestData = fs.readFileSync(path.join(__dirname, "manifest.json"), { encoding: 'utf8', flag: 'r' });
+	fs.writeFileSync(path.join(__dirname, "public", "manifest.json"), manifestData);
+
 	console.log("Deploying completed");
 }

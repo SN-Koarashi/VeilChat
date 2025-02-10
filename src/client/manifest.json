@@ -1,21 +1,21 @@
 {
-  "version": "4.0.250117",
+  "version": "4.0.250210",
   "short_name": "Veil Chat",
   "name": "Veil Chat",
   "description": "專為隱私和安全設計的匿名聊天平台，透過端對端加密技術保障每段對話的安全性，支援即時通訊與私密交流，讓您在無憂的環境中自由表達，盡享安心溝通的體驗。",
   "icons": [
     {
-      "src": "/images/sw/apple-icon-192x.png",
+      "src": "/assets/images/sw/apple-icon-192x.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/images/sw/icon-512x.png",
+      "src": "/assets/images/sw/icon-512x.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
-  "start_url": "https://chat.snkms.com/",
+  "start_url": "{APP_URL}",
   "background_color": "#131313",
   "display": "standalone",
   "theme_color": "#131313",
