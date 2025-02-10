@@ -164,7 +164,7 @@ export function urlify(text) {
 			return `<iframe class="youtube" src="https://www.youtube.com/embed/${videoCode}${timestamp}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
 		}
 		else {
-			let windowAction = (matchSub.match(/^(https?:\/\/chat\.snkms\.com)/ig)) ? "_self" : "_blank";
+			let windowAction = (matchSub.match(new RegExp(`^${process.env.APP_URL}`, 'gi'))) ? "_self" : "_blank";
 			return '<a target="' + windowAction + '" href="' + matchSub + '">' + matchSub + '</a>';
 		}
 	})
@@ -187,7 +187,6 @@ export function ParseBBCode(text) {
 	const codeRegex = /```([a-z0-9]+)?\n\n*([^\n][^]*?)\n*```/ig;
 	const emojiRegex = /:([0-9A-Za-z_]+):/ig;
 	const urlRegex = /(https?:\/\/[^\s]+)/g;
-	// const inviteURLRegex = /(https?:\/\/chat\.snkms\.com\/p\/)([0-9A-Za-z\-]+)/g;
 
 	text = text.replace(emojiRegex, (m, w) => {
 		return `[emoji]:${w.trim()}:[/emoji]`;

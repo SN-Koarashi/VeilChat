@@ -3,6 +3,9 @@ const path = require('path');
 const fs = require('fs-extra');
 const JSOF = require('javascript-obfuscator');
 const UglifyJS = require("uglify-js");
+const dotenv = require('dotenv');
+const envConfig = { path: path.resolve(__dirname, '../../.env') };
+dotenv.config(envConfig);
 
 var result;
 var isDeploy = false;
@@ -55,7 +58,7 @@ result = JSOF.obfuscate(result.code,
 		stringArrayShuffle: true,
 		splitStrings: true,
 		stringArrayThreshold: 1,
-		domainLock: ['chat.snkms.com'],
+		domainLock: [process.env.APP_URL.replace(/^https:\/\//, '').replace('/', ''), 'localhost'],
 		domainLockRedirectUrl: 'about:blank'
 	}
 );

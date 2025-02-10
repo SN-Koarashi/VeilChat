@@ -1,7 +1,12 @@
 const path = require('path');
+const dotenv = require('dotenv');
+const Dotenv = require('dotenv-webpack');
 const webpack = require('webpack');
 const TerserPlugin = require('terser-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const envConfig = { path: path.resolve(__dirname, '../../.env') };
+
+dotenv.config(envConfig);
 
 module.exports = {
     mode: 'production', // 設定為生產模式
@@ -28,6 +33,7 @@ module.exports = {
         ],
     },
     plugins: [
+        new Dotenv(envConfig),
         // 自動將 jQuery 提供為全域變數
         new webpack.ProvidePlugin({
             $: 'jquery',
@@ -50,7 +56,8 @@ module.exports = {
             inject: false,
             // 動態添加查詢參數
             templateParameters: {
-                buildTime: new Date().getTime() // 使用當前時間作為查詢參數
+                buildTime: new Date().getTime(), // 使用當前時間作為查詢參數
+                APP_URL: process.env.APP_URL
             }
         })
     ],

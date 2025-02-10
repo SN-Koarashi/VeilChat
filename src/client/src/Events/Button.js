@@ -135,7 +135,7 @@ export default function RegisterEvent(window) {
 				return;
 			}
 
-			if (value.match(/^(https?:\/\/chat\.snkms\.com\/p\/)/ig) || value.match(/^([0-9A-Za-z\-_]{1,16})$/g)) {
+			if (value.match(new RegExp(`^${process.env.APP_URL}/p/`, 'gi')) || value.match(/^([0-9A-Za-z\-_]{1,16})$/g)) {
 				config.locate = value.replace(config.MainDomain + "/p/", "");
 
 				WebSocketBinaryHandler({

@@ -1,8 +1,10 @@
 "use strict";
-// 部分程式碼源自 https://github.com/SN-Koarashi/discord-bot_sis
 require('./global.js');
 const { onSender, Logger, cryptPwd, isJSONString, isMalicious } = require('./function.js');
 
+const path = require('path');
+const dotenv = require('dotenv');
+const envConfig = { path: path.resolve(__dirname, '../../../.env') };
 const crypto = require('crypto');
 const WebSocket = require('ws');
 const SocketServer = WebSocket.Server;
@@ -20,6 +22,7 @@ const onDeleteMessage = require('./Events/DeleteMessage.js');
 const PORT = process.env.PORT || 8080;
 const server = new http.createServer();
 
+dotenv.config(envConfig);
 // SocketServer 開啟 WebSocket 服務
 wssSrv = new SocketServer({ server })
 
@@ -42,7 +45,7 @@ wssSrv.on('connection', (ws, req) => {
 		return;
 	}
 
-	if (!req.headers["origin"]?.match(/^https?:\/\/chat\.snkms\.com\/?$/ig)) {
+	if (!req.headers["origin"]?.match(new RegExp(`^${process.env.APP_URL}/?$`, 'gi'))) {
 		ws.close(4003, "Forbidden origin");
 		Logger("ERROR", `Client ${ip} forbidden because invalid origin:`, req.headers["origin"]);
 		return;

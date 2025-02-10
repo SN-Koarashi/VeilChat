@@ -1,9 +1,9 @@
 "use strict";
 
 const config = {
-	CDNServer: "https://chat.snkms.com",
-	CDNRedirect: "https://chat.snkms.com/",
-	MainDomain: "https://chat.snkms.com",
+	CDNServer: process.env.APP_URL,
+	CDNRedirect: `${process.env.APP_URL}/`,
+	MainDomain: process.env.APP_URL,
 	lang: navigator.language || window.localStorage.getItem('lang') || 'en',
 	isDebugger: window.localStorage.getItem('debugger') ? true : false,
 	wss: null,
