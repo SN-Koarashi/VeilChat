@@ -739,46 +739,46 @@ body.noOverflow {
 
 @keyframes spinPulse {
 	0% {
-		-moz-transform: rotate(160deg);
+		transform: rotate(160deg);
 		opacity: 0;
 		box-shadow: 0 0 1px #505050;
 	}
 
 	50% {
-		-moz-transform: rotate(145deg);
+		transform: rotate(145deg);
 		opacity: 1;
 	}
 
 	100% {
-		-moz-transform: rotate(-320deg);
+		transform: rotate(-320deg);
 		opacity: 0;
 	}
 }
 
 @keyframes spinoffPulse {
 	0% {
-		-moz-transform: rotate(0deg);
+		transform: rotate(0deg);
 	}
 
 	100% {
-		-moz-transform: rotate(360deg);
+		transform: rotate(360deg);
 	}
 }
 
 @-moz-keyframes spinPulse {
 	0% {
-		-moz-transform: rotate(160deg);
+		transform: rotate(160deg);
 		opacity: 0;
 		box-shadow: 0 0 1px #505050;
 	}
 
 	50% {
-		-moz-transform: rotate(145deg);
+		transform: rotate(145deg);
 		opacity: 1;
 	}
 
 	100% {
-		-moz-transform: rotate(-320deg);
+		transform: rotate(-320deg);
 		opacity: 0;
 	}
 }
