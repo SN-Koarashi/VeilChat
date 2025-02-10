@@ -42,8 +42,8 @@ export default function RegisterEvent() {
 		$("#upload").show();
 		$(".textArea").removeClass("maximum");
 		$("#add").removeClass("right");
-		if ($("#add img").attr("src") != config.MainDomain + "/images/add.png") {
-			$("#add img").attr("src", config.MainDomain + "/images/add.png");
+		if ($("#add img").attr("src") != "/assets/images/add.png") {
+			$("#add img").attr("src", "/assets/images/add.png");
 		}
 		$(".messageBox").removeClass("unhidden");
 	});

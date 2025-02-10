@@ -36,7 +36,7 @@ wssSrv.binaryType = 'arraybuffer';
 // 當 WebSocket 從外部連結時執行
 wssSrv.on('connection', (ws, req) => {
 	// 連結時執行提示
-	const ip = (req.connection.remoteAddress.match(/^(::ffff:(127\.0\.0\.1|192\.168\.([0-9]{1,3})\.([0-9]{1,3})))/ig)) ? req.headers['x-forwarded-for'] : req.connection.remoteAddress;
+	const ip = (process.env.NODE_ENV !== "development" && req.connection.remoteAddress.match(/^(::ffff:(127\.0\.0\.1|192\.168\.([0-9]{1,3})\.([0-9]{1,3})))/ig)) ? req.headers['x-forwarded-for'] : req.connection.remoteAddress;
 	const port = req.connection.remotePort;
 
 	if (isMalicious(ip)) {
@@ -45,7 +45,7 @@ wssSrv.on('connection', (ws, req) => {
 		return;
 	}
 
-	if (!req.headers["origin"]?.match(new RegExp(`^${process.env.APP_URL}/?$`, 'gi'))) {
+	if (process.env.NODE_ENV !== "development" && !req.headers["origin"]?.match(new RegExp(`^${process.env.APP_URL}/?$`, 'gi'))) {
 		ws.close(4003, "Forbidden origin");
 		Logger("ERROR", `Client ${ip} forbidden because invalid origin:`, req.headers["origin"]);
 		return;
@@ -57,7 +57,7 @@ wssSrv.on('connection', (ws, req) => {
 	const SocketData = { clientTokenHash: null, clientID: null, ip, port, addressCrypt, clientUID };
 
 	// 驗證使用者是否合法
-	if (ip != req.headers['x-forwarded-for']) {
+	if (process.env.NODE_ENV !== "development" && ip != req.headers['x-forwarded-for']) {
 		onSender({
 			type: 'forbidden',
 			session: clientUID,
@@ -178,7 +178,7 @@ wssSrv.on('connection', (ws, req) => {
 });
 
 server.listen(PORT, () => {
-	Logger("WARN", `Socket Server is Listening on Port ${server.address().port}`);
+	Logger("WARN", `WebSocket Server is Listening on Port ${server.address().port} | mode: ${process.env.NODE_ENV}`);
 
 	// 全域計時器
 	setInterval(() => {

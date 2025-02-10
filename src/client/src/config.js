@@ -3,6 +3,7 @@
 const config = {
 	CDNServer: process.env.APP_URL,
 	CDNRedirect: `${process.env.APP_URL}/`,
+	WebSocketURL: `${process.env.WS_URL}`,
 	MainDomain: process.env.APP_URL,
 	lang: navigator.language || window.localStorage.getItem('lang') || 'en',
 	isDebugger: window.localStorage.getItem('debugger') ? true : false,

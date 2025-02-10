@@ -34,7 +34,7 @@ export function WebSocketConnect() {
 		return;
 	}
 
-	config.wss = new WebSocket('wss://api.snkms.com:443/ws');
+	config.wss = new WebSocket(window.location.hostname === 'localhost' ? 'ws://localhost:9001/' : config.WebSocketURL);
 	config.wss.binaryType = 'arraybuffer';
 
 	config.wss.onopen = () => {
@@ -47,6 +47,7 @@ export function WebSocketConnect() {
 
 	config.wss.onerror = () => {
 		onError();
+		config.denyCount++;
 	}
 
 	config.wss.onmessage = (e) => {

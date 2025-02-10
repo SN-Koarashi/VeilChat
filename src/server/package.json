@@ -8,9 +8,12 @@
     "dev:express": "PORT=9002 node ./express/server.js",
     "nodemon:websocket": "nodemon ./websocket/server.js --debug",
     "nodemon:express": "nodemon ./express/server.js",
-    "nodemon:dev": "concurrently --kill-others \"PORT=9002 nodemon ./express/server.js\" \"PORT=9001 nodemon ./websocket/server.js --debug\"",
+    "nodemon:dev": "concurrently --kill-others \"PORT=9002 nodemon --exitcrash ./express/server.js\" \"PORT=9001 nodemon --exitcrash ./websocket/server.js --debug\"",
     "start:websocket": "node ./websocket/server.js",
     "start:express": "node ./express/server.js"
+  },
+  "nodemon": {
+    "delay": "750"
   },
   "author": "5026",
   "license": "UNLICENSED",
