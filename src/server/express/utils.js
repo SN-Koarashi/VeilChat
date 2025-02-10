@@ -1,9 +1,22 @@
 const path = require('path');
 const fs = require('fs-extra').promises;
+const fsc = require('fs-extra');
 
 const $ = {
-    uploadFileMaximumSize: 8 * 1024 * 1024,
+    uploadFileMaximumSize: 512 * 1024 * 1024, // 512MB
+    uploadFileTotalMaximumSize: 5120 * 1024 * 1024, // 5GB
     publicPath: path.join(__dirname, '..', '..', 'client/public'),
+    tempFileCleaner: function (files) {
+        files.map(file => {
+            fsc.unlink(file.path, err => {
+                if (err) {
+                    if (err.code !== 'ENOENT') {
+                        console.error("file unlink:", err);
+                    }
+                }
+            });
+        });
+    },
     sanitizePath: function (reqPath) {
         // 只允許字母、數字和部分特殊字符
         return reqPath.replace(/\/+/g, '/').replace(/[^a-zA-Z0-9/_\-.]/g, '');

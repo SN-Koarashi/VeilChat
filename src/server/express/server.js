@@ -33,9 +33,20 @@ const storage = multer.diskStorage({
 // 初始化 multer
 const upload = multer({
 	storage: storage,
-	limits: { fileSize: uploadFileMaximumSize }
+	limits: { fileSize: uploadFileMaximumSize },
+	fileFilter: (req, file, cb) => {
+		req.on('aborted', () => {
+			file.stream.on('end', () => {
+				cb(new Error('Client cancel the file upload.'), false);
+			});
+			file.stream.emit('end');
+		})
+
+		cb(null, true); // 檔案有效，繼續上傳
+	}
 });
 
+app.set('trust proxy', true);
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ limit: '1mb', extended: true }));
 app.use(Handler.CacheHandler);

@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const multer = require('multer');
 const fs = require('fs-extra');
 const mime = require('mime-types');
-const { publicPath, getSafePath, uploadFileMaximumSize } = require('./utils.js');
+const { publicPath, uploadFileTotalMaximumSize, getSafePath, tempFileCleaner } = require('./utils.js');
 
 const noCachePath = [
     "/",
@@ -31,6 +31,10 @@ const fileExpiringTime = {
     'daily': 24 * 60 * 60 * 1000,
     'hourly': 60 * 60 * 1000
 };
+
+const fileUploadMaximumSizePerAddress = uploadFileTotalMaximumSize;
+const fileUploadAddressExpiringTime = 1000 * 60 * 30;
+var addressUploadSizeList = {};
 
 const $ = {
     HomePage: (req, res) => {
@@ -76,8 +80,25 @@ const $ = {
         }
 
         const totalSize = files['fileUpload[]'].reduce((acc, file) => acc + file.size, 0);
-        if (totalSize > uploadFileMaximumSize) {
+        if (totalSize > uploadFileTotalMaximumSize) {
+            tempFileCleaner(files['fileUpload[]']);
             return res.status(400).json({ message: "Total uploaded file size is too large" });
+        }
+
+        (addressUploadSizeList[req.ip] = addressUploadSizeList[req.ip] || []).push({ size: totalSize, time: Date.now() });
+
+        const historyUploaded = addressUploadSizeList[req.ip].reduce((acc, current) => {
+            if (current.time + fileUploadAddressExpiringTime > Date.now()) {
+                return acc + current.size;
+            }
+            else {
+                return acc;
+            }
+        }, 0);
+
+        if (historyUploaded > fileUploadMaximumSizePerAddress) {
+            tempFileCleaner(files['fileUpload[]']);
+            return res.status(400).json({ message: "The total upload size from the same IP address within a certain period of time exceeds the limit" });
         }
 
         var result = [];
@@ -155,6 +176,7 @@ const $ = {
             await Promise.all(promises); // 等待所有檔案處理完成
             return res.json(result); // 回應結果
         } catch (error) {
+            tempFileCleaner(files['fileUpload[]']);
             return res.status(500).json({ message: error.message }); // 伺服器錯誤
         }
     },
