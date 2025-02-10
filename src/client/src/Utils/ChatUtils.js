@@ -447,7 +447,10 @@ export async function compressImage(files) {
 
 	let fileSizeTotal = 0;
 	for (let file of newFiles) {
-		fileSizeTotal += file.size;
+		// 只判斷圖片要不要壓縮
+		if (file.type.startsWith("image/")) {
+			fileSizeTotal += file.size;
+		}
 	}
 
 	if (fileSizeTotal > 8388608) {
@@ -477,9 +480,14 @@ export function uploadPrepare(files, flag) {
 	var totalSize = 0;
 	for (let file of files) {
 		totalSize += file.size;
+
+		// 超過512MB要取消上傳事件
+		if (file.size > 536870912) cancel = true;
 	}
 
-	if (totalSize > 8388608) {
+	// 舊版8MB
+	// 新版5GB
+	if (totalSize > 5368709120) {
 		if (flag) {
 			let toast = "上傳的檔案總和不得超過8MB";
 			if (isMobile())
@@ -500,9 +508,16 @@ export function uploadPrepare(files, flag) {
 	else {
 		if (!cancel && totalSize > 0 && files.length > 0)
 			uploadFiles(files);
-		else
-			$("#fileUpload").val('');
+		else {
+			let toast = cancel ? "單一檔案上傳大小必須小於512MB" : "無法上傳檔案";
+			if (isMobile())
+				Dialog.toastMessage(toast, 'close', 'red');
+			else
+				Dialog.error(toast);
+		}
 	}
+
+	$("#fileUpload").val('');
 }
 
 export function uploadFiles(files) {
@@ -517,11 +532,12 @@ export function uploadFiles(files) {
 		cache: false,
 		processData: false,
 		contentType: false,
+		dataType: 'json',
 		type: 'POST',
 		data: fd,
 		error: function (xhr) {
 			Logger.show(Logger.Types.LOG, xhr.responseText);
-			let toast = "上傳失敗";
+			let toast = "上傳失敗: " + xhr?.responseJSON?.message;
 			if (isMobile())
 				Dialog.toastMessage(toast, 'close', 'red');
 			else
@@ -529,9 +545,9 @@ export function uploadFiles(files) {
 			$('#fileUpload').val('');
 		},
 		xhr: function () {
-			let myXhr = $.ajaxSettings.xhr();
-			if (myXhr.upload) {
-				myXhr.upload.addEventListener('progress', function (e) {
+			var xhr = new window.XMLHttpRequest();
+			if (xhr.upload) {
+				xhr.upload.addEventListener('progress', function (e) {
 					if (e.lengthComputable) {
 						var percent = Math.floor(e.loaded / e.total * 10000) / 100;
 
@@ -555,7 +571,8 @@ export function uploadFiles(files) {
 					}
 				}, false);
 			}
-			return myXhr;
+
+			return xhr;
 		},
 		success: function (response) {
 
