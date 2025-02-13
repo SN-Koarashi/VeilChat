@@ -236,7 +236,16 @@ const $ = {
 
                 // 收到工作者發送的消息
                 worker.on('message', (data) => {
-                    resolve(data);
+                    if (data.code >= 200 && data.code <= 299) {
+                        if (data.code === 200) {
+                            worker.postMessage({
+                                type: 'exit'
+                            });
+                        }
+                    }
+                    else {
+                        reject(data);
+                    }
                 });
 
                 // 當工作者發生錯誤時拒絕 Promise
@@ -244,13 +253,17 @@ const $ = {
 
                 // 當工作者退出時檢查退出狀態
                 worker.on('exit', (code) => {
-                    if (code !== 0) {
-                        reject(new Error(`Worker exited, code: ${code}`));
+                    if (code === 0) {
+                        resolve(true);
+                    }
+                    else {
+                        reject(`Worker exited, code: ${code}`);
                     }
                 });
 
                 // 傳遞必要的資料給工作者
                 worker.postMessage({
+                    type: 'run',
                     directory: path.join(publicPath, 'files', fileExpiringTag[tag]),
                     expirationTime: fileExpiringTime[tag]
                 });
