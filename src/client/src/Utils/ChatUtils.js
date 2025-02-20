@@ -388,9 +388,11 @@ export function compressImagePromise(file, flag) {
 						cvs.height = newImg.naturalHeight;
 						ctx.drawImage(newImg, 0, 0, newImg.naturalWidth, newImg.naturalHeight, 0, 0, cvs.width, cvs.height);
 
+						// const convertType = (file.type.toLowerCase().endsWith("gif")) ? 'image/jpeg' : file.type;
 						cvs.toBlob(function (blob) {
 							Logger.show(Logger.Types.LOG, "[CompressionHandlerPromise]", file.name, "Compressed.");
-							resolve(blob);
+							const compressedFile = new File([blob], `${file.name.replaceAll(/(png|gif|jpg|jpeg|webp)$/ig, 'webp')}`, { type: 'image/webp' });
+							resolve(compressedFile);
 						}, 'image/webp', 0.75);
 					};
 
@@ -413,23 +415,28 @@ export function compressImagePromise(file, flag) {
 	});
 }
 
-export async function compressImage(files) {
+export async function prepareCompressImage(files) {
 	$("#progress").css('background', 'red');
 	$("#circle").addClass('red');
 	$("#circle").show();
 
-	let toast = "正在執行本機壓縮處理程序...";
-	if (isMobile())
-		Dialog.toastMessage(toast, 'loop', 'green');
-	else
-		Dialog.success(toast);
-
+	let showCompressingMessage = false;
 	let newFiles = new Array();
 	let k = 0;
 	for (let file of files) {
 		if (file.type.startsWith("image/")) {
-			await compressImagePromise(file, false);
-			newFiles.push(file);
+			if (!showCompressingMessage) {
+				let toast = "正在執行本機壓縮處理程序...";
+				if (isMobile())
+					Dialog.toastMessage(toast, 'loop', 'green');
+				else
+					Dialog.success(toast);
+
+				showCompressingMessage = true;
+			}
+
+			const compressedFile = await compressImagePromise(file, false);
+			newFiles.push(compressedFile);
 			k++;
 
 			$("#progress").css('width', ((k / files.length) * 100) + "%");
@@ -466,15 +473,15 @@ export async function compressImage(files) {
 			newFilesInFor.push(await compressImagePromise(file, true));
 		}
 
-		uploadPrepare(newFilesInFor, true);
+		return newFilesInFor;
 	}
 	else {
 		Logger.show(Logger.Types.LOG, "[CompressionHandler]", newFiles.length, "file(s) preparing to upload.");
-		uploadPrepare(newFiles, true);
+		return Array.from(newFiles);
 	}
 }
 
-export function uploadPrepare(files, flag) {
+export async function uploadPrepare(files) {
 	var cancel = false;
 	var totalSize = 0;
 	for (let file of files) {
@@ -487,15 +494,11 @@ export function uploadPrepare(files, flag) {
 	// 舊版8MB
 	// 新版5GB
 	if (totalSize > 5368709120) {
-		if (flag) {
-			let toast = "上傳的檔案總和不得超過8MB";
-			if (isMobile())
-				Dialog.toastMessage(toast, 'close', 'red');
-			else
-				Dialog.error(toast);
-		}
+		let toast = "上傳的檔案總和不得超過5GB";
+		if (isMobile())
+			Dialog.toastMessage(toast, 'close', 'red');
 		else
-			compressImage(files);
+			Dialog.error(toast);
 	}
 	else if (files.length > 10) {
 		let toast = "單次上傳數量不得超過10個檔案";
@@ -505,8 +508,11 @@ export function uploadPrepare(files, flag) {
 			Dialog.error(toast);
 	}
 	else {
+		// 執行圖片壓縮函數，判斷是否有圖片/是否需要壓縮
+		const newFiles = await prepareCompressImage(files);
+
 		if (!cancel && totalSize > 0 && files.length > 0)
-			uploadFiles(files);
+			uploadFiles(newFiles);
 		else {
 			let toast = cancel ? "單一檔案上傳大小必須小於512MB" : "無法上傳檔案";
 			if (isMobile())

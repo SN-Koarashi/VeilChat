@@ -50,7 +50,7 @@ export default function RegisterEvent(window) {
 	});
 
 	$('#fileUpload').on('change', function () {
-		uploadPrepare(this.files, false);
+		uploadPrepare(this.files);
 	});
 
 	$("#privateChatCreate").on("click", function () {

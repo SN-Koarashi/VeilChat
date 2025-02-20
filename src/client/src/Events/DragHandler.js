@@ -154,7 +154,7 @@ export default function RegisterEvent() {
 		var fileList = e.originalEvent.dataTransfer.files;
 		if (fileList.length == 0) { $(".dragHover").remove(); return; }
 
-		uploadPrepare(fileList, false);
+		uploadPrepare(fileList);
 		$(".dragHover").fadeOut(150, function () {
 			$(this).remove();
 		});
