@@ -272,7 +272,6 @@ export default function RegisterEvent() {
 
     function privateMessage(targetSession) {
         privateChat(targetSession);
-        $('#sender').trigger('focus');
     }
 
     var moveEndY = 0,

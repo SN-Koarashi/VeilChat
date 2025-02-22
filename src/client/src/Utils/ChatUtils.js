@@ -334,7 +334,7 @@ export function toggleSidebar($element, flag, openDirection, force) {
 
 export function privateChat(targetSignature, message, previousLocate) {
 	if (!config.clientList[targetSignature]) {
-		let toast = "該使用者已不在此聊天室";
+		let toast = "使用者不在這個房間";
 		if (isMobile())
 			Dialog.toastMessage(toast, 'close', 'red');
 		else
@@ -368,6 +368,8 @@ export function privateChat(targetSignature, message, previousLocate) {
 		$('.privateStatus').remove();
 		$('.lobby').append('<div class="privateStatus"><div class="privateText">悄悄話 <span></span></div><div title="關閉悄悄話模式" class="privateButton"><img src="' + config.MainDomain + '/assets/images/close_black.png" /></div></div>');
 		$('.lobby > .privateStatus > .privateText > span').text(`${config.clientList[targetSignature]?.at(0).username}#${crc32(targetSignature)}`);
+
+		$('#sender').trigger('focus');
 	}
 }
 
