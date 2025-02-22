@@ -1,7 +1,7 @@
 {
     "search.exclude": {
-        "/_deprecated": true,
         "**/bin": true,
+        "**/temp": true,
         "**/node_modules": true,
         "**/main.encrypted.js": true,
     },
