@@ -366,7 +366,7 @@ export function privateChat(targetSignature, message, previousLocate) {
 	else {
 		config.privateChatTarget = targetSignature;
 		$('.privateStatus').remove();
-		$('.lobby').append('<div class="privateStatus"><div class="privateText">悄悄話 <span></span></div><div title="關閉悄悄話模式" class="privateButton"><img src="' + config.MainDomain + '/images/close_black.png" /></div></div>');
+		$('.lobby').append('<div class="privateStatus"><div class="privateText">悄悄話 <span></span></div><div title="關閉悄悄話模式" class="privateButton"><img src="' + config.MainDomain + '/assets/images/close_black.png" /></div></div>');
 		$('.lobby > .privateStatus > .privateText > span').text(`${config.clientList[targetSignature]?.at(0).username}#${crc32(targetSignature)}`);
 	}
 }

@@ -2,6 +2,7 @@
 import $ from 'jquery';
 import config from '../config';
 import { copyTextToClipboard, isMobile } from '../Utils/Utils.js';
+import { cancelPrivateMode, privateChat } from '../Utils/ChatUtils';
 import Dialog from '../Functions/Dialog.js';
 import { WebSocketBinaryHandler } from '../Registers/WebSocket';
 
@@ -95,6 +96,10 @@ export default function RegisterEvent() {
             $('div.contextmenu_wrapper > .contextmenu').append(`<hr/>`);
             $('div.contextmenu_wrapper > .contextmenu').append(`<div class="no-icon" data-id="googleSearch">Google 搜尋</div>`);
             $('div.contextmenu_wrapper > .contextmenu').append(`<hr/>`);
+        }
+
+        if (config.messageList[message_id].author != config.tokenHashSelf) {
+            $('div.contextmenu_wrapper > .contextmenu').append(`<div data-icon="textsms" data-id="privateMessage">傳送悄悄話</div>`);
         }
 
         $('div.contextmenu_wrapper > .contextmenu').append(`<div data-icon="content_copy" data-id="copyMessage">複製訊息</div>`);
@@ -197,6 +202,13 @@ export default function RegisterEvent() {
             editMessage(message_id);
         }
         else if (
+            action === "privateMessage"
+            && config.messageList[message_id].author != config.tokenHashSelf
+            && config.messageList[message_id].author?.length > 0
+        ) {
+            privateMessage(config.messageList[message_id].author);
+        }
+        else if (
             action === "deleteMessage"
             && config.messageList[message_id].author === config.tokenHashSelf
             && !config.messageList[message_id].type.startsWith("privateMessage")
@@ -215,14 +227,14 @@ export default function RegisterEvent() {
     });
 
     function editMessage(message_id) {
+        if (config.messageList[message_id] == null || message_id == null) return;
+        cancelPrivateMode();
+
         const element = Object.assign({}, triggerElement);
         config.editMessageTarget = message_id;
         config.lastRange = null;
 
-        if (config.messageList[message_id] == null || message_id == null) return;
-
-        $('.privateStatus').remove();
-        $('.lobby').append('<div class="privateStatus"><div class="privateText">編輯訊息 <span></span></div><div title="關閉訊息編輯模式" class="privateButton"><img src="' + config.MainDomain + '/images/close_black.png" /></div></div>');
+        $('.lobby').append('<div class="privateStatus"><div class="privateText">編輯訊息 <span></span></div><div title="關閉訊息編輯模式" class="privateButton"><img src="' + config.MainDomain + '/assets/images/close_black.png" /></div></div>');
         $('.lobby > .privateStatus > .privateText > span').text(`${message_id}`);
 
         $('#sender').text(config.messageList[message_id].message);
@@ -256,6 +268,11 @@ export default function RegisterEvent() {
             message_id: message_id,
             location: config.locate
         });
+    }
+
+    function privateMessage(targetSession) {
+        privateChat(targetSession);
+        $('#sender').trigger('focus');
     }
 
     var moveEndY = 0,

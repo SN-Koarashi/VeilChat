@@ -14,7 +14,7 @@ import eButton from '../Events/Button.js';
 import eDragHandler from '../Events/DragHandler.js';
 import eEmoji from '../Events/Emoji.js';
 import eMessageBox from '../Events/MessageBox.js';
-import eMobileUX from '../Events/MobileUX.js';
+import eMobileSwipeHandler from '../Events/MobileSwipeHandler.js';
 import eRipple from '../Events/Ripple.js';
 import eContextMenuHandler from '../Events/ContextMenuHandler.js';
 
@@ -145,7 +145,7 @@ export function initFirst(window) {
 	eMessageBox(window);
 
 	eDragHandler(window);
-	eMobileUX(window);
+	eMobileSwipeHandler(window);
 	eRipple(window);
 
 	eContextMenuHandler(window);

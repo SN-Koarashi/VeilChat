@@ -2,6 +2,7 @@ node_modules
 bin
 temp
 *.db
+package-lock.json
 **/public/index.html
 **/public/manifest.json
 **/public/assets/js/main.encrypted.js
