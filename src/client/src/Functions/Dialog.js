@@ -182,7 +182,47 @@ var snkms = function ($) {
 			return $(target).parents(".snkms-jsd-m").length > 0;
 		},
 		/**
-		 * 手機版訊息上層
+		 * 手機版訊息置頂模式
+		 * 
+		 * @param {string} content - 對話框的內容
+		 * @param {string} icon - Material 圖示
+		 * @param {string} color - Material 圖示顏色
+		 * @param {function} callback - 回呼函數
+		 */
+		topbarMessage: function (content, icon, color, callback) {
+			icon = (typeof icon === 'string') ? icon : '';
+			color = (typeof icon === 'string') ? ' ' + color : '';
+			$('body').append('<div data-convert="false" class="toast topbar' + color + '"><i class="material-icons">' + icon + '</i><span>' + content + '</span></div>');
+
+			$('body .toast[data-convert="false"].topbar').each(function () {
+				$(this).attr('data-convert', "true");
+				$(this).slideDown(200);
+				$('.channelHeader').addClass('slideDown');
+				$('.channelName').addClass('slideDown');
+				$('.settings_title').addClass('slideDown');
+				$('.userList').addClass('slideDown');
+				$('.lobby>.chat').addClass('slideDown');
+
+				setTimeout(() => {
+					$(this).attr('data-readyRemove', true);
+
+					if ($('body .toast[data-readyRemove="true"].topbar').length === $('body .toast.topbar').length) {
+						$('.channelHeader').removeClass('slideDown');
+						$('.channelName').removeClass('slideDown');
+						$('.settings_title').removeClass('slideDown');
+						$('.userList').removeClass('slideDown');
+						$('.lobby>.chat').removeClass('slideDown');
+					}
+
+					$(this).slideUp(250, function () {
+						$(this).remove();
+						if (typeof callback === 'function') callback();
+					});
+				}, 3000);
+			});
+		},
+		/**
+		 * 手機版訊息浮動模式
 		 * 
 		 * @param {string} content - 對話框的內容
 		 * @param {string} icon - Material 圖示
@@ -196,40 +236,16 @@ var snkms = function ($) {
 
 			$('body .toast[data-convert="false"]').each(function () {
 				$(this).attr('data-convert', "true");
-				$(this).slideDown(200);
-				$('.channelHeader').addClass('slideDown');
-				$('.channelName').addClass('slideDown');
-				$('.settings_title').addClass('slideDown');
-				$('.userList').addClass('slideDown');
-				$('.lobby>.chat').addClass('slideDown');
+				$(this).fadeIn(200);
 
 				setTimeout(() => {
 					$(this).attr('data-readyRemove', true);
 
-					if ($('body .toast[data-readyRemove="true"]').length === $('body .toast').length) {
-						$('.channelHeader').removeClass('slideDown');
-						$('.channelName').removeClass('slideDown');
-						$('.settings_title').removeClass('slideDown');
-						$('.userList').removeClass('slideDown');
-						$('.lobby>.chat').removeClass('slideDown');
-					}
-
-					$(this).slideUp(250, function () {
+					$(this).fadeOut(250, function () {
 						$(this).remove();
 						if (typeof callback === 'function') callback();
 					});
 				}, 3000);
-				/*
-				var timerToastCount = setInterval(()=>{
-					if($('body .toast').length === 0){
-						$('.channelHeader').removeClass('slideDown');
-						$('.channelName').removeClass('slideDown');
-						$('.settings_title').removeClass('slideDown');
-						$('.userList').removeClass('slideDown');
-						clearInterval(timerToastCount);
-					}
-				},100);
-				*/
 			});
 		},
 		/**
