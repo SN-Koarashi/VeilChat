@@ -6,35 +6,9 @@ import { cancelPrivateMode, privateChat } from '../Utils/ChatUtils';
 import Dialog from '../Functions/Dialog.js';
 import { WebSocketBinaryHandler } from '../Registers/WebSocket';
 
+var triggerElement = {};
+
 export default function RegisterEvent() {
-    function checkBoundary(element, x, y) {
-        const rect = element.getBoundingClientRect(); // 獲取浮動視窗的邊界矩形
-        const windowWidth = window.innerWidth; // 瀏覽器窗口的寬度
-        const windowHeight = window.innerHeight; // 瀏覽器窗口的高度
-
-        // 初始化調整的 x 和 y
-        let adjustedX = x;
-        let adjustedY = y;
-
-        // 檢查是否超出邊界並計算調整量
-        if (rect.right > windowWidth) {
-            adjustedX -= (rect.right - windowWidth + 15); // 超出右邊界，減去超出部分
-        }
-        if (rect.bottom > windowHeight) {
-            adjustedY -= (rect.bottom - windowHeight + 15); // 超出下邊界，減去超出部分
-        }
-        if (rect.left < 0) {
-            adjustedX += rect.left; // 超出左邊界，增加左邊的距離
-        }
-        if (rect.top < 0) {
-            adjustedY += rect.top; // 超出上邊界，增加上邊的距離
-        }
-
-        return { x: adjustedX, y: adjustedY }; // 返回調整後的 x 和 y
-    }
-
-    var triggerElement = {};
-
     $('#sender').on('keydown', function (e) {
         // 手機版不套用快捷鍵
         if (!isMobile() && window.innerWidth > 480) {
@@ -142,9 +116,21 @@ export default function RegisterEvent() {
     $('body').on('click contextmenu', '.contextmenu_wrapper', function (e) {
         e.preventDefault();
         e.stopPropagation();
-        $('div.contextmenu_wrapper').remove();
+
         $('.lobby > .chat > div[data-id].focus').removeClass('focus');
         $('body').removeClass('noOverflow');
+
+        const $wrapper = $(this);
+
+        if (isMobile()) {
+            $wrapper.children('.contextmenu').css('transform', `translateY(100%)`);
+            setTimeout(() => {
+                $wrapper.remove();
+            }, 75);
+        }
+        else {
+            $wrapper.remove();
+        }
     });
 
 
@@ -226,54 +212,7 @@ export default function RegisterEvent() {
         triggerElement = {};
     });
 
-    function editMessage(message_id) {
-        if (config.messageList[message_id] == null || message_id == null) return;
-        cancelPrivateMode();
-
-        const element = Object.assign({}, triggerElement);
-        config.editMessageTarget = message_id;
-        config.lastRange = null;
-
-        $('.lobby').append('<div class="privateStatus"><div class="privateText">編輯訊息 <span></span></div><div title="關閉訊息編輯模式" class="privateButton"><img src="' + config.MainDomain + '/assets/images/close_black.png" /></div></div>');
-        $('.lobby > .privateStatus > .privateText > span').text(`${message_id}`);
-
-        $('#sender').text(config.messageList[message_id].message);
-        $('#sender').focus();
-
-        $(element?.main).addClass("focus");
-        setTimeout(() => {
-            if (!isElementInViewport(element?.main)) {
-                element?.main.scrollIntoView({ behavior: 'instant', block: 'start' });
-            }
-
-            // 獲取當前的範圍
-            const range = document.createRange();
-            const selection = window.getSelection();
-
-            // 清空當前選擇
-            selection.removeAllRanges();
-
-            // 設定範圍為內容的結尾
-            range.selectNodeContents(document.querySelector('#sender'));
-            range.collapse(false); // false 代表光標移到末尾
-
-            // 將範圍添加到選擇中
-            selection.addRange(range);
-        }, 10);
-    }
-
-    function deleteMessage(message_id) {
-        WebSocketBinaryHandler({
-            type: 'deleteMessage',
-            message_id: message_id,
-            location: config.locate
-        });
-    }
-
-    function privateMessage(targetSession) {
-        privateChat(targetSession);
-    }
-
+    // 處理手機版選單手勢操作
     var moveEndY = 0,
         moveEndX = 0,
         touchY = 0,
@@ -369,43 +308,117 @@ export default function RegisterEvent() {
             $(triggerSelector).css('bottom', `0px`);
         }
     });
+}
 
-    function getImageType(url) {
-        const extension = new URL(url).pathname.split('.').pop().toLowerCase();
-        const mimeTypes = {
-            'jpg': 'image/jpeg',
-            'jpeg': 'image/jpeg',
-            'png': 'image/png',
-            'gif': 'image/gif',
-            'bmp': 'image/bmp',
-            'svg': 'image/svg+xml'
-        };
-        return mimeTypes[extension] || 'image/png';
+function getImageType(url) {
+    const extension = new URL(url).pathname.split('.').pop().toLowerCase();
+    const mimeTypes = {
+        'jpg': 'image/jpeg',
+        'jpeg': 'image/jpeg',
+        'png': 'image/png',
+        'gif': 'image/gif',
+        'bmp': 'image/bmp',
+        'svg': 'image/svg+xml'
+    };
+    return mimeTypes[extension] || 'image/png';
+}
+
+function isImage(url) {
+    const extension = new URL(url).pathname.split('.').pop().toLowerCase();
+    const mimeTypes = [
+        'jpg',
+        'jpeg',
+        'png',
+        'gif',
+        'bmp',
+        'svg'
+    ];
+
+    return mimeTypes.includes(extension);
+}
+
+function isElementInViewport(el) {
+    if (el == null) return null;
+
+    const rect = el.getBoundingClientRect();
+    return (
+        rect.top >= 0 &&
+        rect.left >= 0 &&
+        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+    );
+}
+
+function checkBoundary(element, x, y) {
+    const rect = element.getBoundingClientRect(); // 獲取浮動視窗的邊界矩形
+    const windowWidth = window.innerWidth; // 瀏覽器窗口的寬度
+    const windowHeight = window.innerHeight; // 瀏覽器窗口的高度
+
+    // 初始化調整的 x 和 y
+    let adjustedX = x;
+    let adjustedY = y;
+
+    // 檢查是否超出邊界並計算調整量
+    if (rect.right > windowWidth) {
+        adjustedX -= (rect.right - windowWidth + 15); // 超出右邊界，減去超出部分
+    }
+    if (rect.bottom > windowHeight) {
+        adjustedY -= (rect.bottom - windowHeight + 15); // 超出下邊界，減去超出部分
+    }
+    if (rect.left < 0) {
+        adjustedX += rect.left; // 超出左邊界，增加左邊的距離
+    }
+    if (rect.top < 0) {
+        adjustedY += rect.top; // 超出上邊界，增加上邊的距離
     }
 
-    function isImage(url) {
-        const extension = new URL(url).pathname.split('.').pop().toLowerCase();
-        const mimeTypes = [
-            'jpg',
-            'jpeg',
-            'png',
-            'gif',
-            'bmp',
-            'svg'
-        ];
+    return { x: adjustedX, y: adjustedY }; // 返回調整後的 x 和 y
+}
 
-        return mimeTypes.includes(extension);
-    }
+function editMessage(message_id) {
+    if (config.messageList[message_id] == null || message_id == null) return;
+    cancelPrivateMode();
 
-    function isElementInViewport(el) {
-        if (el == null) return null;
+    const element = Object.assign({}, triggerElement);
+    config.editMessageTarget = message_id;
+    config.lastRange = null;
 
-        const rect = el.getBoundingClientRect();
-        return (
-            rect.top >= 0 &&
-            rect.left >= 0 &&
-            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-        );
-    }
+    $('.lobby').append('<div class="privateStatus"><div class="privateText">編輯訊息 <span></span></div><div title="關閉訊息編輯模式" class="privateButton"><img src="' + config.MainDomain + '/assets/images/close_black.png" /></div></div>');
+    $('.lobby > .privateStatus > .privateText > span').text(`${message_id}`);
+
+    $('#sender').text(config.messageList[message_id].message);
+    $('#sender').focus();
+
+    $(element?.main).addClass("focus");
+    setTimeout(() => {
+        if (!isElementInViewport(element?.main)) {
+            element?.main.scrollIntoView({ behavior: 'instant', block: 'start' });
+        }
+
+        // 獲取當前的範圍
+        const range = document.createRange();
+        const selection = window.getSelection();
+
+        // 清空當前選擇
+        selection.removeAllRanges();
+
+        // 設定範圍為內容的結尾
+        range.selectNodeContents(document.querySelector('#sender'));
+        range.collapse(false); // false 代表光標移到末尾
+
+        // 將範圍添加到選擇中
+        selection.addRange(range);
+    }, 10);
+}
+
+function deleteMessage(message_id) {
+    WebSocketBinaryHandler({
+        type: 'deleteMessage',
+        message_id: message_id,
+        location: config.locate
+    });
+}
+
+function privateMessage(targetSession) {
+    privateChat(targetSession);
 }
