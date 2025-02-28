@@ -168,6 +168,10 @@ iframe.youtube {
 	color: #3fff00;
 }
 
+.toast.white i {
+	color: #fff;
+}
+
 @keyframes blink {
 	0% {
 		opacity: 0.5;
