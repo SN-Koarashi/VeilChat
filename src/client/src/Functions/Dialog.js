@@ -179,7 +179,8 @@ var snkms = function ($) {
 	// *** 外部變數區域 *** //
 	return {
 		isShownDialog: function (target) {
-			return $(target).parents(".snkms-jsd-m").length > 0;
+			const dialogElement = document.querySelector('.snkms-jsd-m');
+			return $(target).parents(".snkms-jsd-m").length > 0 || target === dialogElement;
 		},
 		/**
 		 * 手機版訊息置頂模式

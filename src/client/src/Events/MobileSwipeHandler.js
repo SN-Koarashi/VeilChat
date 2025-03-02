@@ -57,8 +57,7 @@ export default function RegisterEvent() {
 	});
 
 	$("body").on("touchstart", function (e) {
-		if (e.originalEvent.touches.length > 1 || $(e.originalEvent.target).parents('.messageBox,.channelHeader').length > 0) return;
-		if ($(e.originalEvent.target).parents('.openBackground').length > 0 && $(e.originalEvent.target).tagName() === 'span') return;
+		if (isPreventTrigger(e)) return;
 
 		touchStarting = true;
 
@@ -102,8 +101,7 @@ export default function RegisterEvent() {
 	});
 
 	$("body").on("touchmove", function (e) {
-		if (e.originalEvent.touches.length > 1 || $(e.originalEvent.target).parents('.messageBox,.channelHeader').length > 0) return;
-		if ($(e.originalEvent.target).parents('.openBackground').length > 0 && $(e.originalEvent.target).tagName() === 'span') return;
+		if (isPreventTrigger(e)) return;
 
 		// 向左滑動 (動態行為)
 		if (e.originalEvent.changedTouches[0].pageX < moveEndX) {
@@ -178,8 +176,7 @@ export default function RegisterEvent() {
 	});
 
 	$("body").on("touchend", function (e) {
-		if (e.originalEvent.touches.length > 1 || $(e.originalEvent.target).parents('.messageBox,.channelHeader').length > 0) return;
-		if ($(e.originalEvent.target).parents('.openBackground').length > 0 && $(e.originalEvent.target).tagName() === 'span') return;
+		if (isPreventTrigger(e)) return;
 
 		touchStarting = false;
 
@@ -196,7 +193,9 @@ export default function RegisterEvent() {
 
 		// 對話框關閉狀態下、按下及放開的座標差異不等於零時 (代表有移動)、沒有在捲動狀態時、主要行為是左右滑動時
 		if (!Dialog.isShownDialog(e.target) && X != 0 && !touchScrolling && Math.abs(X) > Math.abs(Y) || $('.openBackground').hasClass('noOverflow')) {
+			$(this).removeClass("noSwipe");
 			$(".openBackground").removeClass('noOverflow');
+
 			$(".rightSide,#container,.lobby,.wrapper_settings, .channelHeader,.lobby > .menu").addClass('hasAnime');
 			if (X < 0 && $(".rightSide").attr("data-open")) {
 				$("#container,.lobby, .channelHeader").addClass('hasRight');
@@ -400,5 +399,19 @@ export default function RegisterEvent() {
 		dragElement[target].y = parseInt($(target).css('top'));
 		dragElement[target].x = parseInt($(target).css('left'));
 		dragElement[target].rx = parseInt($(target).css('right'));
+	}
+
+	function isPreventTrigger(e) {
+		if (
+			e.originalEvent.touches.length > 1 ||
+			$(e.originalEvent.target).parents('.messageBox,.channelHeader').length > 0
+		) return true;
+
+		if (
+			$(e.originalEvent.target).parents('.openBackground').length > 0 &&
+			$(e.originalEvent.target).tagName() === 'span'
+		) return true;
+
+		return false;
 	}
 }
