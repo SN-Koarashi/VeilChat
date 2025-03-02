@@ -61,7 +61,7 @@ export default function RegisterEvent() {
 	$('.wrapper_settings, .rightSide, .channelHeader').on('touchstart', '[data-ripple]', function (e) {
 		ElementRipple(this, e);
 	});
-	$('body').on('touchstart', '.snkms-jsd-m [data-ripple]', function (e) {
+	$('body').on('touchstart', '.popup-jsd-m [data-ripple]', function (e) {
 		ElementRipple(this, e);
 	});
 

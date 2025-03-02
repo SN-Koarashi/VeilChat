@@ -86,7 +86,7 @@ export default function RegisterEvent() {
 		// $('.emoji-window').css('display') == 'block';
 
 		if (Dialog.isShownDialog(e.target))
-			createDragElementsObject($(e.target).parents(".snkms-content").get(0));
+			createDragElementsObject($(e.target).parents(".popup-content").get(0));
 		else {
 			createDragElementsObject('.wrapper_settings');
 			createDragElementsObject('.rightSide');
@@ -162,16 +162,16 @@ export default function RegisterEvent() {
 		}
 
 		// 對話框手勢操作
-		if (Dialog.isShownDialog(e.target) && dragElement[$(e.target).parents(".snkms-content")?.get(0)]) {
-			let movePosition = moveEndY - dragStartY + dragElement[$(e.target).parents(".snkms-content").get(0)].y;
+		if (Dialog.isShownDialog(e.target) && dragElement[$(e.target).parents(".popup-content")?.get(0)]) {
+			let movePosition = moveEndY - dragStartY + dragElement[$(e.target).parents(".popup-content").get(0)].y;
 
 			// 判斷是否在合理範圍，讓使用者只能在螢幕範圍內拖曳
 			if (movePosition >= 0)
-				$(e.target).parents(".snkms-content").css('top', movePosition + 'px');
+				$(e.target).parents(".popup-content").css('top', movePosition + 'px');
 			else
-				$(e.target).parents(".snkms-content").css('top', '0px');
+				$(e.target).parents(".popup-content").css('top', '0px');
 
-			$(e.target).parents(".snkms-content").removeClass('hasAnime');
+			$(e.target).parents(".popup-content").removeClass('hasAnime');
 		}
 	});
 
@@ -230,17 +230,17 @@ export default function RegisterEvent() {
 
 		// 對話框手勢操作
 		if (Math.abs(X) < 65 && Y > 35 && !touchStaying && Dialog.isShownDialog(e.target)) {
-			$('.snkms-content .snkms-title .close').click();
+			$('.popup-content .popup-title .close').click();
 		}
-		else if (Dialog.isShownDialog(e.target) && dragElement[$(e.target).parents(".snkms-content")?.get(0)]) {
-			if (parseInt($(e.target).parents(".snkms-content").css('top')) > $(document).height() / 2.5) {
-				$('.snkms-content .snkms-title .close').click();
+		else if (Dialog.isShownDialog(e.target) && dragElement[$(e.target).parents(".popup-content")?.get(0)]) {
+			if (parseInt($(e.target).parents(".popup-content").css('top')) > $(document).height() / 2.5) {
+				$('.popup-content .popup-title .close').click();
 			}
 			else {
-				$(e.target).parents(".snkms-content").css('top', '0px');
+				$(e.target).parents(".popup-content").css('top', '0px');
 			}
 
-			$(e.target).parents(".snkms-content").addClass('hasAnime');
+			$(e.target).parents(".popup-content").addClass('hasAnime');
 		}
 
 

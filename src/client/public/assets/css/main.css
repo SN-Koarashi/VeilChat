@@ -190,26 +190,26 @@ body.noOverflow {
 	overflow: hidden !important;
 }
 
-.snkms-jsd-m {
+.popup-jsd-m {
 	position: fixed;
 	left: 0px;
 	right: 0px;
 	top: 0px;
 	bottom: 0px;
 	background: rgba(0, 0, 0, .45);
-	animation-name: snkms-close-window;
+	animation-name: popup-close-window;
 	animation-duration: 0.4s;
 	animation-timing-function: ease;
 	z-index: 60000;
 }
 
-.snkms-content {
+.popup-content {
 	position: fixed;
 	top: 20%;
 	left: 50%;
 	width: 500px;
 	transform: translate(-50%, -10%) scale(1);
-	animation-name: snkms-open;
+	animation-name: popup-open;
 	animation-duration: 0.45s;
 	animation-timing-function: ease;
 	border-radius: 3px;
@@ -219,13 +219,13 @@ body.noOverflow {
 	box-shadow: 5px 5px 20px rgba(20%, 20%, 20%, 0.5);
 }
 
-.snkms-content.ach {
+.popup-content.ach {
 	top: 2%;
 	width: 1000px;
 	height: 600px;
 }
 
-.snkms-content .content-text {
+.popup-content .content-text {
 	width: 100%;
 	line-height: 1.4;
 	font-size: 15px;
@@ -235,12 +235,12 @@ body.noOverflow {
 	color: #FFF;
 }
 
-.snkms-content.close {
-	animation-name: snkms-close;
+.popup-content.close {
+	animation-name: popup-close;
 	animation-duration: 0.4s;
 }
 
-.snkms-content .snkms-title {
+.popup-content .popup-title {
 	background: #212121;
 	width: 100%;
 	height: 45px;
@@ -252,13 +252,13 @@ body.noOverflow {
 	cursor: move;
 }
 
-.snkms-content .snkms-title .close {
+.popup-content .popup-title .close {
 	position: absolute;
 	line-height: 43px;
 	right: 7px;
 }
 
-.snkms-content .snkms-title .close i {
+.popup-content .popup-title .close i {
 	transition: transform 0.15s;
 	margin: 0px;
 	font-size: 26px;
@@ -270,11 +270,11 @@ body.noOverflow {
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-.snkms-content .snkms-title .close i:hover {
+.popup-content .popup-title .close i:hover {
 	transform: rotate(15deg);
 }
 
-.snkms-content input {
+.popup-content input {
 	margin-top: 10px;
 	width: 80%;
 	padding: 7px;
@@ -287,7 +287,7 @@ body.noOverflow {
 	color: #fff;
 }
 
-.snkms-content select {
+.popup-content select {
 	width: 80%;
 	padding: 7px;
 	margin-top: 15px;
@@ -301,18 +301,18 @@ body.noOverflow {
 	color: #fff;
 }
 
-.snkms-content option {
+.popup-content option {
 	color: #fff;
 	background: #000;
 }
 
-.snkms-content .body-bottom {
+.popup-content .body-bottom {
 	background: #212121;
 	width: 100%;
 	height: 50px;
 }
 
-.snkms-content .body-bottom button {
+.popup-content .body-bottom button {
 	transition: background 0.5s;
 	background: #3c3c3c;
 	padding: 7px 20px;
@@ -329,43 +329,43 @@ body.noOverflow {
 	font-family: Arial, 微軟正黑體, "Microsoft JhengHei", 蘋果儷中黑, sans-serif;
 }
 
-.snkms-content .body-bottom button:last-child {
+.popup-content .body-bottom button:last-child {
 	margin-right: 5px;
 }
 
-.snkms-content .body-bottom button:hover {
+.popup-content .body-bottom button:hover {
 	background: #4e4e4e;
 	cursor: pointer;
 }
 
-.snkms-content .body-bottom button::-moz-focus-inner {
+.popup-content .body-bottom button::-moz-focus-inner {
 	border: none
 }
 
-.snkms-content.shake {
-	animation-name: snkms-shake;
+.popup-content.shake {
+	animation-name: popup-shake;
 	animation-duration: 0.35s;
 	animation-timing-function: ease;
 }
 
-.snkms-content.noAnime {
+.popup-content.noAnime {
 	animation-name: none;
 	animation-duration: unset;
 	animation-timing-function: ease;
 }
 
-.snkms-message {
+.popup-message {
 	position: fixed;
 	right: 10px;
 	bottom: 20px;
 	z-index: 60001;
 }
 
-.snkms-message * {
+.popup-message * {
 	-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
-.snkms-status {
+.popup-status {
 	position: relative;
 	right: 0px;
 	bottom: 0px;
@@ -383,7 +383,7 @@ body.noOverflow {
 	font-family: Arial, 微軟正黑體, "Microsoft JhengHei", 蘋果儷中黑, sans-serif;
 	cursor: pointer;
 	text-align: left;
-	animation-name: snkms-msg-enter;
+	animation-name: popup-msg-enter;
 	animation-duration: 0.6s;
 	animation-timing-function: ease;
 	transition: background 0.25s;
@@ -391,45 +391,45 @@ body.noOverflow {
 	overflow: hidden;
 }
 
-.snkms-status:last-child {
+.popup-status:last-child {
 	margin-bottom: 0px;
 }
 
-.snkms-status>span {
+.popup-status>span {
 	position: absolute;
 	bottom: 0px;
 	left: 0px;
 	height: 4px;
-	animation-name: snkms-msg-delay;
+	animation-name: popup-msg-delay;
 	animation-duration: 5s;
 	animation-timing-function: linear;
 }
 
-.snkms-status.snkms-error {
+.popup-status.popup-error {
 	background: rgba(217, 92, 92, .85);
 }
 
-.snkms-status.snkms-error:hover {
+.popup-status.popup-error:hover {
 	background: rgba(217, 92, 92, .95);
 }
 
-.snkms-status.snkms-error>span {
+.popup-status.popup-error>span {
 	background: linear-gradient(45deg, #c34c4c, #950000);
 }
 
-.snkms-status.snkms-success {
+.popup-status.popup-success {
 	background: rgba(91, 189, 114, .85);
 }
 
-.snkms-status.snkms-success:hover {
+.popup-status.popup-success:hover {
 	background: rgba(91, 189, 114, .95);
 }
 
-.snkms-status.snkms-success>span {
+.popup-status.popup-success>span {
 	background: linear-gradient(45deg, #3aa948, #008f12);
 }
 
-@keyframes snkms-close-window {
+@keyframes popup-close-window {
 	0% {
 		background: rgba(0, 0, 0, 0);
 	}
@@ -439,7 +439,7 @@ body.noOverflow {
 	}
 }
 
-@keyframes snkms-shake {
+@keyframes popup-shake {
 	0% {
 		margin-left: -10px;
 	}
@@ -461,7 +461,7 @@ body.noOverflow {
 	}
 }
 
-@keyframes snkms-open {
+@keyframes popup-open {
 	0% {
 		opacity: 0;
 		transform: translate(-50%, -10%) scale(1.1);
@@ -489,7 +489,7 @@ body.noOverflow {
 	}
 }
 
-@keyframes snkms-close {
+@keyframes popup-close {
 	0% {
 		opacity: 1;
 		transform: translate(-50%, -10%) scale(1.0);
@@ -513,7 +513,7 @@ body.noOverflow {
 	}
 }
 
-@keyframes snkms-open-m {
+@keyframes popup-open-m {
 	0% {
 		opacity: 0;
 		top: 100vh;
@@ -525,7 +525,7 @@ body.noOverflow {
 	}
 }
 
-@keyframes snkms-close-m {
+@keyframes popup-close-m {
 	0% {
 		opacity: 1;
 	}
@@ -536,7 +536,7 @@ body.noOverflow {
 	}
 }
 
-@keyframes snkms-msg-enter {
+@keyframes popup-msg-enter {
 	0% {
 		opacity: 0;
 		right: 0px;
@@ -555,7 +555,7 @@ body.noOverflow {
 	}
 }
 
-@keyframes snkms-msg-delay {
+@keyframes popup-msg-delay {
 	0% {
 		width: 100%;
 	}
@@ -566,7 +566,7 @@ body.noOverflow {
 }
 
 @media screen and (max-width: 480px) {
-	.snkms-content {
+	.popup-content {
 		width: 95%;
 		top: 25%;
 	}
@@ -574,7 +574,7 @@ body.noOverflow {
 }
 
 @-moz-document url-prefix() {
-	.snkms-content .snkms-title .close i {
+	.popup-content .popup-title .close i {
 		position: relative;
 		top: 3px;
 	}
@@ -605,7 +605,7 @@ body.noOverflow {
 	bottom: 0px;
 }
 
-.snkms-content input[type="checkbox"] {
+.popup-content input[type="checkbox"] {
 	width: fit-content;
 	position: absolute;
 	left: 0px;
@@ -615,22 +615,22 @@ body.noOverflow {
 	pointer-events: none;
 }
 
-.snkms-content hr {
+.popup-content hr {
 	margin: 10px 5px;
 	border: unset;
 	border-bottom: 1px solid #ccc;
 }
 
-.snkms-content .content-text {
+.popup-content .content-text {
 	max-height: 300px;
 	overflow: auto;
 }
 
-.snkms-content .content-text div {
+.popup-content .content-text div {
 	width: inherit;
 }
 
-.snkms-content .content-text div label {
+.popup-content .content-text div label {
 	display: inline-block;
 	width: inherit;
 	box-sizing: border-box;
@@ -2066,48 +2066,48 @@ body.noOverflow {
 		user-select: none;
 	}
 
-	.snkms-content {
+	.popup-content {
 		top: 0px;
 		left: 0px;
 		width: 100%;
-		animation-name: snkms-open-m;
+		animation-name: popup-open-m;
 		transform: unset;
 	}
 
-	.snkms-content.hasAnime {
+	.popup-content.hasAnime {
 		transition: top 0.5s;
 	}
 
-	.snkms-content.close {
-		animation-name: snkms-close-m;
+	.popup-content.close {
+		animation-name: popup-close-m;
 	}
 
-	.snkms-content .snkms-title {
+	.popup-content .popup-title {
 		font-size: 20px;
 	}
 
-	.snkms-content .snkms-title .close {
+	.popup-content .popup-title .close {
 		right: 10px;
 	}
 
-	.snkms-content .snkms-title .close i {
+	.popup-content .popup-title .close i {
 		font-size: 30px;
 		width: 30px;
 		height: 30px;
 	}
 
 	/* Using "svh" because https://stackoverflow.com/a/72245072/14486292 */
-	.snkms-content .content-text {
+	.popup-content .content-text {
 		height: calc(100svh - 115px);
 		max-height: calc(100svh - 115px);
 		font-size: 18px;
 	}
 
-	.snkms-content .body-bottom {
+	.popup-content .body-bottom {
 		height: 70px;
 	}
 
-	.snkms-content .body-bottom button {
+	.popup-content .body-bottom button {
 		float: unset;
 		right: 0px;
 		left: 50%;
@@ -2118,15 +2118,15 @@ body.noOverflow {
 		font-size: 18px;
 	}
 
-	.snkms-content .body-bottom button:hover {
+	.popup-content .body-bottom button:hover {
 		background: #3c3c3c;
 	}
 
-	.snkms-content .body-bottom button#cancel {
+	.popup-content .body-bottom button#cancel {
 		display: none;
 	}
 
-	.snkms-content .body-bottom button:last-child {
+	.popup-content .body-bottom button:last-child {
 		margin-right: 0px;
 	}
 
@@ -2380,13 +2380,13 @@ body.noOverflow {
 		bottom: 0px;
 		height: 50vh;
 		z-index: 7;
-		animation-name: snkms-open-emoji-m;
+		animation-name: popup-open-emoji-m;
 		animation-duration: 0.4s;
 		animation-timing-function: ease;
 	}
 
 	.emoji-window.close {
-		animation-name: snkms-close-emoji-m;
+		animation-name: popup-close-emoji-m;
 		animation-duration: 0.4s;
 		animation-timing-function: ease;
 	}
@@ -2416,7 +2416,7 @@ body.noOverflow {
 		max-width: calc(100% - 142px);
 	}
 
-	@keyframes snkms-open-emoji-m {
+	@keyframes popup-open-emoji-m {
 		0% {
 			opacity: 0;
 			bottom: -100vh;
@@ -2428,7 +2428,7 @@ body.noOverflow {
 		}
 	}
 
-	@keyframes snkms-close-emoji-m {
+	@keyframes popup-close-emoji-m {
 		0% {
 			opacity: 1;
 		}

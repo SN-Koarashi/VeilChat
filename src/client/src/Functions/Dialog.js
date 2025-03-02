@@ -2,7 +2,7 @@
 import $ from 'jquery';
 import { isMobile } from '../Utils/Utils';
 
-var snkms = function ($) {
+var popup = function ($) {
 	// *** 內部變數區域 *** //
 
 	var isOverflowing = false;
@@ -11,7 +11,7 @@ var snkms = function ($) {
 	// @private
 	function closeWindowHandler() {
 		if (!isMobile() && window.innerWidth >= 480) {
-			let $dom = $('.snkms-content .body-bottom #cancel');
+			let $dom = $('.popup-content .body-bottom #cancel');
 			if ($dom.length > 0)
 				$dom.click();
 			else
@@ -30,8 +30,8 @@ var snkms = function ($) {
 					callback();
 
 				setTimeout(() => {
-					if ($('.snkms-message').children().length === 0) {
-						$('.snkms-message').remove();
+					if ($('.popup-message').children().length === 0) {
+						$('.popup-message').remove();
 					}
 				}, 250);
 			});
@@ -41,15 +41,15 @@ var snkms = function ($) {
 	// 搖動動畫(未輸入內容時的提示)
 	// @private
 	function shakingWindow(time) {
-		$('.snkms-content').addClass('shake');
+		$('.popup-content').addClass('shake');
 
-		$('.snkms-content .content-text #option-input').focus();
-		$('.snkms-content .content-text #prompt-input').focus();
+		$('.popup-content .content-text #option-input').focus();
+		$('.popup-content .content-text #prompt-input').focus();
 
-		$('.snkms-content').removeClass('noAnime');
+		$('.popup-content').removeClass('noAnime');
 		setTimeout(function () {
-			$('.snkms-content').removeClass('shake');
-			$('.snkms-content').addClass('noAnime');
+			$('.popup-content').removeClass('shake');
+			$('.popup-content').addClass('noAnime');
 		}, (time) ? time : 350);
 	};
 
@@ -57,22 +57,22 @@ var snkms = function ($) {
 	// @private
 	function keyboardEventHandler(e) {
 		if (e.keyCode == 27) {
-			let $dom = $('.snkms-content .body-bottom #cancel');
+			let $dom = $('.popup-content .body-bottom #cancel');
 			if ($dom.length > 0)
 				$dom.click();
 			else
 				removeElements();
 		}
 		if (e.keyCode == 13) {
-			$('.snkms-content .body-bottom #ok').click();
+			$('.popup-content .body-bottom #ok').click();
 		}
 	};
 
 	// 全域建立DOM函數
 	// @private
 	function initializeElements(hasCancel) {
-		if ($('.snkms-jsd-m').length === 1) {
-			$('.snkms-jsd-m').remove();
+		if ($('.popup-jsd-m').length === 1) {
+			$('.popup-jsd-m').remove();
 		}
 		var DragDOM = undefined;
 
@@ -83,29 +83,29 @@ var snkms = function ($) {
 			$('body').addClass('noOverflow');
 		}
 
-		$('body').append('<div class="snkms-jsd-m">');
-		$('.snkms-jsd-m').append(`<div class="snkms-content">`);
-		$('.snkms-content').append('<div class="snkms-title">');
-		$('.snkms-title').append('<div class="close"><i class="material-icons">close</i></div>');
-		$('.snkms-title').append('<div class="content">');
-		$('.snkms-content').append('<div class="content-text">');
-		$('.snkms-content').append('<div class="body-bottom">');
+		$('body').append('<div class="popup-jsd-m">');
+		$('.popup-jsd-m').append(`<div class="popup-content">`);
+		$('.popup-content').append('<div class="popup-title">');
+		$('.popup-title').append('<div class="close"><i class="material-icons">close</i></div>');
+		$('.popup-title').append('<div class="content">');
+		$('.popup-content').append('<div class="content-text">');
+		$('.popup-content').append('<div class="body-bottom">');
 
 		if (hasCancel)
-			$('.snkms-content .body-bottom').append('<button id="cancel" data-ripple>取消</button>');
+			$('.popup-content .body-bottom').append('<button id="cancel" data-ripple>取消</button>');
 
-		$('.snkms-content .body-bottom').append('<button id="ok" data-ripple>好的</button>');
+		$('.popup-content .body-bottom').append('<button id="ok" data-ripple>好的</button>');
 
 		$(window).on('keydown', keyboardEventHandler);
-		$('body').on('click', '.snkms-content .snkms-title .close', function () {
-			let $dom = $('.snkms-content .body-bottom #cancel');
+		$('body').on('click', '.popup-content .popup-title .close', function () {
+			let $dom = $('.popup-content .body-bottom #cancel');
 			if ($dom.length > 0)
 				$dom.click();
 			else
 				removeElements();
 		});
 
-		$('body').on('click', '.snkms-content', function (e) {
+		$('body').on('click', '.popup-content', function (e) {
 			e.stopPropagation();
 		});
 
@@ -118,8 +118,8 @@ var snkms = function ($) {
 		var g_top = 0;
 
 		// 滑鼠按下
-		$(document).on('mousedown', '.snkms-title', function (e) {
-			DragDOM = ".snkms-content";
+		$(document).on('mousedown', '.popup-title', function (e) {
+			DragDOM = ".popup-content";
 			clicking = true;
 			//設定移動後的預設位置
 			//獲取div的初始位置，要注意的是需要轉整型，因為獲取到值帶px
@@ -136,13 +136,13 @@ var snkms = function ($) {
 		});
 
 		// 滑鼠放開
-		$(document).on('mouseup', '.snkms-jsd-m', function () {
+		$(document).on('mouseup', '.popup-jsd-m', function () {
 			clicking = false;
 			$('body').css('user-select', '');
 		})
 
 		// 滑鼠移動
-		$(document).on('mousemove', '.snkms-jsd-m', function (es) {
+		$(document).on('mousemove', '.popup-jsd-m', function (es) {
 			if (clicking == false) return;
 			var endx = es.pageX - downx + g_left;
 			var endy = es.pageY - downy + g_top;
@@ -157,30 +157,30 @@ var snkms = function ($) {
 			$('body').removeClass('noOverflow');
 		}
 
-		$('.snkms-jsd-m .snkms-content').removeClass('noAnime');
-		$('.snkms-jsd-m .snkms-content').addClass('close');
+		$('.popup-jsd-m .popup-content').removeClass('noAnime');
+		$('.popup-jsd-m .popup-content').addClass('close');
 
 		// 刪除所有JSD事件
-		$('body').off('click onReadValue', '.snkms-content .body-bottom #ok');
-		$('body').off('click', '.snkms-content .body-bottom #cancel');
-		$('body').off('click', '.snkms-content .snkms-title .close');
+		$('body').off('click onReadValue', '.popup-content .body-bottom #ok');
+		$('body').off('click', '.popup-content .body-bottom #cancel');
+		$('body').off('click', '.popup-content .popup-title .close');
 
-		$(document).off('mousemove', '.snkms-jsd-m');
-		$(document).off('mouseup', '.snkms-jsd-m');
-		$(document).off('mousedown', '.snkms-title');
+		$(document).off('mousemove', '.popup-jsd-m');
+		$(document).off('mouseup', '.popup-jsd-m');
+		$(document).off('mousedown', '.popup-title');
 
 		$(document).off('click', closeWindowHandler);
 		$(window).off('keydown', keyboardEventHandler);
 
 		// 淡出並移除元素
-		$('.snkms-jsd-m').fadeOut(400, function () { $(this).remove(); });
+		$('.popup-jsd-m').fadeOut(400, function () { $(this).remove(); });
 	};
 
 	// *** 外部變數區域 *** //
 	return {
 		isShownDialog: function (target) {
-			const dialogElement = document.querySelector('.snkms-jsd-m');
-			return $(target).parents(".snkms-jsd-m").length > 0 || target === dialogElement;
+			const dialogElement = document.querySelector('.popup-jsd-m');
+			return $(target).parents(".popup-jsd-m").length > 0 || target === dialogElement;
 		},
 		/**
 		 * 手機版訊息置頂模式
@@ -259,9 +259,9 @@ var snkms = function ($) {
 		success: function (content, callback, duration) {
 			duration = (duration && typeof duration === 'number') ? duration : 3000;
 
-			if (!$('.snkms-message').length) { $('body').append('<div class="snkms-message">'); }
-			$('.snkms-message').append('<div data-registered="false" class="snkms-status snkms-success">' + content + '<span></span></div>');
-			$('.snkms-success[data-registered="false"]').each(function () {
+			if (!$('.popup-message').length) { $('body').append('<div class="popup-message">'); }
+			$('.popup-message').append('<div data-registered="false" class="popup-status popup-success">' + content + '<span></span></div>');
+			$('.popup-success[data-registered="false"]').each(function () {
 				var dom = this;
 				var timeout = setTimeout(function () {
 					slideOut(dom, callback);
@@ -288,9 +288,9 @@ var snkms = function ($) {
 		error: function (content, callback, duration) {
 			duration = (duration && typeof duration === 'number') ? duration : 3000;
 
-			if (!$('.snkms-message').length) { $('body').append('<div class="snkms-message">'); }
-			$('.snkms-message').append('<div data-registered="false" class="snkms-status snkms-error">' + content + '<span></span></div>');
-			$('.snkms-error[data-registered="false"]').each(function () {
+			if (!$('.popup-message').length) { $('body').append('<div class="popup-message">'); }
+			$('.popup-message').append('<div data-registered="false" class="popup-status popup-error">' + content + '<span></span></div>');
+			$('.popup-error[data-registered="false"]').each(function () {
 				var dom = this;
 				var timeout = setTimeout(function () {
 					slideOut(dom, callback);
@@ -319,10 +319,10 @@ var snkms = function ($) {
 				content = title;
 				title = '系統訊息';
 			}
-			$('.snkms-title .content').text(title);
-			$('.snkms-content .content-text').html(content);
+			$('.popup-title .content').text(title);
+			$('.popup-content .content-text').html(content);
 
-			$('body').on('click', '.snkms-content .body-bottom #ok', function () {
+			$('body').on('click', '.popup-content .body-bottom #ok', function () {
 				removeElements();
 			});
 		},
@@ -335,28 +335,28 @@ var snkms = function ($) {
 		 */
 		confirm: function (content, ok, cancel) {
 			initializeElements(true);
-			$('.snkms-title .content').text('系統訊息');
-			$('.snkms-content .content-text').html(content);
+			$('.popup-title .content').text('系統訊息');
+			$('.popup-content .content-text').html(content);
 
 
 			if (ok && typeof ok === 'function')
-				$('body').on('click', '.snkms-content .body-bottom #ok', ok);
+				$('body').on('click', '.popup-content .body-bottom #ok', ok);
 
-			$('body').on('click', '.snkms-content .body-bottom #ok', function () {
+			$('body').on('click', '.popup-content .body-bottom #ok', function () {
 				removeElements();
 			});
 
 			if (cancel && typeof cancel === 'function') {
 				// 將函數綁定到取消按鈕以及右上角的叉叉
-				$('body').on('click', '.snkms-content .body-bottom #cancel', cancel);
-				$('body').on('click', '.snkms-title .close', cancel);
+				$('body').on('click', '.popup-content .body-bottom #cancel', cancel);
+				$('body').on('click', '.popup-title .close', cancel);
 
-				$('body').on('click', '.snkms-content .body-bottom #cancel', function () {
+				$('body').on('click', '.popup-content .body-bottom #cancel', function () {
 					removeElements();
 				});
 			}
 			else {
-				$('body').on('click', '.snkms-content .body-bottom #cancel', function () {
+				$('body').on('click', '.popup-content .body-bottom #cancel', function () {
 					removeElements();
 				});
 			}
@@ -372,15 +372,15 @@ var snkms = function ($) {
 		 */
 		prompt: function (title, content, placeholder, ok, cancel) {
 			initializeElements(true);
-			$('.snkms-title .content').text(title);
-			$('.snkms-content .content-text').html(content + '<div><input type="text" placeholder="' + placeholder + '" id="prompt-input" /></div>');
+			$('.popup-title .content').text(title);
+			$('.popup-content .content-text').html(content + '<div><input type="text" placeholder="' + placeholder + '" id="prompt-input" /></div>');
 
 			setTimeout(() => {
-				$('.snkms-content .content-text #prompt-input').focus();
+				$('.popup-content .content-text #prompt-input').focus();
 			}, 250);
 
-			$('body').on('click', '.snkms-content .body-bottom #ok', function () {
-				var value = $('.snkms-content .content-text #prompt-input').val();
+			$('body').on('click', '.popup-content .body-bottom #ok', function () {
+				var value = $('.popup-content .content-text #prompt-input').val();
 				if (!value) {
 					shakingWindow();
 				}
@@ -391,20 +391,20 @@ var snkms = function ($) {
 			});
 
 			if (ok && typeof ok === 'function')
-				$('body').on('onReadValue', '.snkms-content .body-bottom #ok', ok);
+				$('body').on('onReadValue', '.popup-content .body-bottom #ok', ok);
 
-			$('body').on('onReadValue', '.snkms-content .body-bottom #ok', function () {
+			$('body').on('onReadValue', '.popup-content .body-bottom #ok', function () {
 				removeElements();
 			});
 
 			if (cancel && typeof cancel === 'function') {
-				$('body').on('click', '.snkms-content .body-bottom #cancel', cancel);
-				$('body').on('click', '.snkms-content .body-bottom #cancel', function () {
+				$('body').on('click', '.popup-content .body-bottom #cancel', cancel);
+				$('body').on('click', '.popup-content .body-bottom #cancel', function () {
 					removeElements();
 				});
 			}
 			else {
-				$('body').on('click', '.snkms-content .body-bottom #cancel', function () {
+				$('body').on('click', '.popup-content .body-bottom #cancel', function () {
 					removeElements();
 				});
 			}
@@ -430,23 +430,23 @@ var snkms = function ($) {
 		 */
 		option: function (title, content, options, hasOtherInput, ok, cancel, extObj) {
 			initializeElements(true);
-			$('.snkms-title .content').text(title);
-			$('.snkms-content .content-text').html(content + '<div><select id="option-input"></select></div>');
-			$('.snkms-content .content-text #option-input').focus();
+			$('.popup-title .content').text(title);
+			$('.popup-content .content-text').html(content + '<div><select id="option-input"></select></div>');
+			$('.popup-content .content-text #option-input').focus();
 
 			const hasCustomDefault = extObj.customDefault && extObj.customDefault.name && extObj.customDefault.value !== undefined;
 
 			if (hasCustomDefault) {
-				$('.snkms-content .content-text #option-input').append(`<option value="${extObj.customDefault.value}">${extObj.customDefault.name}</option>`);
+				$('.popup-content .content-text #option-input').append(`<option value="${extObj.customDefault.value}">${extObj.customDefault.name}</option>`);
 			}
 			else {
-				$('.snkms-content .content-text #option-input').append('<option value="DEFAULT">-</option>');
+				$('.popup-content .content-text #option-input').append('<option value="DEFAULT">-</option>');
 			}
 
 			if (typeof options === 'object' && Array.isArray(options)) {
 				for (let o of options) {
 					if (o.value !== undefined && o.name)
-						$('.snkms-content .content-text #option-input').append('<option value="' + o.value + '">' + o.name + '</option>');
+						$('.popup-content .content-text #option-input').append('<option value="' + o.value + '">' + o.name + '</option>');
 					else {
 						removeElements();
 						throw new Error(`The option parms error:\nname: ${o.name}, value: ${o.value}`);
@@ -460,30 +460,30 @@ var snkms = function ($) {
 
 			if (typeof hasOtherInput === 'boolean' && hasOtherInput === true || typeof hasOtherInput === 'string' && hasOtherInput.length > 0) {
 				if (typeof hasOtherInput === 'string' && hasOtherInput.length > 0)
-					$('.snkms-content .content-text #option-input').append('<option value="OTHER">' + hasOtherInput + '</option>');
+					$('.popup-content .content-text #option-input').append('<option value="OTHER">' + hasOtherInput + '</option>');
 				else
-					$('.snkms-content .content-text #option-input').append('<option value="OTHER">其他</option>');
+					$('.popup-content .content-text #option-input').append('<option value="OTHER">其他</option>');
 
-				$('.snkms-content .content-text #option-input').parent().append('<input style="display:none;" type="text" id="prompt-input" />');
+				$('.popup-content .content-text #option-input').parent().append('<input style="display:none;" type="text" id="prompt-input" />');
 
-				$('body').on('change', '.snkms-content .content-text #option-input', function () {
-					var totalOptions = $('.snkms-content .content-text #option-input option').length;
-					var selectedIndex = $('.snkms-content .content-text #option-input').prop('selectedIndex');
+				$('body').on('change', '.popup-content .content-text #option-input', function () {
+					var totalOptions = $('.popup-content .content-text #option-input option').length;
+					var selectedIndex = $('.popup-content .content-text #option-input').prop('selectedIndex');
 
 					if (totalOptions - 1 === selectedIndex) {
-						$('.snkms-content .content-text #prompt-input').show();
-						$('.snkms-content .content-text #prompt-input').focus();
+						$('.popup-content .content-text #prompt-input').show();
+						$('.popup-content .content-text #prompt-input').focus();
 					}
 					else {
-						$('.snkms-content .content-text #prompt-input').hide();
+						$('.popup-content .content-text #prompt-input').hide();
 					}
 				});
 			}
 
 			if (typeof extObj.defaultSelectedNumber === 'number') {
-				let totalOptions = $('.snkms-content .content-text #option-input option').length;
+				let totalOptions = $('.popup-content .content-text #option-input option').length;
 				if (extObj.defaultSelectedNumber < totalOptions) {
-					$('.snkms-content .content-text #option-input option').filter(function (idx) {
+					$('.popup-content .content-text #option-input option').filter(function (idx) {
 						return extObj.defaultSelectedNumber === idx;
 					}).attr('selected', true).change();
 				}
@@ -494,17 +494,17 @@ var snkms = function ($) {
 			}
 
 
-			$('body').on('click', '.snkms-content .body-bottom #ok', function () {
-				var totalOptions = $('.snkms-content .content-text #option-input option').length;
-				var selectedIndex = $('.snkms-content .content-text #option-input').prop('selectedIndex');
+			$('body').on('click', '.popup-content .body-bottom #ok', function () {
+				var totalOptions = $('.popup-content .content-text #option-input option').length;
+				var selectedIndex = $('.popup-content .content-text #option-input').prop('selectedIndex');
 
-				var value = $('.snkms-content .content-text #option-input').val();
+				var value = $('.popup-content .content-text #option-input').val();
 				if (!value && selectedIndex !== 0 || selectedIndex === 0 && !extObj.allowDefaultSubmit) {
 					shakingWindow();
 				}
 				else {
-					if (totalOptions - 1 === selectedIndex && $('.snkms-content .content-text #prompt-input').length > 0) {
-						value = $('.snkms-content .content-text #prompt-input').val();
+					if (totalOptions - 1 === selectedIndex && $('.popup-content .content-text #prompt-input').length > 0) {
+						value = $('.popup-content .content-text #prompt-input').val();
 					}
 					else if (selectedIndex === 0 && extObj.customDefault && extObj.customDefault.value === null) {
 						value = null;
@@ -521,20 +521,20 @@ var snkms = function ($) {
 			});
 
 			if (ok && typeof ok === 'function')
-				$('body').on('onReadValue', '.snkms-content .body-bottom #ok', ok);
+				$('body').on('onReadValue', '.popup-content .body-bottom #ok', ok);
 
-			$('body').on('onReadValue', '.snkms-content .body-bottom #ok', function () {
+			$('body').on('onReadValue', '.popup-content .body-bottom #ok', function () {
 				removeElements();
 			});
 
 			if (cancel && typeof cancel === 'function') {
-				$('body').on('click', '.snkms-content .body-bottom #cancel', cancel);
-				$('body').on('click', '.snkms-content .body-bottom #cancel', function () {
+				$('body').on('click', '.popup-content .body-bottom #cancel', cancel);
+				$('body').on('click', '.popup-content .body-bottom #cancel', function () {
 					removeElements();
 				});
 			}
 			else {
-				$('body').on('click', '.snkms-content .body-bottom #cancel', function () {
+				$('body').on('click', '.popup-content .body-bottom #cancel', function () {
 					removeElements();
 				});
 			}
@@ -543,4 +543,4 @@ var snkms = function ($) {
 	}
 }($);
 
-export default snkms;
+export default popup;
