@@ -193,7 +193,7 @@ var popup = function ($) {
 		topbarMessage: function (content, icon, color, callback) {
 			icon = (typeof icon === 'string') ? icon : '';
 			color = (typeof icon === 'string') ? ' ' + color : '';
-			$('body').append('<div data-convert="false" class="toast topbar' + color + '"><i class="material-icons">' + icon + '</i><span>' + content + '</span></div>');
+			$('body').append('<div data-convert="false" class="toast topbar' + color + '"><div class="content"><i class="material-icons">' + icon + '</i><span>' + content + '</span></div></div>');
 
 			$('body .toast[data-convert="false"].topbar').each(function () {
 				$(this).attr('data-convert', "true");
@@ -233,7 +233,7 @@ var popup = function ($) {
 		toastMessage: function (content, icon, color, callback) {
 			icon = (typeof icon === 'string') ? icon : '';
 			color = (typeof icon === 'string') ? ' ' + color : '';
-			$('body').append('<div data-convert="false" class="toast' + color + '"><i class="material-icons">' + icon + '</i><span>' + content + '</span></div>');
+			$('body').append('<div data-convert="false" class="toast' + color + '"><div class="backdrop"></div><div class="content"><i class="material-icons">' + icon + '</i><span>' + content + '</span></div></div>');
 
 			$('body .toast[data-convert="false"]').each(function () {
 				$(this).attr('data-convert', "true");

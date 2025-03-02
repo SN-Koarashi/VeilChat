@@ -112,7 +112,7 @@ iframe.youtube {
 	position: fixed;
 	pointer-events: none;
 	height: 30px;
-	background: rgba(255, 255, 255, 0.065);
+	background: transparent;
 	bottom: 10%;
 	left: 50%;
 	transform: translateX(-50%);
@@ -126,7 +126,6 @@ iframe.youtube {
 	font-size: 16px;
 	vertical-align: middle;
 	line-height: 30px;
-	border-radius: 35px;
 }
 
 .toast.topbar {
@@ -139,15 +138,35 @@ iframe.youtube {
 	top: 0px;
 	bottom: unset;
 	box-shadow: 0px 0.5px 5px #000;
-	border-radius: 0px;
 }
 
-.toast span {
+.toast>div.backdrop {
+	position: absolute;
+	display: block;
+	content: '';
+	background: rgba(0, 0, 0, 0.65);
+	left: 0px;
+	top: 0px;
+	bottom: 0px;
+	right: 0px;
+	z-index: -1;
+	border-radius: 35px;
+	backdrop-filter: blur(2px) saturate(100%) !important;
+}
+
+.toast>div.content {
+	position: relative;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.toast>div.content span {
 	position: relative;
 	vertical-align: middle;
 }
 
-.toast i {
+.toast>div.content i {
 	animation-name: blink;
 	animation-iteration-count: infinite;
 	animation-timing-function: ease-in-out;
@@ -156,19 +175,19 @@ iframe.youtube {
 	margin-right: 5px;
 }
 
-.toast.red i {
+.toast.red>div.content i {
 	color: #ff0000;
 }
 
-.toast.orange i {
+.toast.orange>div.content i {
 	color: #e5a900;
 }
 
-.toast.green i {
+.toast.green>div.content i {
 	color: #3fff00;
 }
 
-.toast.white i {
+.toast.white>div.content i {
 	color: #fff;
 }
 
