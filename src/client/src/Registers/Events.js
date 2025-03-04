@@ -9,14 +9,14 @@ import {
 	toggleSidebar
 } from '../Utils/ChatUtils.js';
 
-import eGeneral from '../Events/General.js';
-import eButton from '../Events/Button.js';
-import eDragHandler from '../Events/DragHandler.js';
-import eEmoji from '../Events/Emoji.js';
-import eMessageBox from '../Events/MessageBox.js';
-import eMobileSwipeHandler from '../Events/MobileSwipeHandler.js';
-import eRipple from '../Events/Ripple.js';
-import eContextMenuHandler from '../Events/ContextMenuHandler.js';
+function importEvents(r) {
+	let modules = {};
+	r.keys().forEach((item) => { modules[item.replace('./', '')] = r(item); });
+	return modules;
+}
+
+// eslint-disable-next-line no-undef
+const eventModules = importEvents(require.context('../Events', false, /\.js$/));
 
 export function initSettings() {
 	if (isMobile() || window.innerWidth <= 480) {
@@ -138,17 +138,12 @@ export function initFirst(window) {
 		config.token = config.localStorage.getItem('token');
 	}
 
-
-	eGeneral(window);
-	eButton(window);
-	eEmoji(window);
-	eMessageBox(window);
-
-	eDragHandler(window);
-	eMobileSwipeHandler(window);
-	eRipple(window);
-
-	eContextMenuHandler(window);
+	// 動態匯入所有事件
+	Object.values(eventModules).forEach(module => {
+		if (typeof module.default === 'function') {
+			module.default(window);
+		}
+	});
 
 	initSetup();
 
