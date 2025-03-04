@@ -1,6 +1,6 @@
 "use strict";
-require('../global.js');
-const { onSender, Logger, getSHA256 } = require('../function.js');
+require('../../global.js');
+const { onSender, Logger, getSHA256 } = require('../../function.js');
 
 function RegisterEvent(data, sd) {
   Logger("INFO", `Client ${sd.ip} sent private message:`, sd.clientUID);

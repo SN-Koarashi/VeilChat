@@ -10,13 +10,7 @@ const WebSocket = require('ws');
 const SocketServer = WebSocket.Server;
 const http = require('http');
 
-const onLogin = require('./Events/Login.js');
-const onCreate = require('./Events/Create.js');
-const onRefresh = require('./Events/Refresh.js');
-const onMessage = require('./Events/Message.js');
-const onPrivateMessage = require('./Events/PrivateMessage.js');
-const onEditMessage = require('./Events/EditMessage.js');
-const onDeleteMessage = require('./Events/DeleteMessage.js');
+const Events = require('./Events/index.js');
 
 // 指定開啟的 port
 const PORT = process.env.PORT || 8080;
@@ -86,31 +80,31 @@ wssSrv.on('connection', (ws, req) => {
 
 			// 登入動作
 			if (data.type == 'login') {
-				onLogin(data, SocketData, ws);
+				Events.Login(data, SocketData, ws);
 			}
 			// 建立私聊
 			else if (data.type == 'create') {
-				onCreate(data, SocketData, ws);
+				Events.Create(data, SocketData, ws);
 			}
 			// 刷新動作
 			else if (data.type == 'refresh') {
-				onRefresh(data, SocketData, ws);
+				Events.Refresh(data, SocketData, ws);
 			}
 			// 發送訊息
 			else if (data.type == "message") {
-				onMessage(data, SocketData, ws);
+				Events.Message(data, SocketData, ws);
 			}
 			// 傳送悄悄話 (悄悄話會在重新整理後消失，不會顯示在訊息歷史中)
 			else if (data.type == "privateMessage") {
-				onPrivateMessage(data, SocketData, ws);
+				Events.PrivateMessage(data, SocketData, ws);
 			}
 			// 編輯訊息
 			else if (data.type == "editMessage") {
-				onEditMessage(data, SocketData, ws);
+				Events.EditMessage(data, SocketData, ws);
 			}
 			// 刪除訊息
 			else if (data.type == "deleteMessage") {
-				onDeleteMessage(data, SocketData, ws);
+				Events.DeleteMessage(data, SocketData, ws);
 			}
 			else {
 				Logger("WARN", `Client ${ip} invalid type:`, clientUID);

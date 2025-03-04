@@ -1,6 +1,6 @@
 "use strict";
-require('../global.js');
-const { onSender, Logger } = require('../function.js');
+require('../../global.js');
+const { onSender, Logger } = require('../../function.js');
 
 function RegisterEvent(data, sd, ws) {
   var locate = (data.location && roomList[data.location]) ? data.location : "public";

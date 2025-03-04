@@ -1,6 +1,6 @@
 "use strict";
-require('../global.js');
-const { onSender, getSHA256, makeID } = require('../function.js');
+require('../../global.js');
+const { onSender, getSHA256, makeID } = require('../../function.js');
 
 function RegisterEvent(data, sd, ws) {
 	var j = 0;

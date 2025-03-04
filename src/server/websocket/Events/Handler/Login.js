@@ -1,6 +1,6 @@
 "use strict";
-require('../global.js');
-const { Logger, onSender, getSHA256, getRandomID } = require('../function.js');
+require('../../global.js');
+const { Logger, onSender, getSHA256, getRandomID } = require('../../function.js');
 
 function RegisterEvent(data, sd, ws) {
 	// 使用者所在的房間
