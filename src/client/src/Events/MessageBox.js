@@ -153,6 +153,8 @@ export default function RegisterEvent() {
 						document.getSelection().removeAllRanges();
 						document.getSelection().addRange(range);
 
+						//! 原始的SPAN需要移除，但現在似乎不需要，而且多執行這操作會導致手機版輸入框失焦
+						//! 可能是因為有觀察者處理游標移動，所以此處廢棄
 						// setTimeout(() => {
 						// 	$('#sender span').remove();
 						// }, 5);

@@ -48,8 +48,9 @@ export default function RegisterEvent() {
 		//e.preventDefault();
 	});
 
+	//? 輸入框觀察者，處理游標移動
 	// 防止拖曳進入輸入框的連結或文字含有HTML標籤
-	// 同時自動偵測輸入框變化以反應游標位置
+	// 同時自動偵測輸入框變化以反應游標位置(包含表情符號的插入、換行等相關操作)
 	const observer = new MutationObserver(MutationCallback);
 
 	function MutationCallback(mutations) {
