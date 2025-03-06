@@ -20,8 +20,9 @@ export default function RegisterEvent(window) {
 
 	$(document).on('keydown', function (e) {
 		if (document.activeElement === document.body && !$('.popup-jsd-m').is(':visible') && !$('.wrapper_settings').is(':visible')) {
-			if (!e.altKey && !e.shiftKey && !e.ctrlKey)
-				$('#sender').focus();
+			if (!e.altKey && !e.shiftKey && !e.ctrlKey) {
+				$('#sender').trigger('focus');
+			}
 		}
 	});
 

@@ -31,7 +31,7 @@ export default function RegisterEvent() {
 		}
 	});
 	$('#sender').on('keydown', function (e) {
-		if (e.keyCode == 13 && config.wss.readyState == 1 && $(this).text().replace(/\n|\r/g, "").length > 0) {
+		if (e.which == 13 && config.wss.readyState == 1 && $(this).text().replace(/\n|\r/g, "").length > 0) {
 			if (!e.shiftKey && !isMobile()) {
 				let outResult = true;
 				// 使用 Markdown 語法時不送出訊息
@@ -53,7 +53,7 @@ export default function RegisterEvent() {
 
 
 		// ALT+Q or CTRL+Q 插入 Markdown 區塊
-		if (e.keyCode == 81 && e.altKey || e.keyCode == 81 && e.ctrlKey) {
+		if (e.which == 81 && e.altKey || e.which == 81 && e.ctrlKey) {
 			/*
 			let cursorPos = $('#sender').prop('selectionStart');
 			let v = $('#sender').text();
@@ -117,7 +117,7 @@ export default function RegisterEvent() {
 		}
 
 		// TAB插入全形空白
-		if (e.keyCode == 9) {
+		if (e.which == 9) {
 			if (document.getSelection().rangeCount > 0) {
 				let range = document.getSelection().getRangeAt(0);
 				var textNode = document.createTextNode("　");
@@ -131,10 +131,10 @@ export default function RegisterEvent() {
 			}
 		}
 
-		if (e.keyCode == 13 && !e.shiftKey && !isMobile() || e.keyCode == 9)
+		if (e.which == 13 && !e.shiftKey && !isMobile() || e.which == 9)
 			e.preventDefault();
 
-		if (e.keyCode == 13) {
+		if (e.which == 13) {
 			if (document.getSelection().rangeCount > 0) {
 				// 非同步處理事件
 				setTimeout(() => {
@@ -153,9 +153,9 @@ export default function RegisterEvent() {
 						document.getSelection().removeAllRanges();
 						document.getSelection().addRange(range);
 
-						setTimeout(() => {
-							$('#sender span').remove();
-						}, 5);
+						// setTimeout(() => {
+						// 	$('#sender span').remove();
+						// }, 5);
 					}
 				}, 1);
 			}

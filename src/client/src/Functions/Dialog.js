@@ -56,15 +56,15 @@ var popup = function ($) {
 	// 鍵盤事件
 	// @private
 	function keyboardEventHandler(e) {
-		if (e.keyCode == 27) {
+		if (e.which == 27) {
 			let $dom = $('.popup-content .body-bottom #cancel');
 			if ($dom.length > 0)
-				$dom.click();
+				$dom.trigger("click");
 			else
 				removeElements();
 		}
-		if (e.keyCode == 13) {
-			$('.popup-content .body-bottom #ok').click();
+		if (e.which == 13) {
+			$('.popup-content .body-bottom #ok').trigger("click");
 		}
 	};
 
