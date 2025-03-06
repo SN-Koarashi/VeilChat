@@ -364,6 +364,11 @@ export function privateChat(targetSignature, message, previousLocate) {
 		onMessage("privateMessageSource", "private", targetSignature, config.clientList[targetSignature]?.at(0).username, config.crypto.randomUUID(), message, new Date().getTime());
 	}
 	else {
+		// 若成功啟動悄悄話模式，則關閉側邊欄
+		if ($('.rightSide[data-open="true"]').length) {
+			toggleSidebar($(".rightSide"), false, 'right');
+		}
+
 		config.privateChatTarget = targetSignature;
 		$('.privateStatus').remove();
 		$('.lobby').append('<div class="privateStatus"><div class="privateText">悄悄話 <span></span></div><div title="關閉悄悄話模式" class="privateButton"><img src="' + config.MainDomain + '/assets/images/close_black.png" /></div></div>');
