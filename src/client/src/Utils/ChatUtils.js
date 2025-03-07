@@ -3,7 +3,7 @@
 
 import $ from 'jquery';
 import config from '../config.js';
-import { crc32, isMobile, escapeHtml, checkImageURL, randomASCIICode, getPlainMessage } from './Utils.js';
+import { crc32, isMobile, escapeHtml, checkImageURL, randomASCIICode, getPlainMessage, getFileCleanerTagFormat } from './Utils.js';
 import Logger from '../Functions/Logger.js';
 import Dialog from '../Functions/Dialog.js';
 import { WebSocketBinaryHandler } from '../Registers/WebSocket.js';
@@ -113,7 +113,18 @@ export function urlify(text) {
 								},
 								success: function (response, status, xhr) {
 									let fileSize = xhr.getResponseHeader("Content-Length");
-									$(`.${crc32(matchSub)}[data-id="${timeID}"]`).text(SizeFormatter(fileSize));
+									$(`.${crc32(matchSub)}[data-id="${timeID}"] > span`).text(SizeFormatter(fileSize));
+
+									let format = getFileCleanerTagFormat(fileSize);
+									let tips = `由於伺服器資源有限，該檔案為${format.priority}優先度，將在${format.date}後自動刪除。`;
+
+									$(`.${crc32(matchSub)}[data-id="${timeID}"] > span`).prepend(`<span class="fileRecycleAlert ${format.color}"></span>`);
+									$(`.${crc32(matchSub)}[data-id="${timeID}"]`).attr('title', tips);
+
+									$('body').on('click', `.${crc32(matchSub)}[data-id="${timeID}"] .fileRecycleAlert`, function (e) {
+										e.stopPropagation();
+										Dialog.alert(tips);
+									});
 								}
 							});
 							localObserver.disconnect();
@@ -147,7 +158,7 @@ export function urlify(text) {
 				filename = url.searchParams.get('fileName');
 			}
 
-			return `<div class="file"><span><a class="linkName" href="${matchSub}" title="${filename}" class="filename">${filename}</a><br/><span data-id="${timeID}" class="${crc32(matchSub)}">-</span></span><a target="_blank" href="${matchSub}&download=true" class="linkButton" title="下載 ${filename}"><img src="/assets/images/download.png" /></a></div>`;
+			return `<div class="file"><span><a class="linkName" href="${matchSub}" title="${filename}" class="filename">${filename}</a><br/><span data-id="${timeID}" class="${crc32(matchSub)}"><span>-</span></span></span><a target="_blank" href="${matchSub}&download=true" class="linkButton" title="下載 ${filename}"><img src="/assets/images/download.png" /></a></div>`;
 		}
 		else if (matchSub.match(/^https?:\/\/(www\.youtube\.com\/watch\?[^\s]+|youtu\.be\/[0-9a-zA-Z\-_]{11})/ig)) {
 			let videoCode = "";

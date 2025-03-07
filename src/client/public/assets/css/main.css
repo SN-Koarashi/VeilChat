@@ -1575,6 +1575,36 @@ body.noOverflow {
 	cursor: not-allowed;
 }
 
+.lobby>.chat div.msgWrapper .file span[data-id] {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.lobby>.chat div.msgWrapper .file .fileRecycleAlert+span {
+	vertical-align: middle;
+}
+
+.lobby>.chat div.msgWrapper .file .fileRecycleAlert {
+	display: inline-block;
+	position: relative;
+	vertical-align: middle;
+	background-color: white;
+	width: 16px;
+	height: 16px;
+	mask: url(/assets/images/emergency.png) no-repeat center;
+	mask-size: 100%;
+	margin-right: 3px;
+	cursor: pointer;
+}
+
+.lobby>.chat div.msgWrapper .file .fileRecycleAlert.red {
+	background-color: red;
+}
+
+.lobby>.chat div.msgWrapper .file .fileRecycleAlert.orange {
+	background-color: orange;
+}
+
 .lobby>.chat div.msgWrapper .file a img {
 	filter: invert(0.85);
 	width: 32px;

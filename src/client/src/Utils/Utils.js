@@ -154,3 +154,31 @@ export function copyTextToClipboard(text) {
 		Logger.show(Logger.Types.ERROR, '複製失敗:', err);
 	});
 }
+
+export function getFileCleanerTagFormat(fileSize) {
+	var color;
+	var priority;
+	var date;
+
+	if (fileSize > 1024 * 1024 * 64) {
+		color = 'red';
+		priority = '高';
+		date = '1小時';
+	}
+	else if (fileSize > 1024 * 1024 * 8) {
+		color = 'orange';
+		priority = '中';
+		date = '1天';
+	}
+	else {
+		color = 'white';
+		priority = '低';
+		date = '1週';
+	}
+
+	return {
+		color,
+		priority,
+		date
+	};
+}

@@ -13,7 +13,7 @@ var popup = function ($) {
 		if (!isMobile() && window.innerWidth >= 480) {
 			let $dom = $('.popup-content .body-bottom #cancel');
 			if ($dom.length > 0)
-				$dom.click();
+				$dom.trigger('click');
 			else
 				removeElements();
 		}
@@ -100,7 +100,7 @@ var popup = function ($) {
 		$('body').on('click', '.popup-content .popup-title .close', function () {
 			let $dom = $('.popup-content .body-bottom #cancel');
 			if ($dom.length > 0)
-				$dom.click();
+				$dom.trigger('click');
 			else
 				removeElements();
 		});
