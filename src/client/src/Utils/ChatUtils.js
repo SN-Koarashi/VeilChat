@@ -805,9 +805,9 @@ export function executeFormattedMessage(element) {
 					$(element).attr('src', '/assets/images/copy.png');
 				}, 1500);
 			});
-		});
 
-		window.hljs.highlightAll();
+			window.hljs.highlightElement(this);
+		});
 	}
 
 	$(element).removeAttr('data-convert');

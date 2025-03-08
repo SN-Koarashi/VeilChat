@@ -23,7 +23,7 @@ pre code.hljs+img {
 	display: none;
 	position: absolute;
 	right: 5px;
-	top: 5px;
+	top: 10px;
 	z-index: 1;
 	filter: invert(1);
 	width: 20px;
