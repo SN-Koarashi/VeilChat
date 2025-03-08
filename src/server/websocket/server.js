@@ -1,6 +1,6 @@
 "use strict";
 require('./global.js');
-const { onSender, Logger, cryptPwd, isJSONString, isMalicious } = require('./function.js');
+const { onSender, Logger, cryptPwd, isJSONString, isMalicious, roomCleanerHandler } = require('./function.js');
 
 const path = require('path');
 const dotenv = require('dotenv');
@@ -141,20 +141,7 @@ wssSrv.on('connection', (ws, req) => {
 
 			clientListID[SocketData.clientTokenHash].splice(clientListID[SocketData.clientTokenHash].indexOf(SocketData.clientID), 1);
 
-			if (roomList[locate] && Object.keys(roomList[locate]).length == 0 && locate.match(/^([0-9a-zA-Z\-_]{8})$/g) && roomListReserved.indexOf(locate) === -1) {
-				roomTimer[locate] = setTimeout(() => {
-					if (roomList[locate] && Object.keys(roomList[locate]).length == 0) {
-						delete roomList[locate];
-						delete messageList[locate];
-						delete roomTimer[locate];
-						delete roomKeyPair[locate];
-						delete roomCreatedTimestamp[locate];
-
-						// 推送清除訊息到控制台
-						Logger("WARN", `Deleted channel #${locate} and its message history.`);
-					}
-				}, 60000);
-			}
+			roomCleanerHandler(locate);
 
 			// 傳遞更新後的使用者列表給所有人
 			let obj = {
@@ -201,7 +188,7 @@ server.listen(PORT, () => {
 	setInterval(() => {
 		wssSrv.clients.forEach((client) => {
 			if (client.isAlive === false) {
-				console.log(client, 'close');
+				// console.log(client, 'close');
 				return client.terminate();
 			}
 			client.isAlive = false;

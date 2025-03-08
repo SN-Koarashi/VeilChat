@@ -124,6 +124,30 @@ const $ = {
 		}
 
 		return false; // 合法請求
+	},
+	roomCleanerHandler: function (locate) {
+		if (roomList[locate] && Object.keys(roomList[locate]).length == 0 && locate.match(/^([0-9a-zA-Z\-_]{8})$/g) && roomListReserved.indexOf(locate) === -1) {
+			// 清除先前的計時器
+			if (roomTimer[locate]) {
+				clearTimeout(roomTimer[locate]);
+			}
+
+			roomTimer[locate] = setTimeout(() => {
+				if (
+					roomList[locate] &&
+					Object.keys(roomList[locate]).length == 0
+				) {
+					delete roomList[locate];
+					delete messageList[locate];
+					delete roomTimer[locate];
+					delete roomKeyPair[locate];
+					delete roomCreatedTimestamp[locate];
+
+					// 推送清除訊息到控制台
+					$.Logger("WARN", `Deleted channel #${locate} and its message history.`);
+				}
+			}, 60000);
+		}
 	}
 };
 

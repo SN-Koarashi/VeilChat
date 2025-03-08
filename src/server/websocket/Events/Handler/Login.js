@@ -1,6 +1,6 @@
 "use strict";
 require('../../global.js');
-const { Logger, onSender, getSHA256, getRandomID } = require('../../function.js');
+const { Logger, onSender, getSHA256, getRandomID, roomCleanerHandler } = require('../../function.js');
 
 function RegisterEvent(data, sd, ws) {
 	// 使用者所在的房間
@@ -111,13 +111,21 @@ function RegisterEvent(data, sd, ws) {
 			for (let c of roomList[clientList[sd.clientUID].locate][sd.clientTokenHash]) {
 				if (c.session == sd.clientUID) {
 					roomList[clientList[sd.clientUID].locate][sd.clientTokenHash].splice(k, 1);
+
 					break;
 				}
 				k++;
 			}
 
-			if (roomList[clientList[sd.clientUID].locate][sd.clientTokenHash].length == 0)
+			// 當該使用者沒有任何工作階段在該房間時，刪除物件資訊
+			if (roomList[clientList[sd.clientUID].locate][sd.clientTokenHash].length == 0) {
 				delete roomList[clientList[sd.clientUID].locate][sd.clientTokenHash];
+			}
+
+			if (Object.keys(roomList[clientList[sd.clientUID].locate]).length == 0) {
+				// 先前的房間沒人時，啟動計時器
+				roomCleanerHandler(clientList[sd.clientUID].locate);
+			}
 		}
 
 
