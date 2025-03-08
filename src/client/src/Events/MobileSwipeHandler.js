@@ -229,12 +229,12 @@ export default function RegisterEvent() {
 		}
 
 		// 對話框手勢操作
-		if (Math.abs(X) < 65 && Y > 35 && !touchStaying && Dialog.isShownDialog(e.target)) {
-			$('.popup-content .popup-title .close').click();
+		if (Math.abs(X) < 150 && Y > 35 && !touchStaying && Dialog.isShownDialog(e.target)) {
+			$('.popup-content .popup-title .close').trigger('click');
 		}
 		else if (Dialog.isShownDialog(e.target) && dragElement[$(e.target).parents(".popup-content")?.get(0)]) {
 			if (parseInt($(e.target).parents(".popup-content").css('top')) > $(document).height() / 2.5) {
-				$('.popup-content .popup-title .close').click();
+				$('.popup-content .popup-title .close').trigger('click');
 			}
 			else {
 				$(e.target).parents(".popup-content").css('top', '0px');
