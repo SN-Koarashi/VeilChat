@@ -10,11 +10,32 @@ body.noOverflow {
 
 pre {
 	margin: 0px;
+	position: relative;
 }
 
 pre code.hljs {
 	overflow-x: hidden;
 	white-space: pre-wrap;
+	border-radius: 8px;
+}
+
+pre code.hljs+img {
+	display: none;
+	position: absolute;
+	right: 5px;
+	top: 5px;
+	z-index: 1;
+	filter: invert(1);
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+	user-select: none;
+	padding: 5px;
+}
+
+pre code.hljs:hover+img,
+pre code.hljs+img:hover {
+	display: inline-block;
 }
 
 iframe.youtube {
@@ -1388,6 +1409,7 @@ body.noOverflow {
 	position: fixed;
 	bottom: 70px;
 	right: 270px;
+	z-index: 1;
 }
 
 .lobby>.menu.hasAnime {
@@ -2121,6 +2143,10 @@ body.noOverflow {
 	body {
 		position: relative;
 		user-select: none;
+	}
+
+	pre code.hljs+img {
+		display: inline-block;
 	}
 
 	.popup-content {

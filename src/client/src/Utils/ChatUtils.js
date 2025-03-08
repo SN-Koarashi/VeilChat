@@ -3,7 +3,7 @@
 
 import $ from 'jquery';
 import config from '../config.js';
-import { crc32, isMobile, escapeHtml, checkImageURL, randomASCIICode, getPlainMessage, getFileCleanerTagFormat } from './Utils.js';
+import { crc32, isMobile, escapeHtml, checkImageURL, randomASCIICode, getPlainMessage, getFileCleanerTagFormat, copyTextToClipboard } from './Utils.js';
 import Logger from '../Functions/Logger.js';
 import Dialog from '../Functions/Dialog.js';
 import { WebSocketBinaryHandler } from '../Registers/WebSocket.js';
@@ -184,12 +184,13 @@ export function urlify(text) {
 export function parseCodeArea(text) {
 	const codeRegex = /\[code(=[0-9a-z]+)?\]([^\n][^]*?)\[\/code\]/ig;
 	return text.replace(codeRegex, function (matched, lang, code) {
+		const preTag = `<pre spellcheck="false" autocorrect="off" autocapitalize="off" translate="no">`;
 		if (lang) {
 			lang = lang.substring(1);
-			return '<pre><code class="language-' + lang + '">' + code + '</code></pre>';
+			return `${preTag}<code class="language-${lang}">${code}</code></pre>`;
 		}
 		else
-			return '<pre><code>' + code + '</code></pre>';
+			return `${preTag}<code>${code}</code></pre>`;
 	});
 }
 
@@ -790,9 +791,24 @@ export function executeFormattedMessage(element) {
 
 	$(element).html(formatterContent);
 
-	$(element).find("pre code").each(function () {
-		window.hljs.highlightElement(this);
-	});
+	if ('hljs' in window) {
+		$(element).find("pre code").each(function () {
+			$(this).after('<img title="複製程式碼區塊內容" src="/assets/images/copy.png" />');
+			$(this).next().on('click', function () {
+				let element = this;
+
+				$(element).attr('src', '/assets/images/check.png');
+
+				copyTextToClipboard($(this).prev().text());
+
+				setTimeout(() => {
+					$(element).attr('src', '/assets/images/copy.png');
+				}, 1500);
+			});
+		});
+
+		window.hljs.highlightAll();
+	}
 
 	$(element).removeAttr('data-convert');
 }
