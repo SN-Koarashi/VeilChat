@@ -14,7 +14,7 @@ import { base64ToBlob } from '../Utils/Utils.js';
 export default function RegisterEvent() {
 	$('#sendMessage').on('click', function (e) {
 		if (config.wss.readyState == 1 && $('#sender').text().replace(/\n|\r/g, "").length > 0) {
-			$(this).blur();
+			$(this).trigger('blur');
 
 			let outResult = sendMessageGeneral(e, $('#sender'));
 
@@ -22,7 +22,7 @@ export default function RegisterEvent() {
 				$('#sender').text('');
 
 				if ($('.textArea').hasClass("maximum")) {
-					$('#sender').focus();
+					$('#sender').trigger('focus');
 				}
 			}
 

@@ -387,7 +387,7 @@ function editMessage(message_id) {
     $('.lobby > .privateStatus > .privateText > span').text(`${message_id}`);
 
     $('#sender').text(config.messageList[message_id].message);
-    $('#sender').focus();
+    $('#sender').trigger('focus');
 
     $(element?.main).addClass("focus");
     setTimeout(() => {

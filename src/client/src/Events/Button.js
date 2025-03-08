@@ -34,7 +34,7 @@ export default function RegisterEvent(window) {
 	$("#add").on("click", function (e) {
 		if ($(this).hasClass("right")) {
 			$("body").trigger("click");
-			$("#sender").focus();
+			$("#sender").trigger('focus');
 		}
 		else {
 			$(".additional").toggle();

@@ -43,8 +43,8 @@ var popup = function ($) {
 	function shakingWindow(time) {
 		$('.popup-content').addClass('shake');
 
-		$('.popup-content .content-text #option-input').focus();
-		$('.popup-content .content-text #prompt-input').focus();
+		$('.popup-content .content-text #option-input').trigger('focus');
+		$('.popup-content .content-text #prompt-input').trigger('focus');
 
 		$('.popup-content').removeClass('noAnime');
 		setTimeout(function () {
@@ -376,7 +376,7 @@ var popup = function ($) {
 			$('.popup-content .content-text').html(content + '<div><input type="text" placeholder="' + placeholder + '" id="prompt-input" /></div>');
 
 			setTimeout(() => {
-				$('.popup-content .content-text #prompt-input').focus();
+				$('.popup-content .content-text #prompt-input').trigger('focus');
 			}, 250);
 
 			$('body').on('click', '.popup-content .body-bottom #ok', function () {
@@ -432,7 +432,7 @@ var popup = function ($) {
 			initializeElements(true);
 			$('.popup-title .content').text(title);
 			$('.popup-content .content-text').html(content + '<div><select id="option-input"></select></div>');
-			$('.popup-content .content-text #option-input').focus();
+			$('.popup-content .content-text #option-input').trigger('focus');
 
 			const hasCustomDefault = extObj.customDefault && extObj.customDefault.name && extObj.customDefault.value !== undefined;
 
@@ -472,7 +472,7 @@ var popup = function ($) {
 
 					if (totalOptions - 1 === selectedIndex) {
 						$('.popup-content .content-text #prompt-input').show();
-						$('.popup-content .content-text #prompt-input').focus();
+						$('.popup-content .content-text #prompt-input').trigger('focus');
 					}
 					else {
 						$('.popup-content .content-text #prompt-input').hide();

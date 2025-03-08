@@ -222,7 +222,7 @@ export default function RegisterEvent() {
 				}
 				else {
 					toggleSidebar($(".wrapper_settings"), false, "left");
-					$("#userName").blur();
+					$("#userName").trigger('blur');
 					savingSettings();
 				}
 			}

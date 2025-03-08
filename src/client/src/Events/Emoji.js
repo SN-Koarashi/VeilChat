@@ -93,7 +93,7 @@ export default function RegisterEvent() {
 		else {
 
 			$(".emoji-window").toggle();
-			$(".emoji-window #search").focus();
+			$(".emoji-window #search").trigger('focus');
 		}
 
 		e.stopPropagation();
@@ -109,7 +109,7 @@ export default function RegisterEvent() {
 			$("#search").trigger(e);
 
 			if ($(".textArea").hasClass("maximum"))
-				$("#sender").focus();
+				$("#sender").trigger('focus');
 		}
 	});
 
@@ -117,7 +117,7 @@ export default function RegisterEvent() {
 	$(".emoji-window .eBody .eContainer").on("click", "div[data-id]", function (e) {
 		var v = $('#sender').text();
 
-		$('#sender').focus();
+		$('#sender').trigger('focus');
 
 		let range = (config.lastRange === null) ? document.getSelection().getRangeAt(0) : config.lastRange;
 

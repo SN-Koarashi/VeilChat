@@ -296,7 +296,7 @@ export function toggleSidebar($element, flag, openDirection, force) {
 
 	if (flag) {
 		//$element.css(openDirection,"5px");
-		$("#sender").blur();
+		$("#sender").trigger('blur');
 		$element.attr("data-open", true);
 		$element.css(openDirection, '');
 		$element.addClass('hasAnime');
