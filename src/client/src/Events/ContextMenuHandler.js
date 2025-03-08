@@ -103,6 +103,13 @@ export default function RegisterEvent() {
             $('div.contextmenu_wrapper > .contextmenu').append(`<div class="no-icon" data-id="openLink">開啟連結</div>`);
         }
 
+        if (e.target.nodeName === "CODE" || e.target?.parentNode.nodeName === "CODE") {
+            triggerElement["CODE"] = (e.target.nodeName === "CODE") ? e.target : e.target?.parentNode;
+
+            $('div.contextmenu_wrapper > .contextmenu').append(`<hr/>`);
+            $('div.contextmenu_wrapper > .contextmenu').append(`<div class="no-icon" data-id="copyCodeBlock">複製程式碼區塊</div>`);
+        }
+
         const fixingPosition = checkBoundary(document.querySelector('div.contextmenu_wrapper > .contextmenu'), x, y);
         $('div.contextmenu_wrapper > .contextmenu').attr('style', `--click-x:${fixingPosition.x}px;--click-y:${fixingPosition.y}px`);
     });
@@ -160,6 +167,9 @@ export default function RegisterEvent() {
         }
         else if (action === "openLink" && triggerElement["A"] != null) {
             window.open(triggerElement["A"].href);
+        }
+        else if (action === "copyCodeBlock" && triggerElement["CODE"] != null) {
+            copyTextToClipboard(triggerElement["CODE"].innerText);
         }
         else if (action === "copyImage" && triggerElement["IMG"]?.src && isImage(triggerElement["IMG"].src)) {
             const mimeType = getImageType(triggerElement["IMG"].src);
