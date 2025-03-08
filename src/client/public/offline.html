@@ -1,178 +1,61 @@
 <!DOCTYPE html>
-<html lang="zh_TW">
+<html lang="zh-TW">
 
 <head>
-	<meta name="robots" content="noindex,nofollow,noarchive" />
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0" />
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<link id="favicon" rel="icon" type="image/x-icon" href="https://i.imgur.com/uf2H38d.png" />
-	<title>Veil Chat 離線模式</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>連線異常 | Veil Chat</title>
 	<style>
-		::-webkit-scrollbar {
-			width: 7px;
-			background: #fff;
-		}
-
-		::-webkit-scrollbar-thumb {
-			background: #ddd;
-		}
-
-		::-webkit-scrollbar-track {
-			border-radius: 5px;
-			background: #fff;
-			-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
-		}
-
-		::-webkit-scrollbar-thumb:hover {
-			background: #aaa;
-		}
-
-		::-webkit-scrollbar-track:hover {
-			-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-		}
-
 		body {
-			overflow-x: hidden;
+			background-color: #121212;
+			color: #ffffff;
+			font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 			margin: 0;
 			padding: 0;
-			background: #131313;
-			font-family: \5FAE\8EDF\6B63\9ED1\9AD4, Microsoft JhengHei, MingLiU, sans-serif;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
 		}
 
-		.computer {
-			display: block;
-			width: 1000px;
-			margin: 23vh auto 35px auto;
-			vertical-align: middle;
-			color: #FFF;
+		.container {
 			text-align: center;
+			padding: 20px;
 		}
 
-		.header {
-			padding-top: 100px;
-			background-repeat: no-repeat;
-			background-position: center top;
+		h1 {
+			font-size: 2em;
+			margin-bottom: 0.5em;
 		}
 
-		.big_font {
-			font-size: 30px;
-			font-weight: bold;
-			padding-bottom: 20px;
-			margin-top: -20px;
+		p {
+			font-size: 1.2em;
+			margin-bottom: 1.5em;
 		}
 
-		.less_font {
-			font-size: 20px;
-			word-break: break-all;
-			word-wrap: break-word;
-		}
-
-		.buttons {
-			padding-top: 20px;
-		}
-
-		a {
-			text-decoration: underline;
-			color: #FFF;
-		}
-
-		a:hover {
-			text-decoration: none;
-		}
-
-		.button,
-		.button:focus,
-		.button:active {
-			width: 115px;
-			height: 35px;
-			background: transparent;
-			border: 2px #FFF solid;
-			margin: 10px auto 0px auto;
-			border-radius: 3px;
-			-moz-border-radius: 3px;
-			-webkit-border-radius: 3px;
+		.button {
+			padding: 0.8em 1.5em;
+			background-color: #1f1f1f;
+			color: #ffffff;
+			border: none;
+			border-radius: 5px;
 			font-size: 1em;
 			cursor: pointer;
-			color: #FFF;
-			outline: 0;
+			transition: background-color 0.3s ease;
 		}
 
 		.button:hover {
-			background: #FFF;
-			background: #404040;
-			outline: 0;
-		}
-
-
-		.TOP {
-			display: block;
-			background-color: #232323;
-			height: 40px;
-			position: fixed;
-			left: 0;
-			top: 0;
-			right: 0;
-			z-index: 100;
-			border-bottom: 1px #FFF solid;
-		}
-
-		.TOP-data {
-			display: block;
-			width: 1000px;
-			margin: 0 auto;
-			color: #FFF;
-			font-family: \5FAE\8EDF\6B63\9ED1\9AD4, Microsoft JhengHei, MingLiU, sans-serif;
-			font-size: 20px;
-			line-height: 37px;
-		}
-
-		.TOP-data #mobile {
-			display: none;
-		}
-
-		@media screen and (max-width: 480px) {
-			.TOP-data {
-				width: 360px;
-				padding: 0px 10px;
-			}
-
-			.TOP-data #mobile {
-				display: block;
-			}
-
-			.TOP-data #desktop {
-				display: none;
-			}
-
-			.computer {
-				width: 340px;
-				margin: 100px auto 0px auto;
-			}
-
-			.header {
-				padding: 5px;
-				margin-top: 0px;
-			}
+			background-color: #333333;
 		}
 	</style>
 </head>
 
-<body onDRAGSTART="window.event.returnValue=false" onCONTEXTMENU="window.event.returnValue=false"
-	onSelectStart="event.returnValue=false">
-	<div class="TOP">
-		<div class="TOP-data">
-			<span id="desktop">Veil Chat</span>
-			<span id="mobile">Veil Chat</span>
-		</div>
-	</div>
-	<div class="computer">
-		<div class="header">
-			<div class="big_font">尚未偵測到網路連線</div>
-			<div class="less_font">您需要連線到網路才可以瀏覽本頁面！</div>
-			<div class="buttons"><a href="javascript:window.location.reload();"><button class="button">重新整理</button></a>
-			</div>
-		</div>
-		<div class="images-i"></div>
+<body>
+	<div class="container">
+		<h1>Veil Chat</h1>
+		<h2>網路連線異常</h2>
+		<p>目前無法偵測到網路連線，請檢查您的網路設定後再試一次。</p>
+		<button class="button" onclick="location.reload();">重新載入</button>
 	</div>
 </body>
 
