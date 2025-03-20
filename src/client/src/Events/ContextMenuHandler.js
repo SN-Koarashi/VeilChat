@@ -131,6 +131,7 @@ export default function RegisterEvent() {
 
         if (isMobile()) {
             $wrapper.children('.contextmenu').css('transform', `translateY(100%)`);
+            $wrapper.children('.contextmenu').removeClass('noAnime');
             setTimeout(() => {
                 $wrapper.remove();
             }, 75);
@@ -234,7 +235,8 @@ export default function RegisterEvent() {
         // eslint-disable-next-line no-unused-vars
         touchStarting = false,
         touchStaying = false,
-        timer = null;
+        timer = null,
+        ticking = false;
 
     const tirggerY = 210
     const triggerSelector = '.contextmenu_wrapper > .contextmenu';
@@ -265,11 +267,12 @@ export default function RegisterEvent() {
         dragStartX = e.originalEvent.changedTouches[0].pageX;
         dragStartY = screenHeight - e.originalEvent.changedTouches[0].pageY;
 
-        $(triggerSelector).removeClass('hasAnime');
+        $(triggerSelector).addClass('noAnime');
     });
 
     $('body').on('touchmove', '.contextmenu_wrapper', function (e) {
         if (touchY > tirggerY) return;
+        $(triggerSelector).addClass('noAnime');
 
         let screenHeight = $(window).height();
 
@@ -280,15 +283,23 @@ export default function RegisterEvent() {
 
         let movePosition = dragStartY - Y;
 
-        // 判斷是否在合理範圍，讓使用者只能在螢幕範圍內拖曳
-        if (movePosition >= 0)
-            $(triggerSelector).css('bottom', `-${movePosition}px`);
-        else
-            $(triggerSelector).css('bottom', `0px`);
+        if (!ticking) {
+            ticking = true;
+            // 判斷是否在合理範圍，讓使用者只能在螢幕範圍內拖曳
+            requestAnimationFrame(() => {
+                if (movePosition >= 0)
+                    $(triggerSelector).css('transform', `translateY(${movePosition}px)`);
+                else
+                    $(triggerSelector).css('transform', `translateY(0px)`);
+
+                ticking = false;
+            });
+        }
     });
 
     $('body').on('touchend', '.contextmenu_wrapper', function (e) {
         if (touchY > tirggerY) return;
+        $(triggerSelector).removeClass('noAnime');
 
         let screenHeight = $(window).height();
 
@@ -312,10 +323,10 @@ export default function RegisterEvent() {
             movePosition > 35 && !touchStaying
         ) {
             $(this).remove();
+            $('.lobby > .chat > div[data-id].focus').removeClass('focus');
         }
         else {
-            $(triggerSelector).addClass('hasAnime');
-            $(triggerSelector).css('bottom', `0px`);
+            $(triggerSelector).css('transform', `translateY(0px)`);
         }
     });
 }

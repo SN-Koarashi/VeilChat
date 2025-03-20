@@ -2145,6 +2145,11 @@ body.noOverflow {
 		user-select: none;
 	}
 
+	html,
+	body {
+		overscroll-behavior: contain;
+	}
+
 	pre code.hljs+img {
 		display: inline-block;
 	}
@@ -2263,14 +2268,15 @@ body.noOverflow {
 		width: 100%;
 		transform: translateY(0%);
 		transition: transform 0.25s, background 0.25s;
+		will-change: transform;
 
 		@starting-style {
 			transform: translateY(100%);
 		}
 	}
 
-	.contextmenu.hasAnime {
-		transition: transform 0.25s, background 0.25s, bottom 0.25s;
+	.contextmenu.noAnime {
+		transition: transform 0.1s, background 0.25s;
 	}
 
 	.contextmenu::before {
