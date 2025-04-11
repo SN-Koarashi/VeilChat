@@ -393,7 +393,8 @@ export function privateChat(targetSignature, message, previousLocate) {
 export function compressImagePromise(file, flag) {
 	return new Promise((resolve, reject) => {
 		if (file.type.startsWith("image/")) {
-			if (file.size > 6291456 || flag) {
+			// 超過 512 KiB 時啟動壓縮
+			if (file.size > 524288 || flag) {
 				Logger.show(Logger.Types.LOG, "[CompressionHandlerPromise]", file.name, "Starting reader...");
 				var reader = new FileReader();
 				reader.onload = function (event) {
