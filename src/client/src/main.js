@@ -3,7 +3,7 @@ import { initFirst } from './registers/events.js';
 
 if ('serviceWorker' in navigator) {
 	window.addEventListener('load', () => {
-		navigator.serviceWorker.register('/js/service-workers.js');
+		navigator.serviceWorker.register('/assets/js/service-workers.js');
 	});
 }
 
