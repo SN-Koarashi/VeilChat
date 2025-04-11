@@ -57,6 +57,7 @@ module.exports = {
             // 動態添加查詢參數
             templateParameters: {
                 buildTime: new Date().getTime(), // 使用當前時間作為查詢參數
+                XOR_KEY: process.env.XOR_KEY,
                 APP_URL: process.env.APP_URL,
                 GA_ID: process.env.GA_ID,
                 SEO_JSON_LD: JSON.stringify([

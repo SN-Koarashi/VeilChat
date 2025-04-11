@@ -6,6 +6,7 @@ import onOpen from '../events/websocket/base/open.js';
 import onClose from '../events/websocket/base/close.js';
 import onError from '../events/websocket/base/error.js';
 import onMessage from '../events/websocket/base/message.js';
+import { getXorKey } from '../utils/util.js';
 
 export async function WebSocketBinaryHandler(obj) {
 	var str;
@@ -24,7 +25,7 @@ export async function WebSocketBinaryHandler(obj) {
 	var enc = new TextEncoder();
 	var arr = enc.encode(str);
 	for (let i = 0; i < arr.length; i++)
-		arr[i] ^= 5026;
+		arr[i] ^= getXorKey();
 
 	config.wss.send(arr);
 }

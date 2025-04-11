@@ -182,3 +182,7 @@ export function getFileCleanerTagFormat(fileSize) {
 		date
 	};
 }
+
+export function getXorKey() {
+	return parseInt(process.env.XOR_KEY);
+}

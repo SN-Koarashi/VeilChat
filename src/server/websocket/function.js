@@ -58,7 +58,7 @@ const $ = {
 		}
 
 		var buf = new Buffer.from(bytes.buffer);
-		var msg = buf.map(b => b ^ 5026);
+		var msg = buf.map(b => b ^ $.getXorKey());
 
 		return msg;
 	},
@@ -148,6 +148,9 @@ const $ = {
 				}
 			}, 60000);
 		}
+	},
+	getXorKey: function () {
+		return parseInt(process.env.XOR_KEY);
 	}
 };
 

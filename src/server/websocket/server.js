@@ -1,6 +1,6 @@
 "use strict";
 require('./global.js');
-const { onSender, Logger, cryptPwd, isJSONString, isMalicious, roomCleanerHandler } = require('./function.js');
+const { onSender, Logger, cryptPwd, isJSONString, isMalicious, roomCleanerHandler, getXorKey } = require('./function.js');
 
 const path = require('path');
 const dotenv = require('dotenv');
@@ -68,7 +68,8 @@ wssSrv.on('connection', (ws, req) => {
 	ws.on('message', async (arraybuffer) => {
 		try {
 			var buf = new Buffer.from(arraybuffer);
-			var msg = buf.map(b => b ^ 5026);
+
+			var msg = buf.map(b => b ^ getXorKey());
 
 			if (!isJSONString(msg.toString())) return;
 
