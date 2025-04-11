@@ -11,7 +11,7 @@ import {
 	cancelPrivateMode
 } from '../../utils/chatUtil.js';
 
-import { initSettings } from '../../registers/events.js';
+import { initSettings } from '../../registers/event.js';
 
 export default function RegisterEvent(window) {
 	$(window).on('popstate', function () {
