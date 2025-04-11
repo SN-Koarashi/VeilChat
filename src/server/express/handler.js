@@ -232,7 +232,7 @@ const $ = {
         // 建立所有工作的 Promise 陣列
         const workerPromises = Object.keys(fileExpiringTag).map(tag => {
             return new Promise((resolve, reject) => {
-                const worker = new Worker(path.join(__dirname, 'Worker/FileCleaner.js'));
+                const worker = new Worker(path.join(__dirname, 'worker/fileCleaner.js'));
 
                 // 收到工作者發送的消息
                 worker.on('message', (data) => {

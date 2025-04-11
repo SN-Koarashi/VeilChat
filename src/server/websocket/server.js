@@ -10,7 +10,7 @@ const WebSocket = require('ws');
 const SocketServer = WebSocket.Server;
 const http = require('http');
 
-const Events = require('./Events/index.js');
+const Events = require('./events/index.js');
 
 // 指定開啟的 port
 const PORT = process.env.PORT || 8080;
