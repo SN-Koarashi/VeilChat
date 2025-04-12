@@ -154,8 +154,9 @@ sudo systemctl enable veilchat-express && sudo systemctl enable veilchat-websock
 sudo systemctl start veilchat-express && sudo systemctl start veilchat-websocket
 ```
 
-### 維護
-清除暫存檔案
+## 後續維護
+### 手動清除暫存檔案
+> 自動清除暫存檔案的定時任務由 Express 伺服器負責，並依照檔案大小有著不同的暫存時間。
 ```
 sudo find ~/repo/VeilChat/src/client/public/files/ -mindepth 1 -type d -exec rm -rf {} + && echo 'Prune Completed' && ls ~/repo/VeilChat/src/client/public/files/
 ```
