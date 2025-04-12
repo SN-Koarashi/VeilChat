@@ -142,11 +142,11 @@ sudo systemctl daemon-reload
 
 ### 啟動
 ```
-sudo systemctl enable veilchat.express && sudo systemctl enable veilchat.websocket
+sudo systemctl enable veilchat-express && sudo systemctl enable veilchat-websocket
 ```
 
 ```
-sudo systemctl start veilchat.express && sudo systemctl start veilchat.websocket
+sudo systemctl start veilchat-express && sudo systemctl start veilchat-websocket
 ```
 
 ### 維護
