@@ -43,7 +43,7 @@
 
 ### 建立服務 WebSocket
 
-0. 一行式指令
+#### 一行式指令
 ```
 cat <<EOF | sudo tee /etc/systemd/system/veilchat-websocket.service > /dev/null
 [Unit]
@@ -63,12 +63,15 @@ ExecStart=/bin/bash -c 'source \$NVM_DIR/nvm.sh && npm run start:websocket'
 WantedBy=multi-user.target
 EOF
 ```
+
+#### 逐步操作
 1. 建立服務
 ```
 sudo nano /etc/systemd/system/veilchat.websocket.service
 ```
 
 1. 編輯內容
+> $USER 要替換為當下登入的使用者名稱
 ```
 [Unit]
 Description=VeilChat WebSocket Service
@@ -89,7 +92,7 @@ WantedBy=multi-user.target
 
 ### 建立服務 Express
 
-0. 一行式指令
+#### 一行式指令
 ```
 cat <<EOF | sudo tee /etc/systemd/system/veilchat-express.service > /dev/null
 [Unit]
@@ -110,12 +113,14 @@ WantedBy=multi-user.target
 EOF
 ```
 
+#### 逐步操作
 1. 建立服務
 ```
 sudo nano /etc/systemd/system/veilchat.express.service
 ```
 
 2. 編輯內容
+> $USER 要替換為當下登入的使用者名稱
 ```
 [Unit]
 Description=VeilChat Express Service
@@ -140,17 +145,18 @@ WantedBy=multi-user.target
 sudo systemctl daemon-reload
 ```
 
-### 啟動
+### 啟動服務
 ```
-sudo systemctl enable veilchat.express && sudo systemctl enable veilchat.websocket
-```
-
-```
-sudo systemctl start veilchat.express && sudo systemctl start veilchat.websocket
+sudo systemctl enable veilchat-express && sudo systemctl enable veilchat-websocket
 ```
 
-### 維護
-清除暫存檔案
+```
+sudo systemctl start veilchat-express && sudo systemctl start veilchat-websocket
+```
+
+## 後續維護
+### 手動清除暫存檔案
+> 自動清除暫存檔案的定時任務由 Express 伺服器負責，並依照檔案大小有著不同的暫存時間。
 ```
 sudo find ~/repo/VeilChat/src/client/public/files/ -mindepth 1 -type d -exec rm -rf {} + && echo 'Prune Completed' && ls ~/repo/VeilChat/src/client/public/files/
 ```
