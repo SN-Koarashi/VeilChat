@@ -2,6 +2,7 @@ node_modules
 bin
 temp
 *.db
+.env
 package-lock.json
 **/public/index.html
 **/public/manifest.json
