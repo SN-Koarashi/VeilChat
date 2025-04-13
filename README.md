@@ -154,6 +154,30 @@ sudo systemctl enable veilchat-express && sudo systemctl enable veilchat-websock
 sudo systemctl start veilchat-express && sudo systemctl start veilchat-websocket
 ```
 
+## 防火牆設定
+> `8080` 為 Express 伺服器所用的連接埠。
+> `8084` 為 WebSocket 伺服器所用的連接埠。
+
+### firewalld
+```sh
+sudo firewall-cmd --add-port=8084/tcp --add-port=8080/tcp --permanent
+sudo firewall-cmd --reload
+```
+
+### iptable
+```sh
+sudo iptables -A INPUT -p tcp --dport 8084 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
+sudo iptables-save | sudo tee /etc/iptables/rules.v4
+```
+
+### ufw
+```sh
+sudo ufw allow 8084/tcp
+sudo ufw allow 8080/tcp
+sudo ufw reload
+```
+
 ## 後續維護
 ### 手動清除暫存檔案
 > 自動清除暫存檔案的定時任務由 Express 伺服器負責，並依照檔案大小有著不同的暫存時間。
