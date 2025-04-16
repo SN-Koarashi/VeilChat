@@ -151,6 +151,16 @@ const $ = {
 	},
 	getXorKey: function () {
 		return parseInt(process.env.XOR_KEY);
+	},
+	reservedRoomRegister: function () {
+		var reservedList = process.env?.RESERVED_ROOM_LIST?.split(',').map(s => s?.trim()).filter(s => s.length > 0);
+		if (reservedList != null && reservedList.length > 0) {
+			reservedList.forEach(r => {
+				roomList[r] = {};
+				roomListReserved.push(r);
+				roomPassword[r] = null;
+			});
+		}
 	}
 };
 

@@ -1,6 +1,6 @@
 "use strict";
 require('./global.js');
-const { onSender, Logger, cryptPwd, isJSONString, isMalicious, roomCleanerHandler, getXorKey } = require('./function.js');
+const { onSender, Logger, cryptPwd, isJSONString, isMalicious, roomCleanerHandler, getXorKey, reservedRoomRegister } = require('./function.js');
 
 const path = require('path');
 const dotenv = require('dotenv');
@@ -161,6 +161,7 @@ wssSrv.on('connection', (ws, req) => {
 
 server.listen(PORT, () => {
 	Logger("WARN", `WebSocket Server is Listening on Port ${server.address().port} | mode: ${process.env.NODE_ENV}`);
+	reservedRoomRegister();
 
 	// 全域計時器
 	setInterval(() => {
