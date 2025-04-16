@@ -39,6 +39,24 @@
   - [X] 由剪貼簿直接貼上並上傳圖片
   - [X] 拖曳上傳功能
 
+## 復原專案
+1. 安裝 nvm，並且安裝 Nodejs 20 以上之版本
+> 本教學直接安裝 Nodejs 20.18.0
+```
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+```
+```
+nvm install 20.18.0
+```
+2. 拉取專案
+```
+mkdir ~/repo/ && cd ~/repo/ && git clone https://github.com/SN-Koarashi/VeilChat.git
+```
+3. 編譯前端必要檔案
+```
+cd ~/repo/VeilChat && npm run build:client
+```
+
 ## 初始化為系統服務
 
 ### 建立服務 WebSocket
@@ -152,6 +170,30 @@ sudo systemctl enable veilchat-express && sudo systemctl enable veilchat-websock
 
 ```
 sudo systemctl start veilchat-express && sudo systemctl start veilchat-websocket
+```
+
+## 防火牆設定
+> `8080` 為 WebSocket 伺服器所用的連接埠。
+> `8084` 為 Express 伺服器所用的連接埠。
+
+### firewalld
+```sh
+sudo firewall-cmd --add-port=8084/tcp --add-port=8080/tcp --permanent
+sudo firewall-cmd --reload
+```
+
+### iptable
+```sh
+sudo iptables -A INPUT -p tcp --dport 8084 -j ACCEPT
+sudo iptables -A INPUT -p tcp --dport 8080 -j ACCEPT
+sudo iptables-save | sudo tee /etc/iptables/rules.v4
+```
+
+### ufw
+```sh
+sudo ufw allow 8084/tcp
+sudo ufw allow 8080/tcp
+sudo ufw reload
 ```
 
 ## 後續維護
